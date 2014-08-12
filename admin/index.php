@@ -61,8 +61,17 @@
 			},
 			clear:function(){
 				output.innerHTML="";
+			},
+			vinfoframe:function(){
+				try{
+					var id=input.value.match(/^vinfoframe\s(\d+)$/)[1];
+					var httpmode=window.location.href.match(/^(.+):\/\//)[1];
+					var frameadr=httpmode+"://"+window.location.host+"/videoinfo.php?id="+id;
+					display('&lt;iframe src="'+frameadr+'" style="height:60%;width:100%;" allowfullscreen&gt;&lt;/iframe&gt;',true);
+				}catch(er){
+					display("<span class='red'>参数错误</span>",true);
+				}
 			}
-			
 		}
 
 		function evalcom(){
@@ -74,10 +83,11 @@
 				comhistory.push(com);
 				index++;
 				var command=com.split(" ")[0];
+				display("<span style='color:#ccc'>"+transarg(com)+"</span>");
 				if(simplecom[command]){
 					simplecom[command]();
 				}else{
-					display("<span style='color:#ccc'>"+transarg(com)+"</span>");
+					
 					cmd(com,false,function(t){
 						display(t,true);
 					});

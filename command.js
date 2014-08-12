@@ -50,6 +50,8 @@ function transarg(str){
 				var tmp;
 				if(tmp=tiz[i].match(/^`(.*)`$/)){
 					tiz[i]=cmd_unitrans(tmp[1]);
+					tiz[i]=tiz[i].replace(/^\-\-/,"`-`-");
+					tiz[i]=tiz[i].replace(/^\-/,"`-");
 					continue;
 				}else if(tmp=tiz[i].match(/^`(.*)$/)){
 					tiz[i]=cmd_unitrans(tmp[1]);
