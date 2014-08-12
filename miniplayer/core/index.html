@@ -1,0 +1,41 @@
+<script src="CanvasObjLibrary_min.js"></script>
+<div id="videoframe">
+                <video id="video"></video>
+                <div id="danmuframe">
+                    <canvas id="danmulayer"></canvas>
+                </div>
+</div>
+<script src="danmucore.js"></script>
+<style>
+	 #videoframe {
+	background-color: #000;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+ #videoframe #video {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	cursor: pointer;
+}
+ #videoframe #danmuframe {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	cursor: pointer;
+}
+ #videoframe #danmuframe #danmulayer {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+}
+</style>
