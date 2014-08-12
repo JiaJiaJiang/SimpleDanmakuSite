@@ -63,17 +63,18 @@ if ($command) {
                 return false;
             }
         }
+        function recovminus($str){
+            $str=preg_replace("/^`\-`\-/", "--", $str);
+            $str=preg_replace("/^`\-/", "-", $str);
+            return $str;
+        }
         function cmd($cmd)
         {
             global $options;
             $options = explode(" ", $cmd);
-            $script  =str_replace("%plus","+",unescape(array_shift($options)));
+            $script  =unescape(recovminus(str_replace("%plus","+",array_shift($options))));
             //echo $options[2]."\n";
             $count=count($options);
-            for ($ind = 0; $ind < $count; $ind++) {
-                //恢复字符串和+号
-                $options[$ind] = unescape(str_replace("%plus","+",$options[$ind]));
-            }
             //查找有名字的参数
             global $args;
             $args=array();
@@ -100,6 +101,18 @@ if ($command) {
                     array_push($flags,$flagname);//把标记名放入flags数组，可用in_array($flags,"标记名")来查找是否存在指定标记
                 }
             }
+            //恢复参数值
+            for ($ind = $count; $ind--; ) {
+                //恢复字符串和+号
+                $options[$ind] = unescape(recovminus(str_replace("%plus","+",$options[$ind])));
+            }
+            foreach ($args as $key => $value) {
+                $args[$key] = unescape(recovminus(str_replace("%plus","+",$value)));
+            }
+            foreach ($flags as $key => $value) {
+                $flags[$key] = unescape(recovminus(str_replace("%plus","+",$value)));
+            }
+
             if (is_file("commands/" . $script . ".php")) {
                 require_once("commands/" . $script . ".php");
             } else {

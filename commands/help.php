@@ -34,7 +34,9 @@ needLogin();
 	getVideoAddress			【播放器】获取视频地址和播放数
 	help 				【控制台】查看帮助
 	initdb				【控制台】初始化数据库(表)        
-	login 				【控制台】登录
+	login 				【控制台】登录(无help)
+	teststr				【控制台】测试命令到服务器后是什么样子(无help)
+	vinfoframe			【控制台】获取某id视频的视频信息页面iframe代码
 
 `号的使用:
 `号在这里用来区分包好空格的参数和转换内部字符到服务器可以识别的状态
