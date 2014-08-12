@@ -25,6 +25,7 @@ needLogin();
 	addvideo			【控制台】添加视频记录
 	clearplaycount			【控制台】清除指定id视频的播放数
 	cleardanmu			【控制台】清除某个视频的所有弹幕
+	commanddir			【控制台】查看commands文件夹下的命令
 	deldanmu			【控制台】使用id删除一条弹幕
 	delvideo			【控制台】删除视频
 	editvideo			【控制台】修改视频信息
@@ -41,8 +42,9 @@ needLogin();
 
 `号的使用:
 `号在这里用来区分包好空格的参数和转换内部字符到服务器可以识别的状态
+`号也可以防止-和--开头的参数被识别成参数名和标记
 `号在普通键盘上的ESC键下面，大概长这个样：<div style="display: inline-block;border: 1px solid #fff;width: 40px;height: 40px;line-height: 20px;font-size: 20px;padding: 5px;">~<br>`</div>
-如果出现这样【命令 `lala sdad asdah aklsdhf a什么的】的情况，将会把从`号开始的所有字符当作一个参数转义，你可以在发送命令前用【echo 你要发的命令】来预览将会发给服务器的转义后命令
+如果出现这样【命令 `lala sdad asdah aklsdhf a什么的】的情况，将会把从`号开始的所有字符当作一个参数转义，你可以在发送命令前用【echo `你要发的命令`】来预览将会发给服务器的转义后命令
 
 <span class="red">所有命令均无再次确认过程和撤销技能，所以请不要手滑</span>
 
