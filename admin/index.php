@@ -50,7 +50,7 @@
 		<script>
 		var output=document.querySelector("#output"),
 		input=document.querySelector("#input");
-		comhistory=[],index=0;
+		comhistory=[],index=-1;
 		function display(con,sign){
 			output.innerHTML+=((sign?"":">> ")+con+"\n");
 			output.scrollTop = output.scrollHeight;
@@ -104,13 +104,17 @@
 					break;
 				}
 				case 40:{
-					if(index<comhistory.length-1)index++;
-					input.value=comhistory[index];
+					if(index<comhistory.length-1){
+						index++;
+						input.value=comhistory[index];
+					}
 					break;
 				}
 				case 38:{
-					if(index>0)index--;
-					input.value=comhistory[index];
+					if(index>0){
+						index--;
+						input.value=comhistory[index];
+					}
 					break;
 				}
 			}

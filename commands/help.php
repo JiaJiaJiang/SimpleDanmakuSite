@@ -33,7 +33,8 @@ needLogin();
 	getDanmu			【播放器】获取json格式弹幕表
 	getVideoAddress			【播放器】获取视频地址和播放数
 	help 				【控制台】查看帮助
-	initdb				【控制台】初始化数据库(表)        
+	initdb				【控制台】初始化数据库(表) 
+	listdanmu			【控制台】列出指定视频的所有弹幕       
 	login 				【控制台】登录(无help)
 	teststr				【控制台】测试命令到服务器后是什么样子(无help)
 	vinfoframe			【控制台】获取某id视频的视频信息页面iframe代码
