@@ -196,7 +196,7 @@ function fitdanmulayer() {
 function fireinterval(){
 		if (timeline[timepoint]) {
 			//danmufuns.fire(timepoint);
-			postMessage(i,"*");
+			postMessage(timepoint,"*");
 		}
 		timepoint += 10;
 		if (player.video.paused) {
