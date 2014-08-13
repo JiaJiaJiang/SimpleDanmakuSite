@@ -1,10 +1,22 @@
 <?php
 if(hasFlag("help")){
-    echo "adddanmu用于添加一条弹幕，此命令通常由播放器调用\n        <b>adddanmu 视频id 弹幕类型 内容 所在时间 颜色 大小</b>";
+    echo "adddanmu用于添加一条弹幕，此命令通常由播放器调用\n        <b>adddanmu 视频id 弹幕类型 内容 所在时间 颜色 大小 存在服务器对应视频id的session</b>\n想手动调用此命令需要先打开对应视频页面获取playersse";
     exit;
 }
 $option = $options;
-if (count($option) == 6) {
+if (count($option) == 7) {
+    if($option[6]!= $_SESSION['access'.$option[0]]){
+        exit;
+    }
+        if(@$_SESSION['lastdanmutime'.$option[0]]){
+                $lst=intval($_SESSION['lastdanmutime'.$option[0]]);
+                $thit=gettimeofday()["sec"];
+                if(($thit-$lst)<5){
+                    echo "Error:发送送间隔太小";
+                    exit;
+                }
+        }
+        $_SESSION['lastdanmutime'.$option[0]]=gettimeofday()["sec"];
     connectSQL();
     Global $SQL;
     $videoid = $option[0];
@@ -14,7 +26,7 @@ if (count($option) == 6) {
     $color   = $option[4];
     $size    = intval($option[5]);
     if (!isID($videoid)) {
-        echo "Error:No video id.";
+        echo "Error:无效id.";
         return;
     }
     if ($type > 5 || $type < 0) {
@@ -36,7 +48,7 @@ if (count($option) == 6) {
     }
     
     //mysql_query( "SELECT LAST_INSERT_ID()" )
-    if ($size==25||$size==30||$size==45)) {}else{
+    if ($size==25||$size==30||$size==45) {}else{
     $size=30;
 }
     $stmt = mysqli_stmt_init($SQL);

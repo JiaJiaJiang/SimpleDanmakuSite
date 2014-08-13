@@ -624,3 +624,36 @@ margin-left: 5px;
 	height: 16px;
 	left: 0px;
 }
+#tip{
+	position: absolute;
+bottom: 30px;
+display: none;
+background-color: #B6B6B6;
+height: auto;
+right: 8px;
+border: 1px solid #ccc;
+padding: 3px;
+font-size: 17px;
+border-radius: 5px;
+animation:tip_in_ani 4s linear 0s forwards;
+  -webkit-animation:tip_in_ani 4s linear 0s forwards;
+  -moz-animation:tip_in_ani 4s linear 0s forwards;
+}
+@keyframes tip_in_ani{
+	0%{opacity: 0;right:-10px;}
+	10%{opacity: 1;right:8px;}
+	80%{opacity: 1;right:8px;}
+	100%{opacity: 0;display: none;}
+}
+@-webkit-keyframes tip_in_ani{
+	0%{opacity: 0;right:-10px;}
+	10%{opacity: 1;right:8px;}
+	80%{opacity: 1;right:8px;}
+	100%{opacity: 0;display: none;}
+}
+@-webkit-keyframes tip_in_ani{
+	0%{opacity: 0;right:-10px;}
+	10%{opacity: 1;right:8px;}
+	80%{opacity: 1;right:8px;}
+	100%{opacity: 0;display: none;}
+}

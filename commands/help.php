@@ -23,6 +23,7 @@ needLogin();
 默认服务器命令：(【】中的内容代表适合用在何处)
 	adddanmu			【播放器】添加一条弹幕(不建议在控制台使用)
 	addvideo			【控制台】添加视频记录
+	backupDB			【控制台】备份数据库
 	clearplaycount			【控制台】清除指定id视频的播放数
 	cleardanmu			【控制台】清除某个视频的所有弹幕
 	commanddir			【控制台】查看commands文件夹下的命令

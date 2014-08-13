@@ -938,12 +938,13 @@ function newCOL() {
 			if (mats) {
 				if (mats.length > 1) {
 					var mp, mn;
+					var ta = new Float64Array(9);
 					for (var i = mats.length; i--;) {
 						var pm = i - 1;
 						if (pm >= 0) {
 							mp = mats[pm];
 							mn = mats[i];
-							var ta = new Float64Array(9);
+							
 							ta[0] = mp[0] * mn[0] + mp[1] * mn[3] + mp[2] * mn[6];
 							ta[1] = mp[0] * mn[1] + mp[1] * mn[4] + mp[2] * mn[7];
 							ta[2] = mp[0] * mn[2] + mp[1] * mn[5] + mp[2] * mn[8];

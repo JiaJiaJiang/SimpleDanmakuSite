@@ -1,12 +1,9 @@
 <?php
+require_once("../funs.php");
 $vid = @$_GET['id'];
-function isID($id){
-  $result=preg_match("/^\d+$/", $id);
-  if($result)return true;
-  else{return false;}
-}
 if (isID($vid))
     {
+        $_SESSION['access'.$vid]=md5(uniqid());
         function pauseicon(){
             echo('<svg width="80.0px" height="80.0px"><polygon fill="#ffffff" points="25.0,17.75 25.0,61.25 56.5,39.0" stroke="#ffffff"/></svg>');
         }
@@ -31,7 +28,8 @@ if (isID($vid))
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <script src="/command.js"></script>
+    <script>var playersse="<?php echo $_SESSION['access'.$vid];?>";</script>
+    <script src="../command.js"></script>
     <script src="danmu.js"></script>
     <link rel="stylesheet" type="text/css" href="danmu.css">
 </head>
@@ -42,6 +40,7 @@ if (isID($vid))
                     <div id="ctrlcovre">
                         <div id="pauseicon"><?php pauseicon();?></div>
                     </div>
+      <div id="tip"></div>
                 <div class="videopreload" id="videopreload">
       <div class="videopreloadanimationframe">
         <div class="videopreloadanimation shakeanimation">(๑•́ ω •̀๑)</div>
