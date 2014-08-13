@@ -8,7 +8,7 @@ if(@$_POST['cmd']){
 }
 if ($command) {
     //设置允许使用命令的域
-    $allow=domainname.",*";
+    $allow=domainname?domainname:"*";
     if(@$_SERVER['SERVER_NAME']){
         $allow=$_SERVER['SERVER_NAME'];
     }

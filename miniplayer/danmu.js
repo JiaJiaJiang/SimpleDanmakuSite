@@ -243,6 +243,7 @@ function initPlayer(_in_videoid) {
 		player.ctrlcovre=d_select(player.mainbody, '#ctrlcovre');
 		player.timepoint = d_select(player.mainbody, '#controler #progress #timepoint');
 		player.time = d_select(player.mainbody, '#controler #time');
+		player.tip = d_select(player.mainbody, '#tip');
 		player.sendbox = d_select(player.mainbody, '#sendbox');
 		player.statboard = d_select(player.mainbody, '#stat');
 		player.videoframe = d_select(player.mainbody, '#videoframe');
@@ -257,7 +258,10 @@ function initPlayer(_in_videoid) {
 		danmumarkcan=d_select("#danmumark");
 		danmumarkct=danmumarkcan.getContext("2d");
 	}
-	
+	function tip(str){
+		player.tip.innerHTML=str;
+		player.tip.style.display="block";
+	}
 	function loadoption() {
 		newstat('加载设置');
 		player.o = {};
@@ -390,7 +394,7 @@ function initPlayer(_in_videoid) {
 				core.danmufuns.createCommonDanmu(danmuobj);
 				danmuarray.push(danmuobj);
 				controlfuns.refreshDanmumark();
-				autocmd('adddanmu', (videoid), type, c, time, color || 'NULL', danmuStyle.fontsize,
+				autocmd('adddanmu', (videoid), type, c, time, color || 'NULL', danmuStyle.fontsize,playersse,
 				function(response) {
 					if (Number(response) >= 0) {
 						danmuobj.id = Number(response);
@@ -399,7 +403,12 @@ function initPlayer(_in_videoid) {
 							player.sendcover.style.display = 'none';
 						}
 					} else {
-						console.log(response);
+						try{
+							var err=response.match(/^Error:(.+)$/)[1];
+							tip(err);
+						}catch(e){
+							console.log(response);
+						}
 						if (!content) player.sendcover.style.display = 'none';
 					}
 				});
@@ -484,9 +493,9 @@ function initPlayer(_in_videoid) {
 	controlfuns.refreshDanmumark=function(){
 		var tw=danmumarkcan.width=danmumarkcan.offsetWidth;
 		var th=danmumarkcan.height=16;
-		var pixtime=Number((core.player.video.duration*1000/tw).toFixed(0));
+		var pixtime=((core.player.video.duration*1000/tw+0.5)|0);
 		var max=0;
-		var grouparr=new Array(Number(tw.toFixed(0))+1),groupnum;
+		var grouparr=new Array(((tw+0.5)|0)+1),groupnum;
 		for(var i=danmuarray.length;i--;){
 			groupnum=Math.floor(danmuarray[i].t/pixtime);
 			if(!grouparr[groupnum])grouparr[groupnum]=0;
@@ -512,10 +521,9 @@ function initPlayer(_in_videoid) {
 
 	function playoption(){
 		core.player.o.RealtimeVary = false;
-		//core.COL.Debug.on();
 		core.player.o.StorkeWidth=Number(getOption("StorkeWidth"));
 		core.player.o.ShadowWidth=Number(getOption("ShadowWidth"));
-		core.moveTime=(Number(getOption("DanmuSpeed")) * 1000).toFixed();
+		core.moveTime=(Number(getOption("DanmuSpeed")) * 1000+0.5)|0;
 	}
 	inputCenter = {
 		colorInput: function(value) {
@@ -810,6 +818,10 @@ function initPlayer(_in_videoid) {
 				controlfuns.refreshtime();
 			});
 			aEL(video, 'seeked',
+			function(e) {
+				controlfuns.refreshprogress();
+			});
+			aEL(video, 'progress',
 			function(e) {
 				controlfuns.refreshprogress();
 			});

@@ -221,7 +221,7 @@ function newTimePiece(t,interval) {
 	10* player.video.playbackRate);
 }
 function getVideoMillionSec() {
-	return Number((player.video.currentTime * 100).toFixed()) * 10;
+	return ((player.video.currentTime * 100+0.5)|0) * 10;
 }
 danmufuns = {
 	createCommonDanmu:function(danmuobj) {
@@ -297,29 +297,31 @@ danmufuns = {
 			danmucontainer.addChild(TextDanmu);
 		},
 
-	danmulayerAnimation: {
-		start: function(time) {
-			if (!AnimationFrame) {
-				function danmurefresh() {
-					if(drawlist.length!=0)
-					COL.draw();
-					AnimationFrame = requestAnimationFrame(danmurefresh);
-				}
-				AnimationFrame = requestAnimationFrame(danmurefresh);
-			}
-		},
-		stop: function() {
-			if (AnimationFrame) {
-				cancelAnimationFrame(AnimationFrame);
-				AnimationFrame = 0;
-			}
-		}
-	},
+	// danmulayerAnimation: {
+	// 	start: function(time) {
+	// 		if (!AnimationFrame) {
+	// 			function danmurefresh() {
+	// 				/*if(drawlist.length!=0)
+	// 				COL.draw();*/
+	// 				AnimationFrame = requestAnimationFrame(danmurefresh);
+	// 			}
+	// 			AnimationFrame = requestAnimationFrame(danmurefresh);
+	// 		}
+	// 	},
+	// 	stop: function() {
+	// 		if (AnimationFrame) {
+	// 			cancelAnimationFrame(AnimationFrame);
+	// 			AnimationFrame = 0;
+	// 		}
+	// 	}
+	// },
 	danmumoverAnimation: {
 		start: function(time) {
 			if (!moverAnimation) {
 				function movedanmu() {
 					danmufuns.mover();
+					if(drawlist.length!=0)
+					COL.draw();
 					moverAnimation = requestAnimationFrame(movedanmu);
 				}
 				movedanmu();
@@ -410,19 +412,17 @@ danmufuns = {
 			COL.draw();
 		},
 	start: function() {
-		//timepoint = getVideoMillionSec();
 		newTimePiece(getVideoMillionSec());
 	},
 	pause: function() {
-		//clearInterval(interval.calibrationTime.i);
-		//TODO:暂停所有弹幕
+		//已废
 	},
 	initFirer: function() {
 		danmufuns.setDanmuArray();
 	},
 	mover:function() {
 			if (player.assvar.isPlaying) {
-				var nowtime = (player.video.currentTime * 1000).toFixed();
+				var nowtime = (player.video.currentTime * 1000+0.5)|0;
 				for (var i = 0; i < danmucontainer.drawlist.length; i++) {
 					var node = danmucontainer.drawlist[i];
 					if (!node) continue;
@@ -430,7 +430,7 @@ danmufuns = {
 					case 0:
 						{
 							var roadLength = width + node.width;
-							node.x =( roadLength * (1 - (nowtime - node.time) / moveTime / width * 520) - node.width+0.5)|0;
+							node.x =roadLength * (1 - (nowtime - node.time) / moveTime / width * 520) - node.width;
 							if (node.tunnelobj && node.x < width - node.width - 150) {
 								danmutunnel.right[node.tunnelobj[1]][node.tunnelobj[2]] = null;
 								node.tunnelobj = null;
@@ -443,7 +443,7 @@ danmufuns = {
 					case 1:
 						{
 							var roadLength = width + node.width;
-							node.x =( roadLength * (nowtime - node.time) / moveTime / width * 520 - node.width+0.5)|0;
+							node.x =roadLength * (nowtime - node.time) / moveTime / width * 520 - node.width;
 							if (node.tunnelobj && node.x > 150) {
 								danmutunnel.left[node.tunnelobj[1]][node.tunnelobj[2]] = null;
 								node.tunnelobj = null;
@@ -524,12 +524,12 @@ controlfuns.playing = function() {
 		player.video.currentTime=0;
 	}
 	danmufuns.danmumoverAnimation.start();
-	danmufuns.danmulayerAnimation.start();
+	//danmufuns.danmulayerAnimation.start();
 }
 controlfuns.pause = function() {
 	danmufuns.pause();
 	danmufuns.danmumoverAnimation.stop();
-	danmufuns.danmulayerAnimation.stop();
+	//danmufuns.danmulayerAnimation.stop();
 	player.assvar.isPaused = true;
 }
 controlfuns.play_pause = function() {
@@ -681,8 +681,6 @@ player.assvar.hasZimu = false;
 setdom();
 
 initevents();
-danmufuns.danmulayerAnimation.start();
 danmufuns.danmumoverAnimation.start();
-danmufuns.danmulayerAnimation.stop();
 danmufuns.danmumoverAnimation.stop();
 EVENT("ready");
