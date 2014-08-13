@@ -29,7 +29,7 @@ if (isID($vid))
 <head>
     <meta charset="UTF-8"/>
     <script>var playersse="<?php echo $_SESSION['access'.$vid];?>";</script>
-    <script src="/command.js"></script>
+    <script src="../command.js"></script>
     <script src="danmu.js"></script>
     <link rel="stylesheet" type="text/css" href="danmu.css">
 </head>

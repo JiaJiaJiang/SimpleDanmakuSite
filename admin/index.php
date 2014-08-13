@@ -48,6 +48,7 @@
 		<pre id="output"></pre>
 		<input id="input" placeholder="在此输入命令">
 		<script>
+		cmd_url="../command.php"; 
 		var output=document.querySelector("#output"),
 		input=document.querySelector("#input");
 		comhistory=[],index=-1;

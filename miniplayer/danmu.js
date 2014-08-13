@@ -4,6 +4,7 @@ Coder:LuoJia
  */
 var DanmuPlayerVersion = "0.3.5";
 var SiteDomain = "";
+cmd_url="../command.php"; 
 function select_do(fun) {
 	if (typeof fun != "function") {
 		console.log(fun);
