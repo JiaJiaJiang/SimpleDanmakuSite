@@ -795,6 +795,7 @@ function initPlayer(_in_videoid) {
 				if(core.danmuarray)
 				controlfuns.refreshDanmumark();
 				player.videopreload.parentNode.removeChild(player.videopreload);
+				setTimeout(function(){player.sendbox.style.opacity=0;},5000);
 			});
 			aEL(video, 'volumechange',
 			function(e) {
