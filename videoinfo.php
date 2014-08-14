@@ -69,6 +69,6 @@ right: 10px;
 	<div id="info"><span>播放数:<?php echo $count;?></span>   <span>弹幕数:<?php echo $danmucount;?></span></div>
 	<h1 id="vid"><i>#<?php echo $vid;?></i></h1>
 	</div>
-		<a id="go" target="_self" href="<?php echo '/miniplayer/player.php?id='.$vid;?>">载入</a>
+		<a id="go" target="_self" href="<?php echo 'miniplayer/player.php?id='.$vid;?>">载入</a>
 	</body>
 </html>
