@@ -21,7 +21,7 @@ if (count($option) == 7) {
     Global $SQL;
     $videoid = $option[0];
     $type    = $option[1];
-    $content = mb_convert_encoding($option[2], "utf-8", "auto");
+    $content =$option[2];
     $time    = $option[3];
     $color   = $option[4];
     $size    = intval($option[5]);
@@ -47,7 +47,6 @@ if (count($option) == 7) {
     	$color=NULL;
     }
     
-    //mysql_query( "SELECT LAST_INSERT_ID()" )
     if ($size==25||$size==30||$size==45) {}else{
     $size=30;
 }
@@ -59,9 +58,8 @@ if (count($option) == 7) {
     if (mysqli_error($SQL)) {
         echo (mysqli_error($SQL));
     } else {
-        //echo mysqli_insert_id($SQL);
-       // echo mysqli_query($SQL, 'SELECT LAST_INSERT_ID()');
         echo $SQL->insert_id;
+        exit;
     }
 } else {
     echo "Error:参数数量错误:";

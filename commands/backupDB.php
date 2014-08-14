@@ -1,9 +1,11 @@
 <?php
 needLogin();
 if(hasFlag("help")){
-    echo "backupDB用于备份数据库\n  <b>backupDB</b>\n如果成功，将会保存一个sql文件在backup文件夹，此文件夹已被.htaccess保护";
+    echo "backupDB用于备份数据库\n  <b>backupDB</b>\n如果成功，将会保存一个sql文件在backup文件夹，此文件夹已被.htaccess保护\n        <b>--output            写入磁盘后再输出到浏览器</b>";
     exit;
 }
+$output=false;
+if(hasFlag("output"))$output=true;
 global $args;
 header("Content-Type:text/html", true);
     if (connectSQL()) {
@@ -33,7 +35,7 @@ while ($t = mysqli_fetch_array($q1))
         $keys = array_map('addslashes', $keys);
         $keys = join('`,`', $keys);
         $keys = "`" . $keys . "`";
-    $mysql .= "insert into `$table` ($keys) values\r\n";
+    $mysql .="insert into `$table` ($keys) values\r\n";
     while ($data = mysqli_fetch_assoc($q3))
     {
         $vals = array_values($data);
@@ -48,6 +50,9 @@ while ($t = mysqli_fetch_array($q1))
 $fp = fopen("backup/".$filename, 'w');
 fputs($fp, $mysql);
 fclose($fp);
+if($output){
+    out("--------------------------------------------------------------------------------------------\n".$mysql."\n--------------------------------------------------------------------------------------------");
+}
 out("数据备份成功，文件:backup/".$filename);
 }else{
     out("数据库连接错误");

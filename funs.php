@@ -14,6 +14,7 @@ if (!$SQL)
   return false;
   }
   }
+  $SQL->query("SET NAMES utf8");
   return true;
 }
 function getDomain($url){
