@@ -85,7 +85,7 @@ var defaultOption={
 	TwoDCodeDanmu:true,
 	ThreeDCodeDanmu: true,
 	ProgressDanmumark:false,
-	StorkeWidth:0,
+	StorkeWidth:0.4,
 	ShadowWidth:10,
 	DanmuSpeed:5,
 	Debug:false,

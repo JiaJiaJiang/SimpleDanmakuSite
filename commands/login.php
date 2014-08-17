@@ -2,8 +2,7 @@
 $rt=hasFlag("return");
 global $args;
 function logsignin($s){
-	$f=fopen("log/login.log","a");
-	fwrite($f,gmdate(DATE_RFC822)." ip:".ip()." ".$s."\n");
+	logfile("login.log",gmdate(DATE_RFC822)." ip:".ip()." ".$s);
 }
 if(@$args["u"]&&@$args["p"]){
 	if(user===$args["u"]&&pass===$args["p"]){

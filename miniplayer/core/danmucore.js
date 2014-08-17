@@ -156,7 +156,6 @@ function initCOL() {
 	COL.setCanvas(player.danmulayer);
 	COL.autoClear = true;
 	initTextDanmuContainer();
-	COL.simpleMouseCheckMode = true;
 	COL.MatrixTransform.on();
 }
 function initTextDanmuContainer() {
@@ -193,32 +192,43 @@ function fitdanmulayer() {
 		danmucontainer.childNode[i].setMatrix();
 	}
 }
+/*function bufferDanaku(){//把从timepoint到现在时间的所有弹幕刷出来
+	if (t >= timepoint) {
+		for (var i = timepoint; i <= t; i += 10) {
+			if (timeline[i]) danmufuns.fire(i);
+			//postMessage(i,"*");
+			requestAnimationFrame(function(){danmufuns.fire(i);});
+		}
+	}
+}*/
 function fireinterval(){
 		if (timeline[timepoint]) {
-			//danmufuns.fire(timepoint);
-			postMessage(timepoint,"*");
+			//setTimeout(function(){danmufuns.fire(timepoint);},0);
+			setTimeout((danmufuns.fire)(timepoint),0);
 		}
 		timepoint += 10;
 		if (player.video.paused) {
 			clearInterval(intervals.timer);
+			//intervals.timer=setTimeout(fireinterval,10);
 		}
 }
-function newTimePiece(t,interval) {
+function newTimePiece(t) {
 	if (intervals.timer) {
 		clearInterval(intervals.timer);
 		intervals.timer = 0;
 	}
 	if (t >= timepoint) {
-		for (var i = timepoint; i <= t; i += 10) {
-			if (timeline[i]) /*danmufuns.fire(i);*/
-			postMessage(i,"*");
+		for (;timepoint <= t; timepoint+= 10) {
+			if (timeline[timepoint]) //danmufuns.fire(i);
+			setTimeout((danmufuns.fire)(timepoint),0);
+			//setTimeout(function(){danmufuns.fire(timepoint);},0);
 		}
 	} else {
 		return;
 	}
-	timepoint = t + 10;
-	intervals.timer = setInterval(fireinterval,
-	10* player.video.playbackRate);
+	// timepoint = t + 10;
+	intervals.timer = setInterval(fireinterval,10/player.video.playbackRate);
+	//intervals.timer=setTimeout(fireinterval,10);
 }
 function getVideoMillionSec() {
 	return ((player.video.currentTime * 100+0.5)|0) * 10;
@@ -297,29 +307,12 @@ danmufuns = {
 			danmucontainer.addChild(TextDanmu);
 		},
 
-	// danmulayerAnimation: {
-	// 	start: function(time) {
-	// 		if (!AnimationFrame) {
-	// 			function danmurefresh() {
-	// 				/*if(drawlist.length!=0)
-	// 				COL.draw();*/
-	// 				AnimationFrame = requestAnimationFrame(danmurefresh);
-	// 			}
-	// 			AnimationFrame = requestAnimationFrame(danmurefresh);
-	// 		}
-	// 	},
-	// 	stop: function() {
-	// 		if (AnimationFrame) {
-	// 			cancelAnimationFrame(AnimationFrame);
-	// 			AnimationFrame = 0;
-	// 		}
-	// 	}
-	// },
 	danmumoverAnimation: {
 		start: function(time) {
 			if (!moverAnimation) {
 				function movedanmu() {
-					danmufuns.mover();
+					setTimeout(danmufuns.mover,0);
+					//danmufuns.mover();
 					if(drawlist.length!=0)
 					COL.draw();
 					moverAnimation = requestAnimationFrame(movedanmu);
@@ -384,6 +377,7 @@ danmufuns = {
 			};
 		}
 		tunnel[tun][i] = size;
+		
 		return [type, tun, i];
 		//轨道类号,分页号，轨道号
 	},
@@ -398,6 +392,9 @@ danmufuns = {
 	addToDanmuArray: function(danmuobj) {
 		if (!danmuarray[danmuobj.t]) danmuarray[danmuobj.t] = [];
 		danmuarray[danmuobj.t].push(danmuobj);
+	},
+	clearItem:function(){
+
 	},
 	clear:function() {
 			for (var i in danmucontainer.childNode) {
@@ -679,7 +676,7 @@ player.o = {
 player.cacheobj = {};
 player.assvar.hasZimu = false;
 setdom();
-
+COL.Debug.on();
 initevents();
 danmufuns.danmumoverAnimation.start();
 danmufuns.danmumoverAnimation.stop();

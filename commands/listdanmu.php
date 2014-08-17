@@ -20,6 +20,7 @@ if(isID($option[0])){
             out("<tr><td>".$id."</td><td>".$videoid."</td><td>".$type."</td><td>".$time."</td><td>".$color."</td><td>".$size."</td><td>".$date."</td><td>".$c."</td></tr>");
         }
         echo "</table>";
+        out("查找完毕,共".$stmt->num_rows."条");
 	
 }else{
 	echo "Error";

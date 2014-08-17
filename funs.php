@@ -21,9 +21,13 @@ function getDomain($url){
 	preg_match("/.+:\/\/(.+)\/*/", $url,$m);
 	return $m[1]?$m[1]:false;
 }
+function logfile($filename,$log){
+	$f=fopen("log/".$filename,"a");
+	fwrite($f,$log."\n");
+	fclose($f);
+}
 function logotherref(){
-	$f=fopen("log/othersiteref.log","a");
-	fwrite($f,$_SERVER["HTTP_REFERER"]."\n");
+	logfile("othersiteref.log",$f,$_SERVER["HTTP_REFERER"]);
 }
 function fromThisDomain(){
 	if(@domainname){
