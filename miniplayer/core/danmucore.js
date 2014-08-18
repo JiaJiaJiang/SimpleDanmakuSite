@@ -676,7 +676,7 @@ player.o = {
 player.cacheobj = {};
 player.assvar.hasZimu = false;
 setdom();
-COL.Debug.on();
+//COL.Debug.on();
 initevents();
 danmufuns.danmumoverAnimation.start();
 danmufuns.danmumoverAnimation.stop();
