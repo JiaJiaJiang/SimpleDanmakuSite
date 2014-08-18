@@ -398,55 +398,7 @@ function newCOL() {
 				},
 				prepareText: function() {
 					COL.commonFunction.t.prepareTextp1(this);
-					/*if ((!this.imageobj) || (!this.imageobj.getContext)) {
-						this.imageobj = document.createElement("canvas");
-					}
-					var imgobj = this.imageobj;
-					var ct = imgobj.getContext("2d");
-					this.varylist = this.text.split(/\n/g);
-					var font = "";
-					if (this.fontStyle || COL.font.fontStyle) font += this.fontStyle || COL.font.fontStyle;
-					if (this.fontVariant || COL.font.fontVariant) font += (" " + (this.fontVariant || COL.font.fontVariant));
-					if (this.fontWeight || COL.font.fontWeight) font += (" " + (this.fontWeight || COL.font.fontWeight));
-					font += (" " + (this.fontSize || COL.font.fontSize) || 15) + "px";
-					if (this.fontFamily || COL.font.fontFamily) font += (" " + (this.fontFamily || COL.font.fontFamily));
-					else {
-						font += (" " + COL.fontFamily);
-					}
-
-					this.font = font;
-					ct.font = font;
-					this.plusoffsetX = this.shadowBlur + (this.shadowOffset.x < 0 ? -this.shadowOffset.x: 0);
-					this.plusoffsetY = this.shadowBlur + (this.shadowOffset.y < 0 ? -this.shadowOffset.y: 0);
-					var addedwidth = this.shadowBlur * 2 + Math.abs(this.shadowOffset.x),
-					addedheight = this.shadowBlur * 2 + Math.abs(this.shadowOffset.y);
-					if (this.autoSize) {
-						var w = 0,
-						tw;
-						if (this.linedirection === 0) {
-							for (var i = 0; i < this.varylist.length; i++) {
-								tw = ct.measureText(this.varylist[i]).width;
-								w = tw > w ? tw: w;
-							}
-							imgobj.width = (this.width = (this.maxWidth >= w) ? this.maxWidth: w) + addedwidth;
-							imgobj.height = (this.height = this.varylist.length * this.lineHeight) + addedheight;
-						} else if (this.linedirection == 1) {
-							for (var i = 0; i < this.varylist.length; i++) {
-								tw = this.varylist[i].split("").length;
-								w = tw > w ? tw: w;
-							}
-							w *= this.fontSize;
-							 imgobj.width =(this.width = this.varylist.length * this.lineHeight)+addedwidth;
-							 imgobj.height =(this.height = (this.maxWidth >= w) ? this.maxWidth: w)+addedheight;
-						}
-
-					} else {
-						imgobj.width = (this.width >= 0) ? this.width: 100;
-						imgobj.height = (this.height >= 0) ? this.height: 30;
-					}
-					//ct.translate(, );
-					ct.transform(1,0,0,1,this.plusoffsetX,this.plusoffsetY);
-					this.vary(ct);*/
+					
 				},
 				setSize: function(width, height) {
 					this.autoSize = false;
