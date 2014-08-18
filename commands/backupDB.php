@@ -15,7 +15,7 @@ $dbname = dbname; //数据库名称
 // 摘自http://www.oschina.net/code/snippet_105637_14996并小作修改，我不保证可靠性
 out("开始备份");
 
-$SQL->query("set names 'utf8'");
+//$SQL->query("set names 'utf8'");
 $mysql = "set charset utf8;\r\n";
 $q1 = $SQL->query("show tables");
 

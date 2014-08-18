@@ -6,6 +6,7 @@ if(hasFlag("help")){
 $option = $options;
 if (count($option) == 7) {
     if($option[6]!= $_SESSION['access'.$option[0]]){
+        echo("Error:Lost connection");
         exit;
     }
         if(@$_SESSION['lastdanmutime'.$option[0]]){
