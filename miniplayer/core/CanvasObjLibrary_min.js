@@ -371,7 +371,7 @@ function newCOL() {
 					if (o.autoSize) {
 						var w = 0,i,
 						tw;
-						ct.font=o.fontSize+"px "+o.fontFamily;
+						ct.font=o.font;
 						if (o.linedirection === 0) {
 							for (i = o.varylist.length; i -- ; ) {
 								tw = ct.measureText(o.varylist[i]).width;
