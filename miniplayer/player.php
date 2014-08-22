@@ -40,7 +40,7 @@ if (isID($vid))
                     <div id="ctrlcovre">
                         <div id="pauseicon"><?php pauseicon();?></div>
                     </div>
-      <div id="tipbox"><div class="tip" style="display:block;">正在缓冲</div></div>
+      <div id="tipbox"></div>
                 <div class="videopreload" id="videopreload">
       <div class="videopreloadanimationframe">
         <div class="videopreloadanimation shakeanimation">(๑•́ ω •̀๑)</div>
