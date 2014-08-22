@@ -628,15 +628,16 @@ margin-left: 5px;
 bottom: 30px;
 right: 8px;
 }
-.tip{
-	position: relative;
+#tipbox .tip{
+position: relative;
 display: none;
-background-color: #B6B6B6;
+background-color: rgba(255, 255, 255, 0.44);
 height: auto;
-border: 1px solid #ccc;
-padding: 3px;
+color: #1F1F1F;
+border: 1px solid #77C5F5;
+padding: 8px;
 font-size: 17px;
-border-radius: 5px;
+border-radius: 3px;
 animation:tip_in_ani 4s linear 0s forwards;
   -webkit-animation:tip_in_ani 4s linear 0s forwards;
   -moz-animation:tip_in_ani 4s linear 0s forwards;

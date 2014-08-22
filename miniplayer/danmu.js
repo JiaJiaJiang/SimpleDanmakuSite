@@ -844,6 +844,7 @@ function initPlayer(_in_videoid) {
 			aEL(video, 'waiting',
 	function() {
 		console.log("事件:媒体缓冲中");
+		tip("正在缓冲");
 	});
 			aEL(player.ctrlcovre,"click",function(){
 			if(video.paused){
