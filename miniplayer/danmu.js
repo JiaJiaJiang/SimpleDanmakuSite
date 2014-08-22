@@ -244,7 +244,7 @@ function initPlayer(_in_videoid) {
 		player.ctrlcovre=d_select(player.mainbody, '#ctrlcovre');
 		player.timepoint = d_select(player.mainbody, '#controler #progress #timepoint');
 		player.time = d_select(player.mainbody, '#controler #time');
-		player.tip = d_select(player.mainbody, '#tip');
+		player.tipbox = d_select(player.mainbody, '#tipbox');
 		player.sendbox = d_select(player.mainbody, '#sendbox');
 		player.statboard = d_select(player.mainbody, '#stat');
 		player.videoframe = d_select(player.mainbody, '#videoframe');
@@ -260,8 +260,17 @@ function initPlayer(_in_videoid) {
 		danmumarkct=danmumarkcan.getContext("2d");
 	}
 	function tip(str){
-		player.tip.innerHTML=str;
-		player.tip.style.display="block";
+		var td=c_ele("div");
+		td.className="tip";
+		td.innerHTML=str;
+		player.tipbox.appendChild(td);
+		setTimeout(function(){
+			td.style.display="block";
+			setTimeout(function(){
+				player.tipbox.removeChild(td);
+				td=null;
+			},4000);
+		},20);
 	}
 	function loadoption() {
 		newstat('加载设置');
@@ -309,11 +318,11 @@ function initPlayer(_in_videoid) {
 				newstat("弹幕错误");
 			};
 			if (typeof danmuarr == 'object') {
-				for (var i = 0; i < danmuarr.length; i++) {
+				for (var i = danmuarr.length; i --; ) {
 					try {
 						danmuarr[i] = eval('(' + danmuarr[i] + ')');
 					} catch(e) {
-						newstat('弹幕错误');
+						console.log("一个错误弹幕无法解析:"+danmuarr[i]);
 					}
 				}
 				Message("CTRL", {

@@ -623,13 +623,16 @@ margin-left: 5px;
 	height: 16px;
 	left: 0px;
 }
-#tip{
+#tipbox{
 	position: absolute;
 bottom: 30px;
+right: 8px;
+}
+.tip{
+	position: relative;
 display: none;
 background-color: #B6B6B6;
 height: auto;
-right: 8px;
 border: 1px solid #ccc;
 padding: 3px;
 font-size: 17px;
