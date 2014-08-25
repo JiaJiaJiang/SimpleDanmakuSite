@@ -1,3 +1,4 @@
+"use strict";
 /*
 Belong to iTisso
 Coder:LuoJia
@@ -232,7 +233,7 @@ danmufuns = {
 			TextDanmu.prepareText();
 		}
 		//console.log(danmuobj) ;
-		TextDanmu.tunnelobj = danmufuns.getTunnel(danmuobj.ty, TextDanmu.lineHeight);
+		TextDanmu.tunnelobj = danmufuns.getTunnel(danmuobj.ty, TextDanmu.lineHeight,TextDanmu.height);
 		//danmuobj.textobj.tunnelobj= danmufuns.getTunnel(danmuobj.ty,danmuobj.textobj);
 		switch (danmuobj.ty) {
 		case 0:
@@ -278,12 +279,11 @@ danmufuns = {
 		TextDanmu.setMatrix();
 		danmucontainer.addChild(TextDanmu);
 	},
-	danmumoverAnimation: {
-		start: function(time) {
-			if (!moverAnimation) {
-				function movedanmu() {
-					//varyflag=1^varyflag;//frame change:取消前面的注释可以把帧数减半
-					if (varyflag && drawlist.length != 0) {
+	movedanmuAnimation:function(){
+		//varyflag=1^varyflag;
+		//frame change:取消前面的注释可以把帧数减半
+		if (varyflag && drawlist.length != 0) {
+
 						if (COL.Debug.stat) {
 							COL.cct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
 							COL.cct.fillStyle = "rgba(0,255,0,0.2)";
@@ -298,10 +298,12 @@ danmufuns = {
 						COL.cct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
 						cleanremainder = false;
 					}
-
-					moverAnimation = requestAnimationFrame(movedanmu);
-				}
-				movedanmu();
+					moverAnimation = requestAnimationFrame(danmufuns.movedanmuAnimation);
+	},
+	danmumoverAnimation: {
+		start: function(time) {
+			if (!moverAnimation) {
+					danmufuns.movedanmuAnimation();
 			}
 		},
 		stop: function() {
@@ -318,7 +320,7 @@ danmufuns = {
 	hide: function() {
 		danmucontainer.display = false;
 	},
-	getTunnel: function(type, size) {
+	getTunnel: function(type, size,height) {
 		var tunnel;
 		switch (type) {
 		case 0:
@@ -343,7 +345,8 @@ danmufuns = {
 			}
 		}
 		var tun = 0,
-		ind = i = 1;
+		ind  = 1,
+		i=1;
 		if (!tunnel[tun]) tunnel[tun] = [];
 		while (ind < (i + size)) {
 			if (tunnel[tun][ind]) {
@@ -361,7 +364,7 @@ danmufuns = {
 			};
 		}
 		tunnel[tun][i] = size;
-		var tunnelobj=[type, tun, i,size];
+		var tunnelobj=[type, tun, i,height];
 		tunnelrecord.push(tunnelobj);
 		return tunnelobj;
 		//轨道类号,分页号，轨道号
@@ -697,22 +700,25 @@ function initevents() {
 					switch (e.data.msg.name) {
 					case "videoaddress":
 						{
-							var videosrc = e.data.msg.src;
-							console.log(videosrc);
+							var videosrc =player.videoaddress= e.data.msg.src;
+							//videosrc为一个包含某一源分段地址的数组
+							//TODO:解决分段视频播放
+							//console.log(videosrc);
 							for (var i = 0; i < videosrc.length; i++) {
 								if (typeof videosrc[i] == 'string') {
 									var s = c_ele('source');
 									videosrc[i] = _string_.removesidespace(videosrc[i]);
 									s.src = videosrc[i];
-									var mime = guessmime(videosrc[i]);
+									/*var mime = guessmime(videosrc[i]);
 									if (mime) {
-										if (mime.match(/audio/i) && player.video.localName == "video") {
+										if (mime.match(/audio/i)) {
 											player.video.style.display = "none";
 										}
 										s.type = mime;
-									}
+									}*/
 									player.video.appendChild(s);
 									CONSOLE('指定视频地址:' + videosrc[i]);
+									break;
 								}
 							}
 							break;

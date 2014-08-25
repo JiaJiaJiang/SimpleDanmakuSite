@@ -42,7 +42,7 @@ needLogin();
 	vinfoframe			【控制台】获取某id视频的视频信息页面iframe代码
 
 `号的使用:
-`号在这里用来区分包好空格的参数和转换内部字符到服务器可以识别的状态
+`号在这里用来区分包含空格的参数和转换内部字符到服务器可以识别的状态
 `号也可以防止-和--开头的参数被识别成参数名和标记
 `号在普通键盘上的ESC键下面，大概长这个样：<div style="display: inline-block;border: 1px solid #fff;width: 40px;height: 40px;line-height: 20px;font-size: 20px;padding: 5px;">~<br>`</div>
 如果出现这样【命令 `lala sdad asdah aklsdhf a什么的】的情况，将会把从`号开始的所有字符当作一个参数转义，你可以在发送命令前用【echo `你要发的命令`】来预览将会发给服务器的转义后命令

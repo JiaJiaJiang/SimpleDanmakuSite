@@ -286,7 +286,7 @@ function initPlayer(_in_videoid) {
 				return;
 			}
 			try {
-				var json = eval('(' + a + ')');
+				var json =JSON.parse(a)/* eval('(' + a + ')')*/;
 			} catch(e) {
 				newstat('地址获取错误');
 				player.videopreload.textdiv.innerHTML = '(๑• . •๑)';
@@ -294,12 +294,18 @@ function initPlayer(_in_videoid) {
 				player.videopreload.textdiv.parentNode.style.top = "calc(50% - 110px)";
 				return;
 			}
-			var videosrc = json.url,
+			var videosrc =JSON.parse(json.url),
 			count = json.count;
-			console.log('得到视频地址:' + videosrc);
+			console.log('得到视频地址:');
+			console.log(videosrc);
+			player.videoaddress=[];
+			for(var no in videosrc){
+				player.videoaddress.push({res:no,url:videosrc[no]});
+			}
+			//TODO:自动把错误源切换到其他源
 			Message("CTRL", {
 				name: "videoaddress",
-				src: videosrc
+				src: player.videoaddress[0].url
 			});
 		});
 	}
@@ -765,10 +771,12 @@ function initPlayer(_in_videoid) {
 				//console.log("循环播放");
 				core.player.video.loop = true;
 				player.loop.style.color = '#66ccff';
+				tip("洗脑循环");
 			} else {
 				//console.log("取消循环");
 				core.player.video.loop = false;
 				player.loop.style.color = '#000';
+				tip("关闭循环");
 			}
 		});
 		aEL(player.volumestat, 'click',
@@ -777,8 +785,10 @@ function initPlayer(_in_videoid) {
 			core.player.video.muted = !core.player.video.muted;
 			if (core.player.video.muted) {
 				console.log('静音');
+				tip("静音");
 			} else {
 				console.log('取消静音');
+				tip("取消静音");
 			}
 		});
 		aEL(player.ctrlcovre,"contextmenu",function(e){
@@ -793,9 +803,11 @@ function initPlayer(_in_videoid) {
 			function() {
 				if (!core.danmucontainer.display) {
 					core.danmufuns.show();
+					tip("显示弹幕");
 				} else {
 					core.danmufuns.hide();
 					core.danmufuns.clear();
+					tip("隐藏弹幕");
 				}
 			});
 			aEL(video, 'loadedmetadata',
