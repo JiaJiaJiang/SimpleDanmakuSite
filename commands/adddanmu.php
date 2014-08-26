@@ -6,7 +6,8 @@ if(hasFlag("help")){
 $option = $options;
 if (count($option) == 7) {
     if($option[6]!= $_SESSION['access'.$option[0]]){
-        echo("Error:Lost connection");
+        echo("Error:失去连接");
+        errorlog("adddanmu","Lost connection");
         exit;
     }
         if(@$_SESSION['lastdanmutime'.$option[0]]){
@@ -14,6 +15,7 @@ if (count($option) == 7) {
                 $thit=gettimeofday()["sec"];
                 if(($thit-$lst)<5){
                     echo "Error:发送送间隔太小";
+                    errorlog("adddanmu","Invalid send interval");
                     exit;
                 }
         }
@@ -28,13 +30,15 @@ if (count($option) == 7) {
     $size    = intval($option[5]);
     if (!isID($videoid)) {
         echo "Error:无效id.";
+        errorlog("adddanmu","Invalid ID");
         return;
     }
     if ($type > 5 || $type < 0) {
         $type = 0;
     }
     if (($time % 1) != 0) {
-        echo "Error:invalid time.";
+        echo "Error:时间错误";
+        errorlog("adddanmu","Error time");
         return;
     }
     if ($color != "NULL") {
@@ -64,6 +68,7 @@ if (count($option) == 7) {
     }
 } else {
     echo "Error:参数数量错误:";
+    errorlog("adddanmu","Error arguments' number");
     for ($i = 0; $i < count($option); $i++) {
         echo $option[$i] . ";";
     }

@@ -11,8 +11,9 @@ if(isID($option[0])){
         mysqli_stmt_bind_result($stmt, $id,$type,$content,$time,$color,$size,$date);
         $arr=[];
 	for($i=0;mysqli_stmt_fetch($stmt);$i++){
-		if(!$id){
+		if(!($id>=0)){
 			echo "Error";
+			errorlog("getDanmu","Get a error id danmaku:".$id);
 			return;
 		}
 		$arr[$i]='{id:'.$id.
@@ -28,10 +29,12 @@ if(isID($option[0])){
 		echo json_encode($arr);
 	}else{
 		echo "Error";
+		errorlog("getDanmu","Unknow error because of:".$arr);
 	}
 	
 }else{
-	echo "Error";
+	echo "参数错误，输入【getDanmu --help】查看用法";
+	errorlog("getDanmu","Error args");
 }
 exit;
 ?>

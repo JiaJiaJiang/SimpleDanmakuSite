@@ -23,7 +23,8 @@ if(isID($option[0])){
         out("查找完毕,共".$stmt->num_rows."条");
 	
 }else{
-	echo "Error";
+	echo "参数错误，输入【listdanmu --help】查看用法";
+        errorlog("listdanmu","Error args");
 }
 exit;
 ?>

@@ -286,7 +286,7 @@ function initPlayer(_in_videoid) {
 				return;
 			}
 			try {
-				var json =JSON.parse(a)/* eval('(' + a + ')')*/;
+				var json =JSON.parse(a);
 			} catch(e) {
 				newstat('地址获取错误');
 				player.videopreload.textdiv.innerHTML = '(๑• . •๑)';
@@ -302,7 +302,10 @@ function initPlayer(_in_videoid) {
 			for(var no in videosrc){
 				player.videoaddress.push({res:no,url:videosrc[no]});
 			}
-			//TODO:自动把错误源切换到其他源
+			if(!player.videoaddress[0]){
+				newstat('地址获取错误');
+				return;
+			}
 			Message("CTRL", {
 				name: "videoaddress",
 				src: player.videoaddress[0].url

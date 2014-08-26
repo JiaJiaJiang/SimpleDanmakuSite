@@ -18,6 +18,7 @@ if (isID($option[0])) {
                 out ("已清零");
             }else{
                 out( "失败");
+                errorlog("clearplaycount","Error to clear danmakus whose videoid=".$option[0]);
             }
             
         }
@@ -27,6 +28,7 @@ if (isID($option[0])) {
         }
 } else {
     echo "参数错误，输入【editvideo --help】查看用法";
+    errorlog("clearplaycount","Err args");
 }
 exit;
 ?>

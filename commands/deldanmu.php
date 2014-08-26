@@ -3,7 +3,7 @@ needLogin();
 $option=$options;
 header("Content-Type:text/html",true);
 if(hasFlag("help")){
-    echo "deldanmu用于删除指定id的弹幕\n 		<b>deldanmu 弹幕id [id id id id ....]</b>";
+    echo "deldanmu用于删除指定id的弹幕\n 		<b>deldanmu 弹幕id [id id id id ....]</b><br>对删除弹幕是否成功的判定还存在问题，所以显示出来的结果不一定是真的";
     exit;
 }
 if(isID($option[0])){
@@ -19,6 +19,7 @@ if(isID($option[0])){
       out("尝试删掉弹幕:".$option[$i]);
 	if(mysqli_affected_rows($SQL)!=1){
 		out("失败");
+		errorlog("deldanmu","Failed to delete danmaku".$option[$i]);
 	}else{
 		out("成功");
 	}
@@ -26,6 +27,7 @@ if(isID($option[0])){
 	
 }else{
 	echo "参数错误，输入【deldanmu --help】查看用法";
+	errorlog("deldanmu","Error args");
     exit;
 }
 exit;

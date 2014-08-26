@@ -12,6 +12,7 @@ if (isID($option[0])) {
         mysqli_stmt_fetch($stmt);
             if (! $address) {
                 echo "Error";
+                errorlog("getVideoAddress","No address got");
                 return;
             }
             if (!$count) {
@@ -31,6 +32,7 @@ if (isID($option[0])) {
         }
 } else {
     echo "Error";
+    errorlog("getVideoAddress","Error args");
 }
 exit;
 ?>

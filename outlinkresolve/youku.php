@@ -29,6 +29,7 @@ class Youku {
      */
     public static function _cget($url,$convert=false,$timeout=10){
         $ch=curl_init($url);
+        curl_setopt ($ch, CURLOPT_PROXY,"http://218.75.100.114:8080");
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
         curl_setopt($ch,CURLOPT_TIMEOUT,$timeout);
         curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,$timeout);

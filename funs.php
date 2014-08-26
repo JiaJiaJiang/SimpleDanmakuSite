@@ -11,6 +11,7 @@ if (!$SQL)
   	if (!$SQL)
   {
   out('无法连接数据库: ' . mysqli_connect_error());
+  errorlog("DB","Cannot connect to DB:". mysqli_connect_error());
   return false;
   }
   }
@@ -25,6 +26,10 @@ function logfile($filename,$log){
 	$f=fopen("log/".$filename,"a");
 	fwrite($f,$log."\n");
 	fclose($f);
+}
+function errorlog($type,$err){
+	if(@ErrorLog===true)
+	logfile("Error_".$type.".log",gmdate(DATE_RFC822)." ".$err);
 }
 function logotherref(){
 	logfile("othersiteref.log",$f,$_SERVER["HTTP_REFERER"]);
