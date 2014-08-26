@@ -30,8 +30,8 @@ if (count($option) == 7) {
     $size    = intval($option[5]);
     if (!isID($videoid)) {
         echo "Error:无效id.";
-        errorlog("adddanmu","Invalid ID");
-        return;
+        errorlog("adddanmu","Invalid ID:".$videoid);
+        exit;
     }
     if ($type > 5 || $type < 0) {
         $type = 0;
@@ -39,7 +39,7 @@ if (count($option) == 7) {
     if (($time % 1) != 0) {
         echo "Error:时间错误";
         errorlog("adddanmu","Error time");
-        return;
+        exit;
     }
     if ($color != "NULL") {
             preg_match("/[\w\d]{6}/i", $color, $matches);
@@ -62,6 +62,7 @@ if (count($option) == 7) {
     mysqli_stmt_execute($stmt);
     if (mysqli_error($SQL)) {
         echo (mysqli_error($SQL));
+        errorlog("adddanmu","A error returned after query the adddanmu sql:".mysqli_error($SQL));
     } else {
         echo $SQL->insert_id;
         exit;
