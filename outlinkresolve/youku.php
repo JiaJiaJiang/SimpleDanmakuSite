@@ -29,7 +29,7 @@ class Youku {
      */
     public static function _cget($url,$convert=false,$timeout=10){
         $ch=curl_init($url);
-        curl_setopt ($ch, CURLOPT_PROXY,"http://218.75.100.114:8080");
+        //curl_setopt ($ch, CURLOPT_PROXY,"http://117.62.168.190:8088");
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
         curl_setopt($ch,CURLOPT_TIMEOUT,$timeout);
         curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,$timeout);
@@ -223,6 +223,7 @@ class Youku {
             $rs = json_decode($retval, true);
             $brs = json_decode($bretval, true);
             if(!empty($rs['data'][0]['error'])){
+                warnlog("VideoResolve","retval decode error:".$retval);
                 return false;  //有错误返回false
             }
             $data = array();
@@ -266,6 +267,7 @@ class Youku {
             $data['seconds'] = $rs['data'][0]['seconds'];*/
             return $data;
         } else {
+            warnlog("VideoResolve","retval error");
             return false;
         }
     }

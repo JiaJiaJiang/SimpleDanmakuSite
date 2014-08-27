@@ -34,6 +34,7 @@ if (count($option) == 7) {
         exit;
     }
     if ($type > 5 || $type < 0) {
+        warnlog("adddanmu","A invalid type[.".$type."] received,replace it to 0");
         $type = 0;
     }
     if (($time % 1) != 0) {
@@ -46,6 +47,7 @@ if (count($option) == 7) {
             if ($matches[0]) {
                 $color = $matches[0];
             } else {
+                warnlog("adddanmu","A invalid color[.".$color."] received,replace it to NULL");
                 $color = "NULL";
             }
     }else{
@@ -53,6 +55,7 @@ if (count($option) == 7) {
     }
     
     if ($size==25||$size==30||$size==45) {}else{
+        warnlog("adddanmu","A invalid size[.".$size."] received,replace it to 30");
     $size=30;
 }
     $stmt = mysqli_stmt_init($SQL);

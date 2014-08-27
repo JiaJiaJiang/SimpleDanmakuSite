@@ -300,7 +300,12 @@ function initPlayer(_in_videoid) {
 			console.log(videosrc);
 			player.videoaddress=[];
 			for(var no in videosrc){
-				player.videoaddress.push({res:no,url:videosrc[no]});
+				if(videosrc[no]&&videosrc[no].length){
+					player.videoaddress.push({res:no,url:videosrc[no]});
+				}else{
+					console.log("丢弃一个空地址");
+				}
+				
 			}
 			if(!player.videoaddress[0]){
 				newstat('地址获取错误');
