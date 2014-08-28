@@ -1,4 +1,5 @@
 <?php
+//本解析来自http://www.iippcc.com/phpjie-xi-xia-mi-xiamiyin-le-di-zhi-jie-xi-jiu.html
 function ipcxiami($location){
 $count = (int)substr($location, 0, 1);
 $url = substr($location, 1);
