@@ -509,6 +509,10 @@ function initPlayer(_in_videoid) {
 		var currentTime = player.assvar.pointingtime||getMin_Sec(core.player.video.currentTime);
 		totaltime = getMin_Sec(core.player.video.duration);
 		if (currentTime.min >= 0 && currentTime.sec >= 0 && totaltime.min >= 0 && totaltime.sec >= 0) {
+			if(currentTime.min<10)currentTime.min="0"+currentTime.min;
+			if(currentTime.sec<10)currentTime.sec="0"+currentTime.sec;
+			if(totaltime.min<10)totaltime.min="0"+totaltime.min;
+			if(totaltime.sec<10)totaltime.sec="0"+totaltime.sec;
 			player.time.innerHTML = currentTime.min + ':' + currentTime.sec + '/' + totaltime.min + ':' + totaltime.sec;
 		} else {
 			player.time.innerHTML = '视频错误';

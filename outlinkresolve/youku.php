@@ -27,9 +27,7 @@ class Youku {
      * @param  integer $timeout [超时时间]
      * @return [type]           [description]
      */
-    public static function _cget($url,$convert=false,$timeout=10){
-        $ch=curl_init($url);
-        //curl_setopt ($ch, CURLOPT_PROXY,"http://117.62.168.190:8088");
+    public static function _cget($url,$convert=false,$timeout=4){
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
         curl_setopt($ch,CURLOPT_TIMEOUT,$timeout);
         curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,$timeout);
@@ -38,6 +36,9 @@ class Youku {
         curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1); //跟随301跳转
         curl_setopt($ch,CURLOPT_AUTOREFERER,1); //自动设置referer              
         $res=curl_exec($ch);
+        if($res===false||$res=="ERROR"){
+            errorlog("VideoResolve",curl_error($ch)." Return:".$res);
+        }
         curl_close($ch);
         if($convert){
             $res=mb_convert_encoding($res,self::TO_ENCODE,self::FORM_ENCODE);
