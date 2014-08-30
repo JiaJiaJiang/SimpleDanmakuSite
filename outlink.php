@@ -8,8 +8,19 @@
 或
 地址
 
+
+解析文件格式
+function resolveVideo($id){//解析入口
+	//返回结果
+}
 */
-global $outlinkresolve;
+function outlinkresolve($pre,$id){
+	if(is_file("outlinkresolve/$pre.php")){
+		require_once("outlinkresolve/$pre.php");
+		return resolveVideo($id);
+	}
+}
+/*global $outlinkresolve;
 $outlinkresolve=array();
 $outlinkresolve["bilibili"]=function($id){
 
@@ -23,5 +34,5 @@ $outlinkresolve["xiami"]=function($id){
 	require_once("outlinkresolve/xiami.php");
 	$re=getxiamiurl($id);
 	return $re;
-};
+};*/
 ?>

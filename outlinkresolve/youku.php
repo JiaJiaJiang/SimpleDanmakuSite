@@ -1,5 +1,8 @@
 <?php
 //来自http://www.cnblogs.com/keygle/p/3829653.html,略修改
+function resolveVideo($id){
+    return Youku::parse($id);
+}
 class Youku {
     const USER_AGENT = "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36";
     const REFERER = "http://www.youku.com";

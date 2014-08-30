@@ -31,7 +31,7 @@ $loc_7++;
 $loc_9 = str_replace('^', 0, urldecode($loc_8));
 return $loc_9;
 }
-function getxiamiurl($id){
+function resolveVideo($id){
 $content=file_get_contents('http://www.xiami.com/widget/xml-single/sid/'.$id); //获取组合地址内容
 preg_match("/<location><\!\[CDATA\[([^\]].*)\]\]><\/location>/i",$content,$location);//匹配location内容
 $xiami=ipcxiami($location[1]); //转码得到正确的地址
