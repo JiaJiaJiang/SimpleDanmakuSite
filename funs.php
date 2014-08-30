@@ -29,11 +29,11 @@ function logfile($filename,$log){
 }
 function errorlog($type,$err){
 	if(@ErrorLog===true)
-	logfile("Error_".$type.".log",gmdate(DATE_RFC822)." ".$err);
+	logfile("Error_".$type.".log",gmdate(DATE_RFC822).": ".$err);
 }
 function warnlog($type,$warn){
 	if(@WarnLog===true)
-	logfile("Warning_".$type.".log",gmdate(DATE_RFC822)." ".$warn);
+	logfile("Warning_".$type.".log",gmdate(DATE_RFC822).": ".$warn);
 }
 function logotherref(){
 	logfile("othersiteref.log",$f,$_SERVER["HTTP_REFERER"]);

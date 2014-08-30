@@ -15,13 +15,9 @@ if ($command) {
     header("Access-Control-Allow-Origin:".$allow);
     /*在这里增加一些命令或许可检测*/
     if (true) { //查找指令前判断是否要执行
-        
-        function unescape($escstr)//此函数来自网络
-        {
-            preg_match_all("/%u[0-9A-Za-z]{4}|%.{2}|[0-9a-zA-Z.+-_]+/", $escstr, $matches);
-            $ar =& $matches[0];
-            $c = "";
-            foreach ($ar as $val) {
+        function decodeChar($val){
+            $val=$val[0];
+             $c = "";
                 if (substr($val, 0, 1) != "%") {
                     $c .= $val;
                 } elseif (substr($val, 1, 1) != "u") {
@@ -43,8 +39,13 @@ if ($command) {
                         $c .= chr(0x80 | ($val % 64));
                     }
                 }
-            }
-            return $c;
+                return $c;
+        }
+        function unescape($escstr)//此函数来自网络
+        {
+            $regrole="/%u[0-9A-Za-z]{4}|%.{2}|[0-9a-zA-Z.+-_]+/";
+            $escstr=preg_replace_callback($regrole, "decodeChar", $escstr);
+            return $escstr;
         }
 
         function isArgName($string){
@@ -71,6 +72,8 @@ if ($command) {
         function cmd($cmd)
         {
             global $options;
+            global $cmdstring;
+            $cmdstring=$cmd;
             $options = explode(" ", $cmd);
             $script  =unescape(recovminus(str_replace("%plus","+",array_shift($options))));
             //echo $options[2]."\n";
@@ -104,13 +107,16 @@ if ($command) {
             //恢复参数值
             for ($ind = $count; $ind--; ) {
                 //恢复字符串和+号
-                $options[$ind] = unescape(recovminus(str_replace("%plus","+",$options[$ind])));
+                //$options[$ind] = unescape(recovminus(str_replace("%plus","+",$options[$ind])));
+                $options[$ind] =unescape(recovminus(str_replace("%plus","+",$options[$ind])));
             }
             foreach ($args as $key => $value) {
-                $args[$key] = unescape(recovminus(str_replace("%plus","+",$value)));
+              //  $args[$key] = unescape(recovminus(str_replace("%plus","+",$value)));
+                 $args[$key] =unescape(recovminus(str_replace("%plus","+",$value)));
             }
             foreach ($flags as $key => $value) {
-                $flags[$key] = unescape(recovminus(str_replace("%plus","+",$value)));
+                //$flags[$key] = unescape(recovminus(str_replace("%plus","+",$value)));
+                $flags[$key] =unescape(recovminus(str_replace("%plus","+",$value)));
             }
 
             if (is_file("commands/" . $script . ".php")) {

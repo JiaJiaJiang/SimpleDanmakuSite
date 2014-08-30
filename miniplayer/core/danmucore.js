@@ -198,7 +198,7 @@ function fireinterval() {
 		danmufuns.fire(timepoint);
 	}
 	timepoint += 10;
-	if (player.video.paused) {
+	if (!player.assvar.isPlaying) {
 		clearInterval(intervals.timer);
 	}
 }
@@ -676,6 +676,7 @@ function initevents() {
 	});
 	aEL(video, 'seeking',
 	function() {
+		player.assvar.isPlaying = false;
 		timepoint = getVideoMillionSec();
 	});
 	aEL(video, 'timeupdate',

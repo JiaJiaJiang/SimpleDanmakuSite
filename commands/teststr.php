@@ -1,8 +1,10 @@
 <?php
 needLogin();
+global $cmdstring;
 $option=$options;
 global $args;
 global $flags;
+echo "原始命令串:".$cmdstring."\n";
 echo "参数表";
 print_r($option);
 echo "命名参数";

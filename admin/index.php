@@ -85,7 +85,7 @@
 				comhistory.push(com);
 				index++;
 				var command=com.split(" ")[0];
-				display("<span style='color:#ccc'>"+transarg(com)+"</span>");
+				display("<span style='color:#ccc'>"+com+"</span>");
 				if(simplecom[command]){
 					simplecom[command]();
 				}else{
