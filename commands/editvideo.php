@@ -32,7 +32,7 @@ if (@$args["id"]&&(@$args["t"]||@$args["url"])) {
         }
 } else {
     echo "参数错误，输入【editvideo --help】查看用法";
+    errorlog("editvideo","Error args");
 }
 exit;
 ?>
-UPDATE  `video` SET  `title` =  'にや' WHERE  `video`.`id` =7;

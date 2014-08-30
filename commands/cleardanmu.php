@@ -23,6 +23,7 @@ WHERE `videoid` =?");
         }
 } else {
     echo "cleardanmu --help】查看用法";
+    errorlog("cleardanmu","Error args");
 }
 exit;
 ?>

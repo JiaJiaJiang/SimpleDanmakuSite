@@ -12,22 +12,15 @@ if (isID($option[0])) {
         mysqli_stmt_fetch($stmt);
             if (! $address) {
                 echo "Error";
+                errorlog("getVideoAddress","No address got");
                 return;
             }
             if (!$count) {
                 $count = 0;
             } 
-            $addresses=explode(";",$address);
- 		$json = '{url:[';
- 		for($i=0;$i<count($addresses);$i++){
- 			$json.='"'.translateAddress($addresses[$i]).'"';
- 			if($i!=count($addresses)-1){
- 				$json.=",";
- 			}
- 		}
-
- 		$json.='],count:' . $count . '}';
-            echo $json;
+            $addr=translateAddress($address);
+            $json=array("url"=> $addr,"count"=>$count);
+            echo json_encode($json);
             $newc=abs($count)+1;
             mysqli_stmt_prepare($stmt, 'UPDATE  `video` SET  `count` =? WHERE  `id` =?');
         mysqli_stmt_bind_param($stmt, "ii",$newc, $option[0]);
@@ -39,6 +32,7 @@ if (isID($option[0])) {
         }
 } else {
     echo "Error";
+    errorlog("getVideoAddress","Error args");
 }
 exit;
 ?>

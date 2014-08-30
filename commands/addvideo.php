@@ -21,6 +21,7 @@ if (@$args["t"]&&@$args["url"]) {
         }
 } else {
    echo "参数错误，输入【addvideo --help】查看用法";
+   errorlog("addvideo","Error args");
     exit;
 }
 exit;

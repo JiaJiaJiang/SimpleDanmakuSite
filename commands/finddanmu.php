@@ -24,11 +24,12 @@ if (@$option[0]) {
         out("查找完毕,共".$stmt->num_rows."条");
         }
         else{
-        	echo "Error";
+        	echo "数据库连接错误";
                 return;
         }
 } else {
-    echo "Error";
+    echo "参数错误，输入【findanmu --help】查看用法";
+    errorlog("finddanmu","Error args");
 }
 exit;
 ?>

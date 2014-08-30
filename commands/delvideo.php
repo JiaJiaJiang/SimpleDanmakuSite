@@ -18,6 +18,7 @@ if (isID($option[0])) {
         out("尝试删除视频".$option[0]);
             if(mysqli_affected_rows($SQL)!=1){
                 out("失败");
+                errorlog("deldanmu","Failed to delete video:".$option[0]);
             }else{
                 out('成功');
             }
@@ -36,6 +37,7 @@ WHERE `videoid` =?");
         }
 } else {
    echo "参数错误，输入【delvedio --help】查看用法";
+   errorlog("delvideo","Error args");
     exit;
 }
 exit;

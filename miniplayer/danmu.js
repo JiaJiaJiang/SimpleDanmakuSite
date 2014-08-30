@@ -286,7 +286,7 @@ function initPlayer(_in_videoid) {
 				return;
 			}
 			try {
-				var json = eval('(' + a + ')');
+				var json =JSON.parse(a);
 			} catch(e) {
 				newstat('地址获取错误');
 				player.videopreload.textdiv.innerHTML = '(๑• . •๑)';
@@ -294,12 +294,26 @@ function initPlayer(_in_videoid) {
 				player.videopreload.textdiv.parentNode.style.top = "calc(50% - 110px)";
 				return;
 			}
-			var videosrc = json.url,
+			var videosrc =JSON.parse(json.url),
 			count = json.count;
-			console.log('得到视频地址:' + videosrc);
+			console.log('得到视频地址:');
+			console.log(videosrc);
+			player.videoaddress=[];
+			for(var no in videosrc){
+				if(videosrc[no]&&videosrc[no].length){
+					player.videoaddress.push({res:no,url:videosrc[no]});
+				}else{
+					console.log("丢弃一个空地址");
+				}
+				
+			}
+			if(!player.videoaddress[0]){
+				newstat('地址获取错误');
+				return;
+			}
 			Message("CTRL", {
 				name: "videoaddress",
-				src: videosrc
+				src: player.videoaddress[0].url
 			});
 		});
 	}
@@ -495,6 +509,10 @@ function initPlayer(_in_videoid) {
 		var currentTime = player.assvar.pointingtime||getMin_Sec(core.player.video.currentTime);
 		totaltime = getMin_Sec(core.player.video.duration);
 		if (currentTime.min >= 0 && currentTime.sec >= 0 && totaltime.min >= 0 && totaltime.sec >= 0) {
+			if(currentTime.min<10)currentTime.min="0"+currentTime.min;
+			if(currentTime.sec<10)currentTime.sec="0"+currentTime.sec;
+			if(totaltime.min<10)totaltime.min="0"+totaltime.min;
+			if(totaltime.sec<10)totaltime.sec="0"+totaltime.sec;
 			player.time.innerHTML = currentTime.min + ':' + currentTime.sec + '/' + totaltime.min + ':' + totaltime.sec;
 		} else {
 			player.time.innerHTML = '视频错误';
@@ -765,10 +783,12 @@ function initPlayer(_in_videoid) {
 				//console.log("循环播放");
 				core.player.video.loop = true;
 				player.loop.style.color = '#66ccff';
+				tip("洗脑循环");
 			} else {
 				//console.log("取消循环");
 				core.player.video.loop = false;
 				player.loop.style.color = '#000';
+				tip("关闭循环");
 			}
 		});
 		aEL(player.volumestat, 'click',
@@ -777,8 +797,10 @@ function initPlayer(_in_videoid) {
 			core.player.video.muted = !core.player.video.muted;
 			if (core.player.video.muted) {
 				console.log('静音');
+				tip("静音");
 			} else {
 				console.log('取消静音');
+				tip("取消静音");
 			}
 		});
 		aEL(player.ctrlcovre,"contextmenu",function(e){
@@ -793,9 +815,11 @@ function initPlayer(_in_videoid) {
 			function() {
 				if (!core.danmucontainer.display) {
 					core.danmufuns.show();
+					tip("显示弹幕");
 				} else {
 					core.danmufuns.hide();
 					core.danmufuns.clear();
+					tip("隐藏弹幕");
 				}
 			});
 			aEL(video, 'loadedmetadata',
@@ -844,6 +868,7 @@ function initPlayer(_in_videoid) {
 			aEL(video, 'waiting',
 	function() {
 		console.log("事件:媒体缓冲中");
+		tip("正在缓冲");
 	});
 			aEL(player.ctrlcovre,"click",function(){
 			if(video.paused){
