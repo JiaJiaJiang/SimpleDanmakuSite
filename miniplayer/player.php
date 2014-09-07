@@ -105,6 +105,7 @@ if (isID($vid))
         </div>
         <script>
         console.log("视频id:"+<?php echo $vid;?>);
+        cmd_url="../command.php"; 
         initPlayer(<?php echo $vid;?>);
         </script>
 

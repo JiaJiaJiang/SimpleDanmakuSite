@@ -1,16 +1,21 @@
 <?php
 needLogin();
+global $args;
 if(hasFlag("help")){
-    echo "finddanmu用于通过查找弹幕(正则查找，弹幕很多时谨慎使用)\n     <b>finddanmu 内容</b>\n此命令使用正则匹配查找，你可以直接输入弹幕或者其一部分，或者使用正则表达式\n 	我会说这个命令是从findvideo直接复制过来改的吗?";
+    echo "finddanmu用于通过查找弹幕(正则查找，弹幕很多时谨慎使用)\n     <b>finddanmu 内容 [-option arg]</b>\n     <b>options</b>\n         <b>-v 指定视频id</b>\n此命令使用正则匹配查找，你可以直接输入弹幕或者其一部分，或者使用正则表达式";
     exit;
 }
 $option = $options;
 header("Content-Type:text/html", true);
+$sql="SELECT id,videoid,type,time, color,size,`date`,content FROM danmu WHERE `content` REGEXP ?";
+if(array_key_exists("v",$args)&&isID($args["v"])){
+    $sql.=(" AND `videoid`=".$args["v"]);
+}
 if (@$option[0]) {
     if (connectSQL()) {
         Global $SQL;
         $stmt = mysqli_stmt_init($SQL);
-        mysqli_stmt_prepare($stmt, "SELECT id,videoid,type,time, color,size,`date`,content FROM danmu WHERE content REGEXP ?");
+        mysqli_stmt_prepare($stmt, $sql);
         mysqli_stmt_bind_param($stmt, "s", $option[0]);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_bind_result($stmt,$id,$videoid,$type,$time, $color,$size,$date,$c);

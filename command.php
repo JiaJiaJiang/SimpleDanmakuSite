@@ -107,15 +107,12 @@ if ($command) {
             //恢复参数值
             for ($ind = $count; $ind--; ) {
                 //恢复字符串和+号
-                //$options[$ind] = unescape(recovminus(str_replace("%plus","+",$options[$ind])));
                 $options[$ind] =unescape(recovminus(str_replace("%plus","+",$options[$ind])));
             }
             foreach ($args as $key => $value) {
-              //  $args[$key] = unescape(recovminus(str_replace("%plus","+",$value)));
                  $args[$key] =unescape(recovminus(str_replace("%plus","+",$value)));
             }
             foreach ($flags as $key => $value) {
-                //$flags[$key] = unescape(recovminus(str_replace("%plus","+",$value)));
                 $flags[$key] =unescape(recovminus(str_replace("%plus","+",$value)));
             }
 
