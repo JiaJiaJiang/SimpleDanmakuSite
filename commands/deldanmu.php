@@ -17,11 +17,11 @@ if(isID($option[0])){
 	mysqli_stmt_bind_param($stmt, "i", $option[$i]);
 	 mysqli_stmt_execute($stmt);
       out("尝试删掉弹幕:".$option[$i]);
-	if(mysqli_affected_rows($SQL)!=1){
-		out("失败");
+	if(mysqli_affected_rows($SQL)==1){
+		out($option[$i].":成功");
 		errorlog("deldanmu","Failed to delete danmaku".$option[$i]);
 	}else{
-		out("成功");
+		out($option[$i].":失败");
 	}
 	}
 	
