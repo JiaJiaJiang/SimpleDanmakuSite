@@ -2,7 +2,7 @@
 	<head>
 		<meta charset="utf-8"/>
 		<title>弹幕控制台</title>
-		<script src="/command.js"></script>
+		<script src="../command.js"></script>
 		<meta name="viewport" content="width=device-width">
 		<style>
 			#output{
