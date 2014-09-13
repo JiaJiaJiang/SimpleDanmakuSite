@@ -6,7 +6,7 @@ if(hasFlag("help")){
     echo "deldanmu用于删除指定id的弹幕\n 		<b>deldanmu 弹幕id [id id id id ....]</b><br>对删除弹幕是否成功的判定还存在问题，所以显示出来的结果不一定是真的";
     exit;
 }
-if(isID($option[0])){
+if(isID(@$option[0])){
 	connectSQL();
 	Global $SQL;
 	$count=count($option);
