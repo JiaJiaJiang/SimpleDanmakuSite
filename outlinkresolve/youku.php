@@ -31,6 +31,7 @@ class Youku {
      * @return [type]           [description]
      */
     public static function _cget($url,$convert=false,$timeout=4){
+        $ch=curl_init($url);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
         curl_setopt($ch,CURLOPT_TIMEOUT,$timeout);
         curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,$timeout);
