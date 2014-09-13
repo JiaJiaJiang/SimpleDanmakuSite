@@ -506,7 +506,7 @@ function initPlayer(_in_videoid) {
 		}
 	}
 	controlfuns.refreshtime = function() {
-		var currentTime = player.assvar.pointingtime||getMin_Sec(core.player.video.currentTime);
+		var currentTime = (player.assvar.pointingtime?Object.create(player.assvar.pointingtime):null)||getMin_Sec(core.player.video.currentTime);
 		totaltime = getMin_Sec(core.player.video.duration);
 		if (currentTime.min >= 0 && currentTime.sec >= 0 && totaltime.min >= 0 && totaltime.sec >= 0) {
 			if(currentTime.min<10)currentTime.min="0"+currentTime.min;
