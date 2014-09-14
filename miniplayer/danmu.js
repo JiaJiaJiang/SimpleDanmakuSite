@@ -510,7 +510,7 @@ function initPlayer(_in_videoid) {
 		var currentTime = player.assvar.pointingtime||getMin_Sec(core.player.video.currentTime);
 		totaltime = getMin_Sec(core.player.video.duration);
 		if (currentTime.min >= 0 && currentTime.sec >= 0 && totaltime.min >= 0 && totaltime.sec >= 0) {
-			player.time.innerHTML =(currentTime.min<10?currentTime.min="0"+currentTime.min:currentTime.min)+ ':' + (currentTime.sec<10?currentTime.sec="0"+currentTime.sec:currentTime.sec) + '/' + (totaltime.min<10?totaltime.min="0"+totaltime.min:totaltime.min) + ':' + (totaltime.sec<10?totaltime.sec="0"+totaltime.sec:totaltime.sec);
+			player.time.innerHTML =(currentTime.min<10?"0"+currentTime.min:currentTime.min)+ ':' + (currentTime.sec<10?"0"+currentTime.sec:currentTime.sec) + '/' + (totaltime.min<10?"0"+totaltime.min:totaltime.min) + ':' + (totaltime.sec<10?"0"+totaltime.sec:totaltime.sec);
 		} else {
 			player.time.innerHTML = '视频错误';
 		}
@@ -537,7 +537,7 @@ function initPlayer(_in_videoid) {
 		
 		for(var i=grouparr.length;i--;){
 			if(!grouparr[i])grouparr[i]=0;
-			danmumarkct.lineTo(i,(1-grouparr[i]/max)*th);
+			danmumarkct.lineTo(i*2,(1-grouparr[i]/max)*th);
 		}
 		danmumarkct.closePath();
 		danmumarkct.fill();
