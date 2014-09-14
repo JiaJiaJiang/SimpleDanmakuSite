@@ -107,14 +107,17 @@ function translateAddress($address){
 			for($i2=count($tmppart);$i2--;){//处理视频分段
 				$tempparts2=array();
 				if($tmppart[$i2]!=""){//过滤掉空字符串
-					preg_match_all("/\w+/i",$tmppart[$i2],$result);//获取地址前缀和视频地址（id）
-					if($result){
-						$videoid=$result[0][1];
-						$pre=$result[0][0];
+					//preg_match("/^(.+)(\:(.+$))/",$tmppart[$i2],$result);//获取地址前缀和视频地址（id）
+					if(preg_match("/^(.+)(\:(.+$))/",$tmppart[$i2],$result)){
+						$videoaddress=$result/*[0]*/[3];
+						$pre=$result/*[0]*/[1];
+					}else{
+						$pre="";
+						$videoaddress=$tmppart[$i2];
 					}
 					$result=null;//释放结果数组
-					if(/*array_key_exists($pre,$outlinkresolve)*/is_file("outlinkresolve/$pre.php")){//如果解析库里可以找到对应前缀视频的解析文件
-						$tmppart[$i2]=outlinkresolve($pre,$videoid);//用解析函数解析，获得多源数组
+					if(is_file("outlinkresolve/$pre.php")){//如果解析库里可以找到对应前缀视频的解析文件
+						$tmppart[$i2]=outlinkresolve($pre,$videoaddress);//用解析函数解析，获得多源数组
 						if(is_array($tmppart[$i2])){//如果转换结果是数组
 							//如果返回视频里有多源，但这不是独段视频的话则选择其中一个丢弃其它源。如果是独段源则把其他源单独添加到结果数组
 							foreach ($tmppart[$i2] as $note => $childsource) {

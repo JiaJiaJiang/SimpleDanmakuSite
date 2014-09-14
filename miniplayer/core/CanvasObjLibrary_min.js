@@ -225,12 +225,8 @@ function newCOL() {
 				if(ind>=0){
 					this.drawlist.splice(ind, 1);
 				}
-				/*for (var i = this.drawlist.length; i--; ) {
-					if (this.drawlist[i].GraphID == graph.GraphID) {
-						this.drawlist.splice(i, 1);
-						break;
-					}
-				}*/
+			}else{
+				console.log(graph.GraphID);
 			}
 		},
 		setMatrix: function(floatarrayMatrix) {

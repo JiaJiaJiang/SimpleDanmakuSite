@@ -17,7 +17,12 @@ function resolveVideo($id){//解析入口
 function outlinkresolve($pre,$id){
 	if(is_file("outlinkresolve/$pre.php")){
 		require_once("outlinkresolve/$pre.php");
-		return resolveVideo($id);
+		if(function_exists("resolveVideo")){
+			return resolveVideo($id);
+		}else{
+			return "ERROR";
+		}
+		
 	}
 }
 /*global $outlinkresolve;

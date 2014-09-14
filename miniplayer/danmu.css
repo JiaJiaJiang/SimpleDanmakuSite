@@ -663,3 +663,6 @@ animation:tip_in_ani 4s linear 0s forwards;
 	90%{opacity: 1;right:8px;}
 	100%{opacity: 0;display: none;right:0px;}
 }
+.forceopacity{
+	opacity: 1 !important;
+}

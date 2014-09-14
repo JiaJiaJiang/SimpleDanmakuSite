@@ -2,7 +2,7 @@
 Belong to iTisso
 Coder:LuoJia
  */
-var DanmuPlayerVersion = "0.3.5";
+var DanmuPlayerVersion = "0.4.0";
 var SiteDomain = "";
 cmd_url="../command.php"; 
 function select_do(fun) {
@@ -168,7 +168,8 @@ function isFullscreen() {
 	if (document.fullscreen || document.mozFullScreen || document.webkitIsFullScreen || document.msFullscreenElement) return true;
 }
 function removeEleClass(e, classname) {
-	if (classname != '' && classname != ' ' && e) e.classList.remove(classname);
+	if (classname != '' && classname != ' ' && e) 
+		e.classList.remove(classname);
 }
 function addEleClass(e, classname) {
 	if (classname != '' && classname != ' ' && e) {
@@ -415,7 +416,7 @@ function initPlayer(_in_videoid) {
 				date.month = (date.month < 10) ? '0' + date.month: date.month;
 				danmuobj.d = date.getFullYear() + '-' + date.month + '-' + date.day;
 				core.danmufuns.initnewDanmuObj(danmuobj);
-				core.danmufuns.createCommonDanmu(danmuobj);
+				//core.danmufuns.createCommonDanmu(danmuobj);
 				danmuarray.push(danmuobj);
 				controlfuns.refreshDanmumark();
 				autocmd('adddanmu', (videoid), type, c, time, color || 'NULL', danmuStyle.fontsize,playersse,
@@ -509,11 +510,7 @@ function initPlayer(_in_videoid) {
 		var currentTime = player.assvar.pointingtime||getMin_Sec(core.player.video.currentTime);
 		totaltime = getMin_Sec(core.player.video.duration);
 		if (currentTime.min >= 0 && currentTime.sec >= 0 && totaltime.min >= 0 && totaltime.sec >= 0) {
-			if(currentTime.min<10)currentTime.min="0"+currentTime.min;
-			if(currentTime.sec<10)currentTime.sec="0"+currentTime.sec;
-			if(totaltime.min<10)totaltime.min="0"+totaltime.min;
-			if(totaltime.sec<10)totaltime.sec="0"+totaltime.sec;
-			player.time.innerHTML = currentTime.min + ':' + currentTime.sec + '/' + totaltime.min + ':' + totaltime.sec;
+			player.time.innerHTML =(currentTime.min<10?currentTime.min="0"+currentTime.min:currentTime.min)+ ':' + (currentTime.sec<10?currentTime.sec="0"+currentTime.sec:currentTime.sec) + '/' + (totaltime.min<10?totaltime.min="0"+totaltime.min:totaltime.min) + ':' + (totaltime.sec<10?totaltime.sec="0"+totaltime.sec:totaltime.sec);
 		} else {
 			player.time.innerHTML = '视频错误';
 		}
@@ -692,6 +689,13 @@ function initPlayer(_in_videoid) {
 		function(e) {
 			if (e.keyCode == 13) {
 				danmufuns.send();
+			}
+		});
+		aEL(player.danmuinput,"input",function(){
+			if(player.danmuinput.value!=""){
+				addEleClass(player.sendbox,"forceopacity");
+			}else{
+				removeEleClass(player.sendbox,"forceopacity");
 			}
 		});
 		aEL(d_select('#fontstylebutton #danmuType'), 'click',
