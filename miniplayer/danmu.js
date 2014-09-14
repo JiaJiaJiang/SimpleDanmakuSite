@@ -518,9 +518,9 @@ function initPlayer(_in_videoid) {
 	controlfuns.refreshDanmumark=function(){
 		var tw=danmumarkcan.width=danmumarkcan.offsetWidth;
 		var th=danmumarkcan.height=16;
-		var pixtime=((core.player.video.duration*1000/tw+0.5)|0);
+		var pixtime=((core.player.video.duration*1000/tw*2+0.5)|0);
 		var max=0;
-		var grouparr=new Array(((tw+0.5)|0)+1),groupnum;
+		var grouparr=new Array(((tw/2+0.5)|0)+1),groupnum;
 		for(var i=danmuarray.length;i--;){
 			groupnum=Math.floor(danmuarray[i].t/pixtime);
 			if(!grouparr[groupnum])grouparr[groupnum]=0;
