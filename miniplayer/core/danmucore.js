@@ -194,7 +194,6 @@ function fitdanmulayer() {
 }
 function fireinterval() {
 	if (timeline[timepoint]) {
-		//setTimeout((danmufuns.fire)(timepoint),0);
 		danmufuns.fire(timepoint);
 	}
 	timepoint += 10;
@@ -210,7 +209,6 @@ function newTimePiece(t) {
 	if (t >= timepoint) {
 		for (; timepoint <= t; timepoint += 10) {
 			if (timeline[timepoint])
-			//setTimeout((danmufuns.fire)(timepoint),0);
 			danmufuns.fire(timepoint);
 		}
 	} else {
@@ -279,27 +277,28 @@ danmufuns = {
 		TextDanmu.setMatrix();
 		danmucontainer.addChild(TextDanmu);
 	},
-	movedanmuAnimation:function(){
-		//varyflag=1^varyflag;
-		//frame change:取消前面的注释可以把帧数减半
-		if (varyflag && drawlist.length != 0) {
+movedanmuAnimation: function() {
+	//varyflag=1^varyflag;
+	//frame change:取消前面的注释可以把帧数减半
+	if (varyflag && drawlist.length != 0) {
 
-						if (COL.Debug.stat) {
-							COL.cct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
-							COL.cct.fillStyle = "rgba(0,255,0,0.2)";
-							COL.cct.fillRect(0, cleartop, COL.canvas.width, clearbottom-cleartop);
-						} else {
-							COL.cct.clearRect(0, cleartop, COL.canvas.width, clearbottom-cleartop);
-						}
-						COL.draw();
-						cleanremainder = true;
-						setTimeout(danmufuns.mover, 0);
-					} else if (drawlist.length === 0 && cleanremainder) {
-						COL.cct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
-						cleanremainder = false;
-					}
-					moverAnimation = requestAnimationFrame(danmufuns.movedanmuAnimation);
-	},
+		if (COL.Debug.stat) {
+			COL.cct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
+			COL.cct.fillStyle = "rgba(0,255,0,0.2)";
+			COL.cct.fillRect(0, cleartop, COL.canvas.width, clearbottom - cleartop);
+		} else {
+			COL.cct.clearRect(0, cleartop-5, COL.canvas.width, clearbottom - cleartop+5);
+		}
+		COL.draw();
+		cleanremainder = true;
+		setTimeout(danmufuns.mover, 0);
+	} else if (drawlist.length === 0 && cleanremainder) {
+		COL.cct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
+		cleanremainder = false;
+	}
+	moverAnimation = requestAnimationFrame(danmufuns.movedanmuAnimation);
+},
+
 	danmumoverAnimation: {
 		start: function(time) {
 			if (!moverAnimation) {
@@ -383,9 +382,10 @@ danmufuns = {
 	},
 	clear: function() {
 		danmucontainer.drawlist.forEach(function(e){
-			e.parentNode=null;
+			//e.parentNode=null;
+			e.parentNode.removeChild(e);
 		});
-		danmucontainer.drawlist=[];
+		drawlist=danmucontainer.drawlist=[];
 		danmutunnel = {
 			right: [],
 			left: [],
@@ -410,8 +410,9 @@ danmufuns = {
 			var node, r = false;
 			for (var i = danmucontainer.drawlist.length; i--;) {
 				node = danmucontainer.drawlist[i];
-				if (!node||!node.imgobj){
-					console.log(node.imgobj);
+				if (!node||!node.imgobj||!node.tunnelobj){
+					//node.parentNode.removeChild(node);
+					console.log(node);
 					continue;
 				} 
 				switch (node.type) {
@@ -480,7 +481,9 @@ danmufuns = {
 			if(r){
 				danmufuns.changeCleanRect();
 			}
-		}
+		}/*else{
+			console.log(0);
+		}*/
 	},
 changeCleanRect: function() {
 	var p = true,
@@ -529,11 +532,12 @@ changeCleanRect: function() {
 		if (typeof danmuobj == 'object') {
 			timeline[danmuobj.t] = true;
 			danmufuns.addToDanmuArray(danmuobj);
+			danmufuns.inittextobj(danmuobj);
+			danmufuns.varydanmu(danmuobj);
 		}
 	},
 	fire: function(t) {
 		if (danmuarray[t]) {
-			//setTimeout(function(){danmufuns.displaydanmuontime(t)}, 0);
 			danmufuns.displaydanmuontime(t);
 		}
 	},
@@ -542,7 +546,6 @@ displaydanmuontime: function(t) {
 		var tmpd = danmuarray[t][i];
 		if (tmpd.ty <= 3 && tmpd.ty >= 0) {
 			if (player.o.textdanmu == true) {
-				//setTimeout(function(){danmufuns.displaydanmuontime_text(tmpd)},0);
 				danmufuns.displaydanmuontime_text(tmpd);
 				setTimeout(function(){danmufuns.changeCleanRect();},0);
 			}
@@ -753,7 +756,7 @@ player.o = {
 player.cacheobj = {};
 player.assvar.hasZimu = false;
 setdom();
-//COL.Debug.on();
+COL.Debug.on();
 initevents();
 danmufuns.danmumoverAnimation.start();
 danmufuns.danmumoverAnimation.stop();
