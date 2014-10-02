@@ -141,7 +141,7 @@ var videoinfo = {
 	height: null,
 	CrownHeight: null
 };
-var COL, Glib, AnimationFrame, moverAnimation;
+var COL, AnimationFrame, moverAnimation;
 function setdom() {
 	player.videoframe = d_select('#videoframe');
 	player.danmuframe = d_select(player.videoframe, '#danmuframe');
@@ -382,7 +382,6 @@ movedanmuAnimation: function() {
 	},
 	clear: function() {
 		danmucontainer.drawlist.forEach(function(e){
-			//e.parentNode=null;
 			e.parentNode.removeChild(e);
 		});
 		drawlist=danmucontainer.drawlist=[];

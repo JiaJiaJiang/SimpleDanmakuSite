@@ -2,8 +2,8 @@
 Belong to iTisso
 Coder:LuoJia
  */
-var DanmuPlayerVersion = "0.4.0";
-var SiteDomain = "";
+const DanmuPlayerVersion = "0.4.0";
+const SiteDomain = "";
 cmd_url="../command.php"; 
 function select_do(fun) {
 	if (typeof fun != "function") {
@@ -15,20 +15,16 @@ function select_do(fun) {
 	}
 }
 function d_select(query) {
-	var /*arr = [],*/
-	root;
+	var root;
 	if ((typeof arguments[0]) != 'string' && arguments[0] != null) {
 		root = arguments[0];
 		arguments[0] = arguments[1];
 	} else {
 		root = document;
 	}
-	/*console.log(root)
-	arr.push();
-	arr.__proto__.do = select_do;*/
 	return root.querySelector(arguments[0]);
 }
-function d_selectall(query) {
+function d_selectall(query) { 
 	var arr = [],
 	root;
 	if ((typeof arguments[0]) != 'string' && arguments[0] != null) {
@@ -41,7 +37,7 @@ function d_selectall(query) {
 	arr.__proto__.do = select_do;
 	return arr;
 }
-var $ = d_select,
+const $ = d_select,
 $$ = d_selectall;
 function c_ele(tag) {
 	return document.createElement(tag);
@@ -224,40 +220,40 @@ function initPlayer(_in_videoid) {
 	var getVideoMillionSec;
 	function setdom() {
 		player.displaystat = 'normal';
-		player.mainbody = d_select('.playermainbody');
-		player.controler = d_select(player.mainbody, '#controler');
-		player.colorinput = d_select(player.mainbody, '#colorinput');
-		player.colorview = d_select(player.mainbody, '#colorview');
-		player.sendcover = d_select(player.mainbody, '#sendbox #sendboxcover');
-		player.danmuctrl = d_select(player.mainbody, '#controler #danmuctrl');
-		player.danmuinput = d_select(player.mainbody, '#sendbox #danmuinput');
-		//player.danmucontantor = d_select(player.mainbody, '#danmus');
-		player.fullscreen = d_select(player.mainbody, '#controler #fullscreen');
-		player.loop = d_select(player.mainbody, '#controler #loop');
-		player.play_pause = d_select(player.mainbody, '#play_pause');
-		//player.playcount = d_select(player.mainbody, '#playcount');
-		player.progress = d_select(player.mainbody, '#progress');
-		player.progerssdisplay = d_select(player.mainbody, '#progerssdisplay');
-		player.videocached = d_select(player.mainbody, '#videocached');
-		player.progersscover = d_select(player.mainbody, '#progersscover');
-		player.playbutton = d_select(player.mainbody, '#play_pause #play');
-		player.pausebutton = d_select(player.mainbody, '#play_pause #pause');
-		player.ctrlcovre=d_select(player.mainbody, '#ctrlcovre');
-		player.timepoint = d_select(player.mainbody, '#controler #progress #timepoint');
-		player.time = d_select(player.mainbody, '#controler #time');
-		player.tipbox = d_select(player.mainbody, '#tipbox');
-		player.sendbox = d_select(player.mainbody, '#sendbox');
-		player.statboard = d_select(player.mainbody, '#stat');
-		player.videoframe = d_select(player.mainbody, '#videoframe');
-		player.videoiframe = d_select(player.videoframe, '#videoiframe');
-		player.videopreload = d_select('#videopreload');
-		player.videopreload.textdiv = d_select(player.videopreload, '.videopreloadanimation');
-		player.volume = d_select(player.mainbody, '#controler #volume');
-		player.volumerange = d_select(player.mainbody, '#controler #volume #range');
-		player.volumevalue = d_select(player.mainbody, '#controler #volume #range div');
-		player.volumepercentage = d_select(player.mainbody, '#controler #volume span');
-		player.volumestat = d_select(player.mainbody, '#controler #volume #voluemstat');
-		danmumarkcan=d_select("#danmumark");
+		player.mainbody = $('.playermainbody');
+		player.controler = $(player.mainbody, '#controler');
+		player.colorinput = $(player.mainbody, '#colorinput');
+		player.colorview = $(player.mainbody, '#colorview');
+		player.sendcover = $(player.mainbody, '#sendbox #sendboxcover');
+		player.danmuctrl = $(player.mainbody, '#controler #danmuctrl');
+		player.danmuinput = $(player.mainbody, '#sendbox #danmuinput');
+		//player.danmucontantor = $(player.mainbody, '#danmus');
+		player.fullscreen = $(player.mainbody, '#controler #fullscreen');
+		player.loop = $(player.mainbody, '#controler #loop');
+		player.play_pause = $(player.mainbody, '#play_pause');
+		//player.playcount = $(player.mainbody, '#playcount');
+		player.progress = $(player.mainbody, '#progress');
+		player.progerssdisplay = $(player.mainbody, '#progerssdisplay');
+		player.videocached = $(player.mainbody, '#videocached');
+		player.progersscover = $(player.mainbody, '#progersscover');
+		player.playbutton = $(player.mainbody, '#play_pause #play');
+		player.pausebutton = $(player.mainbody, '#play_pause #pause');
+		player.ctrlcovre=$(player.mainbody, '#ctrlcovre');
+		player.timepoint = $(player.mainbody, '#controler #progress #timepoint');
+		player.time = $(player.mainbody, '#controler #time');
+		player.tipbox = $(player.mainbody, '#tipbox');
+		player.sendbox = $(player.mainbody, '#sendbox');
+		player.statboard = $(player.mainbody, '#stat');
+		player.videoframe = $(player.mainbody, '#videoframe');
+		player.videoiframe = $(player.videoframe, '#videoiframe');
+		player.videopreload = $('#videopreload');
+		player.videopreload.textdiv = $(player.videopreload, '.videopreloadanimation');
+		player.volume = $(player.mainbody, '#controler #volume');
+		player.volumerange = $(player.mainbody, '#controler #volume #range');
+		player.volumevalue = $(player.mainbody, '#controler #volume #range div');
+		player.volumepercentage = $(player.mainbody, '#controler #volume span');
+		player.volumestat = $(player.mainbody, '#controler #volume #voluemstat');
+		danmumarkcan=$("#danmumark");
 		danmumarkct=danmumarkcan.getContext("2d");
 	}
 	function tip(str){
@@ -306,7 +302,6 @@ function initPlayer(_in_videoid) {
 				}else{
 					console.log("丢弃一个空地址");
 				}
-				
 			}
 			if(!player.videoaddress[0]){
 				newstat('地址获取错误');
@@ -321,7 +316,7 @@ function initPlayer(_in_videoid) {
 	
 	function loaddanmu() {
 		newstat('加载弹幕');
-		cmd('getDanmu ' + videoid, false,
+		cmd('getDanmu ' + videoid+" --no_date", false,
 		function(a) {
 			if (a == 'Error') {
 				newstat('弹幕加载失败');
@@ -335,9 +330,10 @@ function initPlayer(_in_videoid) {
 			if (typeof danmuarr == 'object') {
 				for (var i = danmuarr.length; i --; ) {
 					try {
-						danmuarr[i] = eval('(' + danmuarr[i] + ')');
+						//danmuarr[i] = eval('(' + danmuarr[i] + ')');
+						danmuarr[i] = JSON.parse(danmuarr[i]);
 					} catch(e) {
-						console.log("一个错误弹幕无法解析:"+danmuarr[i]);
+						console.log("一个错误弹幕无法解析:",danmuarr[i]);
 					}
 				}
 				Message("CTRL", {
@@ -414,7 +410,7 @@ function initPlayer(_in_videoid) {
 				date.day = (date.getDate() < 10) ? '0' + date.getDate() : date.getDate();
 				date.month = date.getMonth() + 1;
 				date.month = (date.month < 10) ? '0' + date.month: date.month;
-				danmuobj.d = date.getFullYear() + '-' + date.month + '-' + date.day;
+				//danmuobj.d = date.getFullYear() + '-' + date.month + '-' + date.day;
 				core.danmufuns.initnewDanmuObj(danmuobj);
 				//core.danmufuns.createCommonDanmu(danmuobj);
 				danmuarray.push(danmuobj);
@@ -426,6 +422,7 @@ function initPlayer(_in_videoid) {
 						if (!content) {
 							player.danmuinput.value = '';
 							player.sendcover.style.display = 'none';
+							removeEleClass(player.sendbox,"forceopacity");
 						}
 					} else {
 						try{
@@ -447,12 +444,6 @@ function initPlayer(_in_videoid) {
 				}
 			}
 
-		},
-		addToDanmuArray: function(danmuobj) {
-			if (!danmuarray[danmuobj.t]) danmuarray[danmuobj.t] = [];
-			danmuarray[danmuobj.t].push(danmuobj);
-		},
-		pause: function() {
 		}
 	}
 	controlfuns.play = function() {
@@ -681,7 +672,7 @@ function initPlayer(_in_videoid) {
 					requestFullscreen(player.mainbody);
 				}
 		});
-		aEL(d_select('#sendbutton'), 'click',
+		aEL($('#sendbutton'), 'click',
 		function(e) {
 			danmufuns.send();
 		});
@@ -698,7 +689,7 @@ function initPlayer(_in_videoid) {
 				removeEleClass(player.sendbox,"forceopacity");
 			}
 		});
-		aEL(d_select('#fontstylebutton #danmuType'), 'click',
+		aEL($('#fontstylebutton #danmuType'), 'click',
 		function(e) {
 			var selections = d_selectall(player.mainbody, '#fontstylebutton #danmuType div'),
 			id = e.target.id;
@@ -731,7 +722,7 @@ function initPlayer(_in_videoid) {
 				}
 			}
 		});
-		aEL(d_select(player.mainbody, '#fontstylebutton #fontSize'), 'click',
+		aEL($(player.mainbody, '#fontstylebutton #fontSize'), 'click',
 		function(e) {
 			var selections = d_selectall(player.mainbody, '#fontstylebutton #fontSize div'),
 			id = e.target.id;
