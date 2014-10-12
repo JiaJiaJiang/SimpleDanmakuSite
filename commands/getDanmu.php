@@ -1,5 +1,9 @@
 <?php
 $option=$options;
+if(hasFlag("help")){
+    echo "getDanmu用于获取弹幕\n         <b>getDanmu 视频id";
+    exit;
+}
 header("Content-Type:text/json",true);
 if(isID($option[0])){
 	$odate=true;
@@ -13,7 +17,7 @@ if(isID($option[0])){
 	mysqli_stmt_bind_param($stmt, "i", $option[0]);
 	 mysqli_stmt_execute($stmt);
         mysqli_stmt_bind_result($stmt, $id,$type,$content,$time,$color,$size,$date);
-        $arr=[];
+        $arr=Array();
 	for($i=0;mysqli_stmt_fetch($stmt);$i++){
 		if(!($id>=0)){
 			echo "Error";
