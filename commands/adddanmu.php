@@ -10,16 +10,17 @@ if (count($option) == 7) {
         errorlog("adddanmu","Lost connection");
         exit;
     }
+	$thit=gettimeofday();
+	$thit=$thit["sec"];
         if(@$_SESSION['lastdanmutime'.$option[0]]){
                 $lst=intval($_SESSION['lastdanmutime'.$option[0]]);
-                $thit=gettimeofday()["sec"];
                 if(($thit-$lst)<5){
                     echo "Error:发送送间隔太小";
                     errorlog("adddanmu","Invalid send interval");
                     exit;
                 }
         }
-        $_SESSION['lastdanmutime'.$option[0]]=gettimeofday()["sec"];
+        $_SESSION['lastdanmutime'.$option[0]]=$thit;
     connectSQL();
     Global $SQL;
     $videoid = $option[0];
