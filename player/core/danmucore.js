@@ -142,7 +142,7 @@ var danmufirer, superdanmu;
 var zimulist = [],
 zimucontainer;
 player.assvar = {};
-
+var drawlist;
 /*var danmuStyle = {
 	fontsize: 30,
 	color: null,
@@ -158,7 +158,7 @@ function setdom() {
 	player.videoframe = d_select('#videoframe');
 	player.danmuframe = d_select(player.videoframe, '#danmuframe');
 	player.danmulayer = d_select(player.videoframe, '#danmulayer');
-	player.divdanmulayer = d_select(player.videoframe, '#divdanmulayer');
+	//player.divdanmulayer = d_select(player.videoframe, '#divdanmulayer');
 	player.video = d_select(player.videoframe, '#video');
 	initCOL();
 }
@@ -188,18 +188,18 @@ function initTextDanmuContainer() {
 	zimucontainer.zindex(2);
 }
 
-function initcacheobj() {
-	/*div弹幕对象*/
+/*function initcacheobj() {
 	var a = player.cacheobj.divdanmu = c_ele('div');
 	a.style.position = 'absolute';
 	a.className = 'divtextdanmu';
 	a.style.textAlign = 'left';
 	a.style.fontWeight = 600;
-}
+}*/
 
 function fitdanmulayer() {
-	width = COL.document.width = player.danmulayer.width = window.innerWidth;
-	tunnelheight = COL.document.height = player.danmulayer.height = window.innerHeight;
+	COL.adjustcanvas();
+	width = player.danmulayer.width = window.innerWidth;
+	tunnelheight =  player.danmulayer.height = window.innerHeight;
 	for (var i in danmucontainer.childNode) {
 		if (danmucontainer.childNode[i].type == 2) {
 			danmucontainer.childNode[i].set({
@@ -214,6 +214,7 @@ function fitdanmulayer() {
 		}
 		danmucontainer.childNode[i].setMatrix();
 	}
+	COL.draw();
 }
 
 function fireinterval() {
@@ -239,31 +240,6 @@ function newTimePiece(t, interval) {
 		return;
 	}
 	intervals.timer = setInterval(fireinterval, 10 / player.video.playbackRate);
-	/*interval=interval||10;
-	if (intervals.timer) {
-		clearInterval(intervals.timer);
-		intervals.timer = 0;
-	}
-	if (!player.assvar.isPlaying || player.video.paused) return;
-	if (t >= timepoint) {
-		for (var i = timepoint; i <= t; i += 10) {
-			if (timeline[i]) danmufuns.fire(i);
-		}
-	} else {
-		return;
-	}
-	timepoint = t + 10;
-	intervals.timer = setInterval(function() {
-		if (!player.assvar.isPlaying || player.video.paused) return;
-		if (timeline[timepoint]) {
-			danmufuns.fire(timepoint);
-		}
-		timepoint += 10;
-		if (i == 25 || player.video.paused) {
-			clearInterval(intervals.timer);
-		}
-	},
-	interval* player.video.playbackRate);*/
 }
 
 function getVideoMillionSec() {
@@ -271,7 +247,7 @@ function getVideoMillionSec() {
 }
 
 danmufuns = {
-	createCommonDanmufun: {
+	/*createCommonDanmufun: {
 		canvas: function(danmuobj) {
 			if (danmuobj.hasfirstshowed === 0) {
 				danmuobj.hasfirstshowed = 1;
@@ -353,7 +329,7 @@ danmufuns = {
 							player.video.pause();
 						}
 						break;
-					}*/
+					}
 				case 2:
 					{
 						//danmufuns.showContextMenu(TextDanmu, danmuobj);
@@ -421,10 +397,104 @@ danmufuns = {
 			}
 			TextDanmu.danmuobj = danmuobj;
 		}
-	},
-	createCommonDanmu: function() {},
+	},*/
+	createCommonDanmu: function(danmuobj) {
+			if (danmuobj.hasfirstshowed === 0) {
+				danmuobj.hasfirstshowed = 1;
+			} else if (danmuobj.hasfirstshowed == 1) {
+				danmuobj.hasfirstshowed = null;
+				return;
+			}
+			var color = isHexColor(danmuobj.co) ? ('#' + danmuobj.co) : '#fff';
+			var bordercolor = (danmuobj.co == '000000') ? '#fff': '#000';
+			setTimeout(function(){
+				var TextDanmu = COL.Graph.NewTextObj(danmuobj.c, danmuobj.s, {
+				color: color,
+				textborderColor: bordercolor,
+				textborderWidth: player.o.StorkeWidth,
+				type: danmuobj.ty,
+				time: danmuobj.t,
+				fontWeight: 600,
+				realtimeVary: player.o.RealtimeVary,
+				shadowBlur: player.o.ShadowWidth,
+				shadowColor: (danmuobj.co == '000000') ? '#fff': '#000'
+			});
+			TextDanmu.tunnelobj = danmufuns.getTunnel(danmuobj.ty, TextDanmu.lineHeight);
+			switch (danmuobj.ty) {
+			case 0:
+				{
+					TextDanmu.set({
+						x:
+						width,
+						y: TextDanmu.tunnelobj[2]
+					});
+					break;
+				}
+			case 1:
+				{
+					TextDanmu.set({
+						x:
+						-TextDanmu.width,
+						y: TextDanmu.tunnelobj[2]
+					});
+					break;
+				}
+			case 2:
+				{
+					TextDanmu.setPositionPoint(TextDanmu.width / 2, TextDanmu.height);
+					TextDanmu.set({
+						x: width / 2,
+						y: tunnelheight - TextDanmu.tunnelobj[2]
+					});
+					break;
+				}
+			case 3:
+				{
+					TextDanmu.setPositionPoint(TextDanmu.width / 2, 0);
+					TextDanmu.set({
+						x: width / 2,
+						y: TextDanmu.tunnelobj[2]
+					});
+					break;
+				}
+			default:
+				{
+					return;
+				}
+			}
+			if (danmuobj.sended) {
+				var lineset = TextDanmu.lineHeight * TextDanmu.varylist.length - 10;
+				TextDanmu.backgroundColor = 'rgba(255,255,255,0.4)';
+			}
+			TextDanmu.danmuobj = danmuobj;
+			COL.Graph.Eventable(TextDanmu);
+			TextDanmu.addEvent('mousedown',
+			function(e) {
+				switch (e.button) {
+				/*case 0:
+					{
+						if (player.video.paused) {
+							danmufuns.start();
+							player.video.play();
+						} else {
+							player.video.pause();
+						}
+						break;
+					}*/
+				case 2:
+					{
+						//danmufuns.showContextMenu(TextDanmu, danmuobj);
+					}
+				}
+			});
+			TextDanmu.setMatrix();
+			danmucontainer.addChild(TextDanmu);
+			},0);
+			
+		},
 
 	danmurefreshAnimationfun: function() {
+		danmufuns.movedanmuAnimation();
 		COL.draw();
 		danmulayerAnimationFrame = requestAnimationFrame(danmufuns.danmurefreshAnimationfun);
 	},
@@ -432,7 +502,7 @@ danmufuns = {
 		start: function() {
 			if (!danmulayerAnimationFrame) {
 				danmulayerAnimationFrame = requestAnimationFrame(danmufuns.danmurefreshAnimationfun);
-				player.danmuframe.style.display = 'block';
+				//player.danmuframe.style.display = 'block';
 			}
 		},
 		stop: function() {
@@ -440,27 +510,27 @@ danmufuns = {
 				danmucontainer.display = false;
 				cancelAnimationFrame(danmulayerAnimationFrame);
 				danmulayerAnimationFrame = 0;
-				player.danmuframe.style.display = 'none';
+				//player.danmuframe.style.display = 'none';
 			}
 		}
 	},
 
 	movedanmuAnimation: function() {
-		if (drawlist.length != 0) {
-			COL.draw();
-			cleanremainder = true;
-			setTimeout(danmufuns.mover, 0);
-		} else if (drawlist.length === 0 && cleanremainder) {
+		if (danmucontainer.drawlist.length != 0) {
+			//COL.draw();
+			//cleanremainder = true;
+			danmufuns.mover();
+		} /*else if (danmucontainer.drawlist.length === 0 && cleanremainder) {
 			COL.cct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
-			cleanremainder = false;
-		}
-		moverAnimation = requestAnimationFrame(danmufuns.movedanmuAnimation);
+			//cleanremainder = false;
+		}*/
+		/*moverAnimation = requestAnimationFrame(danmufuns.movedanmuAnimation);*/
 	},
-	danmumoverAnimation: {
+	/*danmumoverAnimation: {
 		start: function(time) {
 			if (!moverAnimation) {
 				danmufuns.movedanmuAnimation();
-				/*function movedanmu() {
+				function movedanmu() {
 					danmufuns.mover();
 					if (player.o.divcommondanmu) {
 						moverAnimation = setTimeout(movedanmu, 18);
@@ -468,7 +538,7 @@ danmufuns = {
 						moverAnimation = requestAnimationFrame(movedanmu, player.divdanmulayer, time);
 					}
 				}
-				movedanmu();*/
+				movedanmu();
 			}
 		},
 		stop: function() {
@@ -482,7 +552,7 @@ danmufuns = {
 				moverAnimation = 0;
 			}
 		}
-	},
+	},*/
 
 	show: function() {
 		this.showtextdanmu();
@@ -545,12 +615,13 @@ danmufuns = {
 			if (!danmuarray[danmulist[i].t]) danmuarray[danmulist[i].t] = [];
 			danmuarray[danmulist[i].t].push(danmulist[i]);
 		}
+		danmulist=null;
 	},
 	addToDanmuArray: function(danmuobj) {
 		if (!danmuarray[danmuobj.t]) danmuarray[danmuobj.t] = [];
 		danmuarray[danmuobj.t].push(danmuobj);
 	},
-	clearfun: {
+	/*clearfun: {
 		div: function() {
 			for (var i = divdanmucontainer.length; i--;) {
 				player.divdanmulayer.removeChild(divdanmucontainer[i]);
@@ -576,11 +647,22 @@ danmufuns = {
 			};
 			COL.draw();
 		}
-	},
-	clear: function() {},
+	},*/
+	clear: function() {
+			danmucontainer.drawlist.forEach(function(e) {
+				e.parentNode.removeChild(e);
+			});
+			drawlist = danmucontainer.drawlist = [];
+			danmutunnel = {
+				right: [],
+				left: [],
+				bottom: [],
+				top: []
+			};
+			COL.draw();
+		},
 	start: function() {
-		timepoint = getVideoMillionSec();
-		newTimePiece(timepoint);
+		newTimePiece(getVideoMillionSec());
 	},
 	pause: function() {
 		//clearInterval(interval.calibrationTime.i);
@@ -588,68 +670,16 @@ danmufuns = {
 	},
 	initFirer: function() {
 		danmufuns.setDanmuArray();
-		//danmufuns.initContextMenu();
-		/*danmufirer.addEventListener('message',
-			function(e) {
-				console.log(e.data);
-				if (!player.video.paused) {
-					//danmufuns.fire(e.data);
-				}
-			},
-			false);*/
 	},
-	moverfun: {
-		div: function() {
+	mover: function() {
 			if (player.assvar.isPlaying) {
 				var nowtime = (player.video.currentTime * 1000 + 0.5) | 0;
-				var tmp, nodewidth, hasgone;
-				for (var i = divdanmucontainer.length - 1; i >= 0; i--) {
-					var node = divdanmucontainer[i];
-					switch (node.type) {
-					case 0:
-					case 1:
-						{
-							if (node.type) {
-								tmp = 'left';
-							} else {
-								tmp = 'right';
-							}
-							nodewidth = node.offsetwidth,
-							roadLength = width + nodewidth,
-							hasgone = (roadLength * ((nowtime - node.time) / moveTime / width * 520) - nodewidth);
-							node.style[tmp] = hasgone + 'px';
-							if (node.tunnelobj && hasgone > 150) {
-								danmutunnel[tmp][node.tunnelobj[1]][node.tunnelobj[2]] = null;
-								node.tunnelobj = null;
-							} else if (hasgone > width) {
-								divdanmucontainer.splice(i, 1);
-								player.divdanmulayer.removeChild(node);
-								continue;
-							}
-							break;
-						}
-					case 2:
-					case 3:
-						{
-							tmp = (node.type == 2) ? 'bottom': 'top';
-							if (nowtime - node.time > moveTime) {
-								danmutunnel[tmp][node.tunnelobj[1]][node.tunnelobj[2]] = null;
-								divdanmucontainer.splice(i, 1);
-								player.divdanmulayer.removeChild(node);
-								continue;
-							}
-							break;
-						}
-					}
-				}
-			}
-		},
-		canvas: function() {
-			if (player.assvar.isPlaying) {
-				var nowtime = (player.video.currentTime * 1000 + 0.5) | 0;
+			if(COL.lastmovedtime==nowtime)return;
+			COL.lastmovedtime=nowtime;
+				var temp;
 				for (var i = 0; i < danmucontainer.drawlist.length; i++) {
 					var node = danmucontainer.drawlist[i];
-					if (!node || !node.imgobj || !node.tunnelobj) continue;
+					if (!(node &&node.imageobj &&node.tunnelobj)) continue;
 					switch (node.type) {
 					case 0:
 						{
@@ -659,8 +689,6 @@ danmufuns = {
 								node.tunnelobj[1] = null;
 							} else if (node.x < -node.width) {
 								node.parentNode.removeChild(node);
-								r = true;
-								tunnelrecord.splice(tunnelrecord.indexOf(node.tunnelobj), 1);
 								delete node.tunnelobj;
 								continue;
 							}
@@ -675,8 +703,6 @@ danmufuns = {
 								node.tunnelobj[1] = null;
 							} else if (node.x > width) {
 								node.parentNode.removeChild(node);
-								r = true;
-								tunnelrecord.splice(tunnelrecord.indexOf(node.tunnelobj), 1);
 								delete node.tunnelobj;
 								continue;
 							}
@@ -688,10 +714,8 @@ danmufuns = {
 							if (nowtime - node.time > moveTime) {
 								node.parentNode.removeChild(node);
 								delete danmutunnel.bottom[node.tunnelobj[1]][node.tunnelobj[2]];
-								tunnelrecord.splice(tunnelrecord.indexOf(node.tunnelobj), 1);
 								delete node.tunnelobj;
 								COL.cct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
-								r = true;
 								continue;
 							}
 							break;
@@ -701,10 +725,8 @@ danmufuns = {
 							if (nowtime - node.time > moveTime) {
 								node.parentNode.removeChild(node);
 								delete danmutunnel.top[node.tunnelobj[1]][node.tunnelobj[2]];
-								tunnelrecord.splice(tunnelrecord.indexOf(node.tunnelobj), 1);
 								delete node.tunnelobj;
 								COL.cct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
-								r = true;
 								continue;
 							}
 							break;
@@ -714,10 +736,8 @@ danmufuns = {
 					}
 				}
 			}
-		}
-
+		
 	},
-	mover: function() {},
 	initnewDanmuObj: function(danmuobj) {
 		if (typeof danmuobj == 'object') {
 			//danmucount++;
@@ -727,9 +747,7 @@ danmufuns = {
 		}
 	},
 	fire: function(t) {
-		if (
-		/*player.assvar.isPlaying && */
-		danmuarray[t]) {
+		if (danmuarray[t]) {
 			for (var i = 0; i < danmuarray[t].length; i++) {
 				var tmpd = danmuarray[t][i];
 				if (tmpd.ty <= 3 && tmpd.ty >= 0) {
@@ -825,12 +843,19 @@ function initevents() {
 	function() {
 		fitdanmulayer();
 	});
-
-	aEL(player.divdanmulayer, 'contextmenu',
+	aEL(window,"mouseleave",function(){
+		if(!player.assvar.playing){
+			danmufuns.danmulayerAnimation.stop();
+		}
+	});
+	aEL(window,"mouseover",function(){
+		danmufuns.danmulayerAnimation.start();
+	});
+	/*aEL(player.divdanmulayer, 'contextmenu',
 	function(e) {
 		e.preventDefault();
-	});
-	aEL(player.divdanmulayer, 'mousedown',
+	});*/
+	/*aEL(player.divdanmulayer, 'mousedown',
 	function(e) {
 		switch (e.button) {
 		case 0:
@@ -848,7 +873,7 @@ function initevents() {
 				//danmufuns.showContextMenu(e.target, null, e);
 			}
 		}
-	});
+	});*/
 
 	aEL(player.danmulayer, 'contextmenu',
 	function(e) {
@@ -974,7 +999,7 @@ function initevents() {
 		//EVENT("timeupdate");
 		//controlfuns.refreshprogresscanvas();
 		//controlfuns.refreshtime();
-		newTimePiece(timepoint = getVideoMillionSec());
+		newTimePiece(getVideoMillionSec());
 	});
 	aEL(video, 'waiting',
 	function() {
@@ -1070,13 +1095,14 @@ player.o = {
 player.cacheobj = {};
 player.assvar.hasZimu = false;
 player.assvar.hasSuperDanmu = false;
-initcacheobj();
+//initcacheobj();
 setdom();
 
 initevents();
 danmufuns.danmulayerAnimation.start();
 
 EVENT("ready");
+//COL.Debug.on();
 /*字幕对象结构*/
 /*{id:id,ty:5,c:"{主要结构}}",t:null,s:null,d:"2014-05-17"}
 

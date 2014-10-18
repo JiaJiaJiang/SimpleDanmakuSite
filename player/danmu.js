@@ -2,8 +2,8 @@
 Belong to iTisso
 Coder:LuoJia
  */
-var DanmuPlayerVersion = "0.3.5";
-var SiteDomain = "*";
+const DanmuPlayerVersion = "0.3.5";
+const SiteDomain = "*";
 var defaultOption={
 	TwoDCodeDanmu:true,
 	ThreeDCodeDanmu: true,
@@ -116,7 +116,7 @@ function getMin_Sec_By_Million(time) {
 }
 function setOption(name, value) {
 	if ((typeof name != 'string')) {
-		console.log('错误的设置参数');
+		console.error('错误的设置参数');
 		return false;
 	}
 	if (localstoragesupport) {
@@ -129,7 +129,7 @@ function setOption(name, value) {
 
 }*/
 
-function makeTabGroup(obj) {
+/*function makeTabGroup(obj) {
 	//[[tab1,block1],[tab2,block2]]
 	if (!window.TabGroups) window.TabGroups = [];
 	if (obj) {
@@ -145,7 +145,7 @@ function makeTabGroup(obj) {
 			}
 		}
 	}
-}
+}*/
 function getOption(name) {
 	if (localstoragesupport) {
 		var re = window.localStorage['playeroption:' + name];
@@ -201,7 +201,7 @@ function requestFullscreen(dom) {
       else if (dom.webkitRequestFullscreen) {
         dom.webkitRequestFullscreen(dom['ALLOW_KEYBOARD_INPUT']);
       } else {
-        console.log("Fullscreen API is not supported");
+        console.warn("Fullscreen API is not supported");
       } 
 }
 function exitFullscreen() {
@@ -387,20 +387,23 @@ function toHexColor(colorString) {
 	return cs;
 }
 function initPlayer(_in_videoid) {
-	var videoid = _in_videoid;
+	const videoid = _in_videoid;
 	var width, height;
 	var player = {},
 	intervals = {},
-	timeouts = {},
-	controlfuns = {};
+	controlfuns = {},
+	danmufuns = {};
 	localstoragesupport = window.localStorage ? true: false;
-	timeouts.fun = {};
 	var danmulist = [],
-	danmufuns = {},
 	danmuarray = [],
 	danmucount,
 	ready = false;
-	
+	var playersse;
+	player.EC=new SimpleEvent();
+	player.EC.debug=true;
+	if(typeof loadplugins=="function"){
+		loadplugins(player.EC);
+	}
 
 	var Message = function() {},
 	core;
@@ -420,10 +423,10 @@ function initPlayer(_in_videoid) {
 		player.colorview = $(mainbody, '#colorview');
 		player.sendcover = $(mainbody, '#sendbox #sendboxcover');
 		player.danmuctrl = $(mainbody, '#controler #danmuctrl');
-		player.danmucount = $(mainbody, '#sidebar #ctrlpannel #danmucount');
+		//player.danmucount = $(mainbody, '#sidebar #ctrlpannel #danmucount');
 		player.danmuinput = $(mainbody, '#sendbox #danmuinput');
 		player.danmucontantor = $(mainbody, '#danmus');
-		player.danmulistbutton = $(mainbody, '#sidebar #ctrlpannel #danmulistbutton');
+		//player.danmulistbutton = $(mainbody, '#sidebar #ctrlpannel #danmulistbutton');
 		player.fullscreen = $(mainbody, '#controler #fullscreen');		
 		player.loop = $(mainbody, '#controler #loop');
 		player.optionbutton = $(mainbody, '#optionbutton');
@@ -436,13 +439,14 @@ function initPlayer(_in_videoid) {
 		player.pausebutton = $(mainbody, '#play_pause #pause');
 		player.timepoint = $(mainbody, '#controler #progress #timepoint');
 		player.time = $(mainbody, '#controler #time');
+		player.tipbox = $(player.mainbody, '#tipbox');
 		//player.tabpages = d_selectall(mainbody, '.tabpage');
 		//player.ctrlbuttons = d_selectall(mainbody, '.ctrlbutton');
 		player.sidebarSwitch = $(mainbody, '#controler #sidebarctrl');
-		player.sidebar = $(mainbody, '#sidebar');
+		//player.sidebar = $(mainbody, '#sidebar');
 		player.sendbox = $(mainbody, '#sendbox');
-		player.statboard = $(mainbody, '#sidebar #ctrlpannel #statboard');
-		player.superdanmubutton = $(mainbody, '#sidebar #ctrlpannel #superdanmubutton');
+		//player.statboard = $(mainbody, '#sidebar #ctrlpannel #statboard');
+		//player.superdanmubutton = $(mainbody, '#sidebar #ctrlpannel #superdanmubutton');
 		/*player.video = $(player.mainbody, '#videoframe #video');*/
 		player.videoframe = $(mainbody, '#videoframe');
 		player.videoiframe = $(player.videoframe, '#videoiframe');
@@ -454,14 +458,15 @@ function initPlayer(_in_videoid) {
 		player.volumepercentage = $(mainbody, '#controler #volume span');
 		player.volumestat = $(mainbody, '#controler #volume #stat');
 		//player.loadinfo.ctx = player.loadinfo.getContext('2d');
-		makeTabGroup([[player.danmulistbutton, $(player.sidebar, '#danmupool')], [player.superdanmubutton, $(player.sidebar, '#superdanmueditor')], [player.optionbutton, player.optionpannel]]);
-		makeTabGroup([[$(player.sidebar, '#chooseText'), $(player.sidebar, '#SuperTextTab')], [$(player.sidebar, '#chooseCode'), $(player.sidebar, '#SupeCodeTab')]]);
+		//makeTabGroup([[player.danmulistbutton, $(player.sidebar, '#danmupool')], [player.superdanmubutton, $(player.sidebar, '#superdanmueditor')], [player.optionbutton, player.optionpannel]]);
+		//makeTabGroup([[$(player.sidebar, '#chooseText'), $(player.sidebar, '#SuperTextTab')], [$(player.sidebar, '#chooseCode'), $(player.sidebar, '#SupeCodeTab')]]);
 		player.danmumark=$(mainbody,"#danmumark");
 		danmumarkct=player.danmumark.getContext("2d");
 		progressct=player.progressbar.getContext("2d");
+		player.progressbar.height=9;
 		//player.loadinfo.height = player.progress.offsetHeight; 
 		(player.danmuContextMenu = c_ele('div')).className = 'textContextMenu';
-
+		playersse=player.mainbody.getAttribute("playersse");
 	}
 	/*function setPlayOption() {
 		player.o.recycle = false;
@@ -506,10 +511,6 @@ function initPlayer(_in_videoid) {
 		player.switchs = {};
 		//player.ZiMu={};
 		player.cacheobj = {};
-		//player.assvar.danmufeng = 0;
-		//player.assvar.danmumark = c_ele("canvas");
-		//player.assvar.danmumark.height = player.progress.offsetHeight;
-		//player.assvar.danmumark.ct = player.assvar.danmumark.getContext("2d");
 		player.assvar.hasZimu = false;
 		player.assvar.hasSuperDanmu = false;
 		var optioncategory = [],
@@ -518,49 +519,7 @@ function initPlayer(_in_videoid) {
 		for (var i = 0; i < tmpcategory.length; i++) {
 			optioncategory.push([tmpcategory[i], tmpoption[i]]);
 		}
-		makeTabGroup(optioncategory);
-		/*player.assvar.danmumark.draw = function() {
-			if (player.assvar.danmumark) {
-				player.assvar.danmumark.drawfunction(player.assvar.danmumark.ct);
-			}
-		}
-		player.assvar.danmumark.drawfunction = function(ct) {
-			if (player.video) {
-				var Xw = player.loadinfo.width,
-				d = player.video.duration;
-				ct.clearRect(0, 0, Xw, 25);
-				ct.beginPath();
-				var left = 0,
-				color, cutnum;
-				for (var time in danmuarray) {
-					ct.save();
-					left = time / 1000 / d * Xw;
-					cutnum = danmuarray[time].length;
-					if (cutnum > player.assvar.danmufeng) player.assvar.danmufeng = cutnum;
-					ct.beginPath();
-					ct.strokeStyle = 'rgba(125, 156, 156,' + (cutnum / player.assvar.danmufeng + 0.5) + ')';
-					ct.moveTo(left, 0);
-					ct.lineTo(left, cutnum / player.assvar.danmufeng * 20 + 1);
-					ct.stroke();
-					ct.restore();
-				}
-			}
-
-		}*/
-		controlfuns.sidebar_show();
-		if (getOption('DefaultHideSideBar') == 'true') {
-			controlfuns.sidebar_hide();
-		}
 		resetprocess();
-		initcacheobj();
-	}
-	function initcacheobj() {
-		/*div弹幕对象*/
-		var a = player.cacheobj.divdanmu = c_ele('div');
-		a.style.position = 'absolute';
-		a.className = 'divtextdanmu';
-		a.style.textAlign = 'left';
-		a.style.fontWeight = 600;
 	}
 	function loadvideo() {
 		//console.log("加载视频");
@@ -570,27 +529,28 @@ function initPlayer(_in_videoid) {
 			if (a == 'Error') {
 				newstat('地址获取错误');
 				player.playcount.innerHTML = '视频错误';
+				player.EC.fireEvent("VideoAddressError");
 				return;
 			}
 			try {
-				//var json = eval('(' + a + ')');
-				var json =JSON.parse(a);
+				var json =JSON.parse(a),
+				videosrc = JSON.parse(json.url);
 			} catch(e) {
 				newstat('地址获取错误');
-				player.playcount.innerHTML = '视频错误';
+				player.EC.fireEvent("VideoAddressParseError");
+				//player.playcount.innerHTML = '视频错误';
 				player.videopreload.textdiv.innerHTML = '(๑• . •๑)';
 				removeEleClass(player.videopreload.textdiv, "shakeanimation");
 				player.videopreload.textdiv.parentNode.style.top = "calc(50% - 110px)";
 				return;
 			}
-			var videosrc = JSON.parse(json.url),
-			count = json.count;
+			var count = json.count;
 			player.videoaddress=[];
 			for(var no in videosrc){
 				if(videosrc[no]&&videosrc[no].length){
 					player.videoaddress.push({res:no,url:videosrc[no]});
 				}else{
-					console.log("丢弃一个空地址");
+					console.warn("丢弃一个空地址");
 				}
 			}
 			if(!player.videoaddress[0]){
@@ -598,16 +558,16 @@ function initPlayer(_in_videoid) {
 				return;
 			}
 			if ((count = Number(count)) >= 0) {
-				player.playcount.innerHTML = '播放数:' + count;
+				//player.playcount.innerHTML = '播放数:' + count;
 			}
-			console.log('得到视频地址:' + videosrc);
+			console.info('得到视频地址:' , videosrc);
 			Message("CTRL", {
 				name: "videoaddress",
 				src: player.videoaddress[0].url
 			});
 		});
 	}
-	function createDanmuDiv(obj) {
+	/*function createDanmuDiv(obj) {
 		var danmudiv = c_ele('div');
 		danmudiv.className = 'danmudiv';
 		danmudiv.danmuid = obj.id||"";
@@ -624,8 +584,8 @@ function initPlayer(_in_videoid) {
 			danmudiv.style.backgroundColor = 'green';
 		}
 		player.danmucontantor.appendChild(danmudiv);
-	}
-	function listdanmu(danmuobj) {
+	}*/
+	/*function listdanmu(danmuobj) {
 		if (danmuobj) {
 			createDanmuDiv(danmuobj);
 		} else {
@@ -633,7 +593,7 @@ function initPlayer(_in_videoid) {
 				createDanmuDiv(danmulist[i]);
 			}
 		}
-	}
+	}*/
 	function loaddanmu() {
 		//console.log("加载弹幕");
 		newstat('加载弹幕');
@@ -665,12 +625,12 @@ function initPlayer(_in_videoid) {
 				}
 				danmulist = danmuarr;
 				danmucount = danmuarr.length;
-				listdanmu();
+				//listdanmu();
 				Message("CTRL", {
 					name: "danmuarray",
 					array: danmuarr
 				});
-				danmuarray=danmuarr;
+				//danmuarray=danmuarr;
 				danmufuns.refreshnumber();
 			}
 		});
@@ -752,7 +712,7 @@ function initPlayer(_in_videoid) {
 
 	function newstat(stat) {
 		if (typeof stat == 'string') {
-			player.statboard.innerHTML = '&nbsp;' + stat + '<br>' + player.statboard.innerHTML;
+			//player.statboard.innerHTML = '&nbsp;' + stat + '<br>' + player.statboard.innerHTML;
 		}
 	}
 	danmufuns = {
@@ -847,8 +807,10 @@ function initPlayer(_in_videoid) {
 				core.danmufuns.initnewDanmuObj(danmuobj);
 				//createDanmuDiv(danmuobj);
 				//core.danmufuns.createCommonDanmu(danmuobj, core.danmufuns.getTunnel(danmuobj.ty, danmuobj.s));
-				danmuarray.push(danmuobj);
-				controlfuns.refreshDanmumark();
+				danmulist.push(danmuobj);
+				//danmucount++;
+				danmufuns.refreshnumber();
+				//controlfuns.refreshDanmumark();
 				autocmd('adddanmu', (videoid), type, c, time, color || 'NULL', danmuStyle.fontsize,playersse,
 				function(response) {
 					if (Number(response) >= 0) {
@@ -878,20 +840,20 @@ function initPlayer(_in_videoid) {
 			}
 		},
 
-		/*addToDanmuArray: function(danmuobj) {
-			if (!danmuarray[danmuobj.t]) danmuarray[danmuobj.t] = [];
-			danmuarray[danmuobj.t].push(danmuobj);
-		},*/
+		addToDanmuList: function(danmuobj) {
+			danmulist.push(danmuobj);
+			if (core)core.addToDanmuArray(danmuobj);
+		},
 
 		pause: function() {
 			//clearInterval(interval.calibrationTime.i);
 			//TODO:暂停所有弹幕
 		},
 		refreshnumber: function() {
-			if (danmucount >= 0) {
-				player.danmucount.innerHTML = '弹幕数:' + danmucount;
+			if (danmulist.length >= 0) {
+				//player.danmucount.innerHTML = '弹幕数:' + danmucount;
 			} else {
-				player.danmucount.innerHTML = '弹幕错误';
+				//player.danmucount.innerHTML = '弹幕错误';
 			}
 			/*player.assvar.danmumark.drawpic(player.loadinfo.width, 25, player.assvar.danmumark.drawfunction);*/
 			controlfuns.refreshDanmuMark();
@@ -908,22 +870,22 @@ function initPlayer(_in_videoid) {
 		player.playbutton.style.display = 'block';
 	}
 	controlfuns.fullscreen = function() {
-		console.log('打开全屏');
+		console.info('打开全屏');
 		addEleClass(player.sendbox, 'sendbox_fullscreen');
 		addEleClass(player.videoframe, 'videoframe_fullscreen');
 		addEleClass(player.controler, 'controler_fullscreen');
 		//addEleClass(player.sidebar, "sidebar_fullscreen");
-		controlfuns.sidebar_hide();
+		//controlfuns.sidebar_hide();
 		player.displaystat = 'fullscreen';
 		resetprocess();
 	}
 	controlfuns.exitfullscreen = function() {
-		console.log('退出全屏');
+		console.info('退出全屏');
 		removeEleClass(player.sendbox, 'sendbox_fullscreen');
 		removeEleClass(player.videoframe, 'videoframe_fullscreen');
 		removeEleClass(player.controler, 'controler_fullscreen');
 		//removeEleClass(player.sidebar, "sidebar_fullscreen");
-		controlfuns.sidebar_show();
+		//controlfuns.sidebar_show();
 		resetprocess();
 	}
 	controlfuns.fullscreenchange = function() {
@@ -970,17 +932,16 @@ function initPlayer(_in_videoid) {
 	}
 	//刷新弹幕标记
 	controlfuns.refreshDanmuMark = function() {
-		/*player.assvar.danmumark.drawpic(player.loadinfo.width, 25, player.assvar.danmumark.drawfunction);*/
-		//player.assvar.danmumark.draw();
-		if(!core||!core.danmuarray[i])return;
+		if(!core)return;
 		var dmk=player.danmumark;
 		var tw=dmk.width;
 		var th=dmk.height=16;
+		danmumarkct.clearRect(0, 0,tw,16);
 		var pixtime=((core.player.video.duration*1000/tw*2+0.5)|0);
 		var max=0;
 		var grouparr=new Array(((tw/2+0.5)|0)+1),groupnum;
-		for(var i=core.danmuarray.length;i--;){
-			groupnum=Math.floor(core.danmuarray[i].t/pixtime);
+		for(var i=danmulist.length;i--;){
+			groupnum=Math.floor(danmulist[i].t/pixtime);
 			if(!grouparr[groupnum])grouparr[groupnum]=0;
 			grouparr[groupnum]++;
 			if(grouparr[groupnum]>max){
@@ -988,8 +949,8 @@ function initPlayer(_in_videoid) {
 			}
 		}
 		danmumarkct.strokeStyle="rgb(2, 149, 223)";
-		danmumarkct.fillStyle="rgb(95, 186, 231)";
-		danmumarkct.clearRect(0, 0, dmk.width,dmk.height);
+		danmumarkct.fillStyle="rgba(95, 186, 231,0.5)";
+		
 		danmumarkct.moveTo(0,dmk.height);
 		danmumarkct.lineTo(dmk.width,dmk.height);
 		
@@ -1007,37 +968,42 @@ function initPlayer(_in_videoid) {
 			if (video) {
 				var Xw = player.progressbar.width,
 				d = video.duration;
-				//ct.save();
+				ct.save();
 				ct.clearRect(0, 0, Xw, 9);
+				//player.progressbar.height=9;
 				ct.lineCap="round";
 				//绘制已播放区域
+				ct.beginPath();
 				ct.strokeStyle = '#ffcc66';
 				ct.lineWidth =1;
 				var tr = video.played;
 				for (var i = 0; i < tr.length; i++) {
-					ct.moveTo(tr.start(i) / d * Xw, 9);
-					ct.lineTo(tr.end(i) / d * Xw, 9);
+					ct.moveTo(tr.start(i) / d * Xw, 8);
+					ct.lineTo(tr.end(i) / d * Xw, 8);
 					ct.stroke();
 				}
 
 				//绘制已缓冲区间
+				ct.beginPath();
 				ct.strokeStyle = '#C0BBBB';
 				ct.lineWidth =3;
 				var tr = video.buffered;
 				for (var i = 0; i < tr.length; i++) {
-					ct.moveTo(tr.start(i) / d * Xw, 7);
-					ct.lineTo(tr.end(i) / d * Xw, 7);
+					ct.moveTo(tr.start(i) / d * Xw, 6);
+					ct.lineTo(tr.end(i) / d * Xw, 6);
 					ct.stroke();
 				}
 				
 				//绘制普通进度条
-				//ct.fillStyle = '#66CCFF';
+				ct.beginPath();
 				ct.strokeStyle = '#66CCFF';
 				ct.lineWidth =5;
-				ct.moveTo(0, 5);
-				ct.lineTo(video.currentTime / d * Xw, 5);
+				ct.moveTo(0, 3);
+				ct.lineTo(video.currentTime / d * Xw, 3);
+				//ct.stroke();
+
 				ct.stroke();
-				//ct.restore();
+				ct.restore();
 			}
 			
 		}
@@ -1051,7 +1017,7 @@ function initPlayer(_in_videoid) {
 			player.time.innerHTML = '视频错误';
 		}
 	}
-	controlfuns.sidebar_hide = function() {
+	/*controlfuns.sidebar_hide = function() {
 		if (player.videoframe.className.search('sidebarhide_videoframe') == -1) {
 			//console.log("隐藏边栏");
 			addEleClass(player.videoframe, 'sidebarhide_videoframe');
@@ -1067,7 +1033,7 @@ function initPlayer(_in_videoid) {
 		removeEleClass(player.sidebar, 'sidebarhide_sidebar');
 		window.danmusidebarstat = true;
 		resetprocess();
-	}
+	}*/
 
 	/*CB={
 		//currentTime:
@@ -1144,7 +1110,7 @@ function initPlayer(_in_videoid) {
 				setOption('ProgressDanmumark', 'false');
 			}
 		},
-		DivCommonDanmu: {
+		/*DivCommonDanmu: {
 			type: "core",
 			on: function() {
 				core.danmufuns.danmumoverAnimation.stop();
@@ -1174,7 +1140,7 @@ function initPlayer(_in_videoid) {
 				player.switchs['RealtimeVary'].enable();
 				setOption('DivCommonDanmu', 'false');
 			}
-		}
+		}*/
 	};
 	rangeCenter = {
 		PlaySpeed: function(value) {
@@ -1268,7 +1234,7 @@ function initPlayer(_in_videoid) {
 				}
 			}
 		});*/
-		aEL(player.optionpannel, 'click',
+		/*aEL(player.optionpannel, 'click',
 		function(e) {
 			var ele = e.target.parentNode;
 			var name;
@@ -1285,8 +1251,8 @@ function initPlayer(_in_videoid) {
 					if (switchCenter[name].off) switchCenter[name].off();
 				}
 			}
-		});
-		aEL(player.danmucontantor, 'dblclick',
+		});*/
+		/*aEL(player.danmucontantor, 'dblclick',
 		function(e) {
 			e.preventDefault();
 			switch (e.target.className) {
@@ -1303,7 +1269,7 @@ function initPlayer(_in_videoid) {
 					break;
 				}
 			}
-		});
+		});*/
 
 		aEL(player.mainbody, 'keydown',
 		function(e) {
@@ -1367,14 +1333,14 @@ function initPlayer(_in_videoid) {
 		function(e) {
 			volumemousekey = false;
 		});
-		aEL(player.sidebarSwitch, 'click',
+		/*aEL(player.sidebarSwitch, 'click',
 		function(e) {
 			if (player.videoframe.className.search('sidebarhide_videoframe') != -1) {
 				controlfuns.sidebar_show();
 			} else {
 				controlfuns.sidebar_hide();
 			}
-		});
+		});*/
 		aEL(player.fullscreen, 'click',
 		function(e) {
 			e.preventDefault();
@@ -1476,22 +1442,22 @@ function initPlayer(_in_videoid) {
 		});
 		aEL(document, 'fullscreenchange',
 		function() {
-			console.log('事件:全屏状态改变');
+			console.info('事件:全屏状态改变');
 			controlfuns.fullscreenchange();
 		});
 		aEL(document, 'mozfullscreenchange',
 		function() {
-			console.log('事件:moz全屏状态改变');
+			console.info('事件:moz全屏状态改变');
 			controlfuns.fullscreenchange();
 		});
 		aEL(document, 'webkitfullscreenchange',
 		function() {
-			console.log('事件:webkit全屏状态改变');
+			console.info('事件:webkit全屏状态改变');
 			controlfuns.fullscreenchange();
 		});
 		aEL(document, 'MSFullscreenChange',
 		function() {
-			console.log('事件:MS全屏状态改变');
+			console.info('事件:MS全屏状态改变');
 			controlfuns.fullscreenchange();
 		});
 		aEL(player.loop, 'click',
@@ -1513,9 +1479,9 @@ function initPlayer(_in_videoid) {
 			e.preventDefault();
 			video.muted = !video.muted;
 			if (video.muted) {
-				console.log('静音');
+				console.info('静音');
 			} else {
-				console.log('取消静音');
+				console.info('取消静音');
 			}
 		});
 		/*aEL(video, 'play',
@@ -1636,7 +1602,7 @@ function initPlayer(_in_videoid) {
 			});
 			aEL(video, 'waiting',
 	function() {
-		console.log("事件:媒体缓冲中");
+		console.info("事件:媒体缓冲中");
 		tip('缓冲中..');
 	});
 		}
@@ -1647,7 +1613,7 @@ function initPlayer(_in_videoid) {
 			//console.log(e.data);
 			if (SiteDomain == "*" || (SiteDomain.search(e.origin) != -1)) {
 				if (e.data.type) {
-					console.log(e);
+					//console.log(e);
 					switch (e.data.type) {
 						/*case "CTRL":{
 							switch(e.data.msg){
@@ -1660,7 +1626,7 @@ function initPlayer(_in_videoid) {
 							switch (e.data.msg) {
 							case "ready":
 								{
-									console.log("弹幕核心已加载");
+									console.info("弹幕核心已加载");
 									core = e.source;
 									getcorecontent();
 									player.video = core.player.video;
@@ -1671,6 +1637,7 @@ function initPlayer(_in_videoid) {
 										};
 										core.postMessage(msg, "*");
 									}
+									player.EC.fireEvent("danmucoreloaded");
 									videoevents();
 									loadvideo();
 									loaddanmu();
@@ -1785,4 +1752,4 @@ function initPlayer(_in_videoid) {
 
 var i喵i = '不要卖萌눈_눈';
 /*自定义事件发射器*/
-function SimpleEvent(){this.eventid=1;this.eventlist={};this.eventargrule={};this.debug=false;this.addEvent=function(ename,fun){if(typeof ename!="string"){if(this.debug===true)console.log("事件名不是字符串:",ename);return}if(!this.eventlist[ename]||typeof this.eventlist[ename].join!="function"){this.eventlist[ename]=[]}return[ename,this.eventlist[ename][this.eventlist[ename].push(fun)-1].id=this.eventid++,fun]};this.removeEvent=function(eobj){if(!eobj||typeof eobj!="object"||!eobj.join)return;if(this.eventlist[eobj[0]]&&this.eventlist[eobj[0]].indexOf){var ind=this.eventlist[eobj[0]].indexOf(eobj[2]);if(ind>=0){this.eventlist.splice(ind,1)}}else if(this.debug===true){console.log("移除未定义的事件:",eobj[0])}};this.setargrule=function(ename,rulefun){if(typeof ename!="string"){if(this.debug===true)console.log("事件名不是字符串:",ename);return}if(typeof rulefun=="function"){this.eventargrule[ename]=rulefun}else if(his.debug===true){console.log("参数规则不是函数")}};this.fireEvent=function(ename){if(typeof ename!="string"){if(this.debug===true)console.log("事件名不是字符串:",ename);return}if((typeof this.eventlist[ename])=="object"){var th=this;this.eventlist[ename].forEach(function(value){if(this.debug===true){console.log("事件触发事件列表:",ename)}if(typeof value=="function"){setTimeout(function(){if(th.eventargrule[ename]){value(th.eventargrule[ename]());return}value()},0)}else if(typeof value=="string"){setTimeout(function(){try{eval(value)}catch(e){if(th.debug===true){console.log("无法执行事件:",e)}}},0)}})}else if(this.debug===true){console.log("未定义的事件:",ename)}}}
+function SimpleEvent(){this.eventid=1;this.eventlist={};this.eventargrule={};this.debug=false;this.addEvent=function(ename,fun){if(typeof ename!="string"){if(this.debug===true)console.error("事件名不是字符串:",ename);return}if(!this.eventlist[ename]||typeof this.eventlist[ename].join!="function"){this.eventlist[ename]=[];if(this.debug===true)console.info("添加事件:",ename)}return[ename,this.eventlist[ename][this.eventlist[ename].push(fun)-1].id=this.eventid++,fun]};this.removeEvent=function(eobj){if(!eobj||typeof eobj!="object"||!eobj.join)return;if(this.eventlist[eobj[0]]&&this.eventlist[eobj[0]].indexOf){var ind=this.eventlist[eobj[0]].indexOf(eobj[2]);if(ind>=0){this.eventlist.splice(ind,1);if(this.debug===true)console.info("移除事件:",eobj[0])}}else if(this.debug===true){console.warn("移除未定义的事件:",eobj[0])}};this.setargrule=function(ename,rulefun){if(typeof ename!="string"){if(this.debug===true)console.error("事件名不是字符串:",ename);return}if(typeof rulefun=="function"){this.eventargrule[ename]=rulefun}else if(his.debug===true){console.error("参数规则不是函数")}};this.fireEvent=function(ename){if(typeof ename!="string"){if(this.debug===true)console.error("事件名不是字符串:",ename);return}if(this.debug===true){console.info("发射事件:",ename)}if((typeof this.eventlist[ename])=="object"){var th=this;this.eventlist[ename].forEach(function(value){if(this.debug===true){console.info("事件触发事件列表:",ename)}if(typeof value=="function"){setTimeout(function(){if(th.eventargrule[ename]){value(th.eventargrule[ename]());return}value()},0)}else if(typeof value=="string"){setTimeout(function(){try{eval(value)}catch(e){if(th.debug===true){console.error("无法执行事件:",e)}}},0)}})}else if(this.debug===true){console.warn("未定义的事件:",ename)}}}
