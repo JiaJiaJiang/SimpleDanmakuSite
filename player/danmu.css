@@ -1033,3 +1033,39 @@ animation:tip_in_ani 4s linear 0s forwards;
 .forceopacity{
 	opacity: 1 !important;
 }
+
+#videoframe {
+	background-color: #000;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+ #videoframe #video {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	cursor: pointer;
+}
+ #videoframe #danmuframe {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	cursor: pointer;
+}
+ #videoframe #divdanmulayer {
+	left: 0px;
+	top: 0px;
+}
+ #videoframe #danmuframe #danmulayer {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+}

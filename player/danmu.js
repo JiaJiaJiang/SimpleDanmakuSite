@@ -4,17 +4,17 @@ Coder:LuoJia
  */
 const DanmuPlayerVersion = "0.3.5";
 const SiteDomain = "*";
-var defaultOption={
-	TwoDCodeDanmu:true,
+var defaultOption = {
+	TwoDCodeDanmu: true,
 	ThreeDCodeDanmu: true,
-	ProgressDanmumark:false,
-	StorkeWidth:0.4,
-	ShadowWidth:10,
-	DanmuSpeed:5,
-	Debug:false,
-	DefaultHideSideBar:false,
-	DivCommonDanmu:false,
-	RealtimeVary:false
+	ProgressDanmumark: false,
+	StorkeWidth: 0.4,
+	ShadowWidth: 10,
+	DanmuSpeed: 5,
+	Debug: false,
+	DefaultHideSideBar: false,
+	DivCommonDanmu: false,
+	RealtimeVary: false
 };
 function select_do(fun) {
 	if (typeof fun != "function") {
@@ -53,8 +53,7 @@ $$ = d_selectall;
 function c_ele(tag) {
 	return document.createElement(tag);
 }
-var _string_ ;
- /*{
+var _string_ = {
 	removesidespace: function(string) {
 		if (typeof string == 'string') {
 			var s = string.replace(/\s+$/, '');
@@ -64,7 +63,7 @@ var _string_ ;
 			return false;
 		}
 	}
-};*/
+};
 function aEL(dom, e, fun) {
 	//添加事件监听
 	if (dom.addEventListener) dom.addEventListener(e, fun, false);
@@ -73,7 +72,7 @@ function aEL(dom, e, fun) {
 		dom['on' + e] = fun;
 	}
 }
-/*function guessmime(url) {
+function guessmime(url) {
 	//猜测媒体mime类型
 	var mimelist = {
 		'mp4': 'video/mp4',
@@ -87,7 +86,7 @@ function aEL(dom, e, fun) {
 	} else {
 		return false;
 	}
-}*/
+}
 function getext(url) {
 	//获取后缀
 	if (typeof url == 'string') {
@@ -152,9 +151,9 @@ function getOption(name) {
 		if (re) {
 			return window.localStorage['playeroption:' + name];
 		} else {
-			if(defaultOption[name]){
+			if (defaultOption[name]) {
 				return defaultOption[name];
-			}else{
+			} else {
 				return false;
 			}
 		}
@@ -163,9 +162,9 @@ function getOption(name) {
 		if (re = getCookie('playeroption:' + name)) {
 			return re;
 		} else {
-			if(defaultOption[name]){
+			if (defaultOption[name]) {
 				return defaultOption[name];
-			}else{
+			} else {
 				return false;
 			}
 		}
@@ -190,37 +189,33 @@ function setCookie(c_name, value, expiredays) {
 }
 function requestFullscreen(dom) {
 	if (dom.requestFullscreen) {
-        dom.requestFullscreen();
-      }
-      else if (dom.msRequestFullscreen) {
-        dom.msRequestFullscreen();
-      }
-      else if (dom.mozRequestFullScreen) {
-        dom.mozRequestFullScreen();
-      }
-      else if (dom.webkitRequestFullscreen) {
-        dom.webkitRequestFullscreen(dom['ALLOW_KEYBOARD_INPUT']);
-      } else {
-        console.warn("Fullscreen API is not supported");
-      } 
+		dom.requestFullscreen();
+	} else if (dom.msRequestFullscreen) {
+		dom.msRequestFullscreen();
+	} else if (dom.mozRequestFullScreen) {
+		dom.mozRequestFullScreen();
+	} else if (dom.webkitRequestFullscreen) {
+		dom.webkitRequestFullscreen(dom['ALLOW_KEYBOARD_INPUT']);
+	} else {
+		console.warn("Fullscreen API is not supported");
+	}
 }
 function exitFullscreen() {
 	if (document.exitFullscreen) {
 		document.exitFullscreen();
 	} else if (document.msExitFullscreen) {
 		document.msExitFullscreen();
-	}else if (document.mozCancelFullScreen) {
+	} else if (document.mozCancelFullScreen) {
 		document.mozCancelFullScreen();
 	} else if (document.webkitCancelFullScreen) {
 		document.webkitCancelFullScreen();
-	} 
+	}
 }
 function isFullscreen() {
 	if (document.fullscreen || document.mozFullScreen || document.webkitIsFullScreen || document.msFullscreenElement) return true;
 }
 function removeEleClass(e, classname) {
-	if (classname != '' && classname != ' ' && e) 
-		e.classList.remove(classname);
+	if (classname != '' && classname != ' ' && e) e.classList.remove(classname);
 }
 function addEleClass(e, classname) {
 	if (classname != '' && classname != ' ' && e) {
@@ -399,9 +394,9 @@ function initPlayer(_in_videoid) {
 	danmucount,
 	ready = false;
 	var playersse;
-	player.EC=new SimpleEvent();
-	player.EC.debug=true;
-	if(typeof loadplugins=="function"){
+	player.EC = new SimpleEvent();
+	player.EC.debug = true;
+	if (typeof loadplugins == "function") {
 		loadplugins(player.EC);
 	}
 
@@ -417,7 +412,7 @@ function initPlayer(_in_videoid) {
 	function setdom() {
 		player.displaystat = 'normal';
 		player.mainbody = $('.playermainbody[videoid="' + videoid + '"]');
-		mainbody=player.mainbody;
+		mainbody = player.mainbody;
 		player.controler = $(mainbody, '#controler');
 		player.colorinput = $(mainbody, '#colorinput');
 		player.colorview = $(mainbody, '#colorview');
@@ -427,7 +422,7 @@ function initPlayer(_in_videoid) {
 		player.danmuinput = $(mainbody, '#sendbox #danmuinput');
 		player.danmucontantor = $(mainbody, '#danmus');
 		//player.danmulistbutton = $(mainbody, '#sidebar #ctrlpannel #danmulistbutton');
-		player.fullscreen = $(mainbody, '#controler #fullscreen');		
+		player.fullscreen = $(mainbody, '#controler #fullscreen');
 		player.loop = $(mainbody, '#controler #loop');
 		player.optionbutton = $(mainbody, '#optionbutton');
 		player.optionpannel = $(mainbody, '#optionpannel');
@@ -460,29 +455,32 @@ function initPlayer(_in_videoid) {
 		//player.loadinfo.ctx = player.loadinfo.getContext('2d');
 		//makeTabGroup([[player.danmulistbutton, $(player.sidebar, '#danmupool')], [player.superdanmubutton, $(player.sidebar, '#superdanmueditor')], [player.optionbutton, player.optionpannel]]);
 		//makeTabGroup([[$(player.sidebar, '#chooseText'), $(player.sidebar, '#SuperTextTab')], [$(player.sidebar, '#chooseCode'), $(player.sidebar, '#SupeCodeTab')]]);
-		player.danmumark=$(mainbody,"#danmumark");
-		danmumarkct=player.danmumark.getContext("2d");
-		progressct=player.progressbar.getContext("2d");
-		player.progressbar.height=9;
+		player.danmumark = $(mainbody, "#danmumark");
+		danmumarkct = player.danmumark.getContext("2d");
+		progressct = player.progressbar.getContext("2d");
+		player.progressbar.height = 9;
 		//player.loadinfo.height = player.progress.offsetHeight; 
 		(player.danmuContextMenu = c_ele('div')).className = 'textContextMenu';
-		playersse=player.mainbody.getAttribute("playersse");
+		playersse = player.mainbody.getAttribute("playersse"); (player.core = new window.danmuplayer.DanmuCore()).bind(player);
+		player.EC.fireEvent("CoreReady");
 	}
 	/*function setPlayOption() {
 		player.o.recycle = false;
 	}*/
-	function tip(str){
-		var td=c_ele("div");
-		td.className="tip";
-		td.innerHTML=str;
+	function tip(str) {
+		var td = c_ele("div");
+		td.className = "tip";
+		td.innerHTML = str;
 		player.tipbox.appendChild(td);
-		setTimeout(function(){
-			td.style.display="block";
-			setTimeout(function(){
+		setTimeout(function() {
+			td.style.display = "block";
+			setTimeout(function() {
 				player.tipbox.removeChild(td);
-				td=null;
-			},4000);
-		},20);
+				td = null;
+			},
+			4000);
+		},
+		20);
 	}
 	/*function setDefaultOption() {
 		var ver = DanmuPlayerVersion;
@@ -533,7 +531,7 @@ function initPlayer(_in_videoid) {
 				return;
 			}
 			try {
-				var json =JSON.parse(a),
+				var json = JSON.parse(a),
 				videosrc = JSON.parse(json.url);
 			} catch(e) {
 				newstat('地址获取错误');
@@ -545,22 +543,25 @@ function initPlayer(_in_videoid) {
 				return;
 			}
 			var count = json.count;
-			player.videoaddress=[];
-			for(var no in videosrc){
-				if(videosrc[no]&&videosrc[no].length){
-					player.videoaddress.push({res:no,url:videosrc[no]});
-				}else{
+			player.videoaddress = [];
+			for (var no in videosrc) {
+				if (videosrc[no] && videosrc[no].length) {
+					player.videoaddress.push({
+						res: no,
+						url: videosrc[no]
+					});
+				} else {
 					console.warn("丢弃一个空地址");
 				}
 			}
-			if(!player.videoaddress[0]){
+			if (!player.videoaddress[0]) {
 				newstat('地址获取错误');
 				return;
 			}
 			if ((count = Number(count)) >= 0) {
 				//player.playcount.innerHTML = '播放数:' + count;
 			}
-			console.info('得到视频地址:' , videosrc);
+			console.info('得到视频地址:', videosrc);
 			Message("CTRL", {
 				name: "videoaddress",
 				src: player.videoaddress[0].url
@@ -811,7 +812,7 @@ function initPlayer(_in_videoid) {
 				//danmucount++;
 				danmufuns.refreshnumber();
 				//controlfuns.refreshDanmumark();
-				autocmd('adddanmu', (videoid), type, c, time, color || 'NULL', danmuStyle.fontsize,playersse,
+				autocmd('adddanmu', (videoid), type, c, time, color || 'NULL', danmuStyle.fontsize, playersse,
 				function(response) {
 					if (Number(response) >= 0) {
 						danmuobj.id = Number(response);
@@ -820,10 +821,10 @@ function initPlayer(_in_videoid) {
 							player.sendcover.style.display = 'none';
 						}
 					} else {
-						try{
-							var err=response.match(/^Error:(.+)$/)[1];
+						try {
+							var err = response.match(/^Error:(.+)$/)[1];
 							tip(err);
-						}catch(e){
+						} catch(e) {
 							console.log(response);
 						}
 						if (!content) player.sendcover.style.display = 'none';
@@ -842,7 +843,7 @@ function initPlayer(_in_videoid) {
 
 		addToDanmuList: function(danmuobj) {
 			danmulist.push(danmuobj);
-			if (core)core.addToDanmuArray(danmuobj);
+			if (core) core.danmufuns.addToDanmuArray(danmuobj);
 		},
 
 		pause: function() {
@@ -932,50 +933,52 @@ function initPlayer(_in_videoid) {
 	}
 	//刷新弹幕标记
 	controlfuns.refreshDanmuMark = function() {
-		if(!core)return;
-		var dmk=player.danmumark;
-		var tw=dmk.width;
-		var th=dmk.height=16;
-		danmumarkct.clearRect(0, 0,tw,16);
-		var pixtime=((core.player.video.duration*1000/tw*2+0.5)|0);
-		var max=0;
-		var grouparr=new Array(((tw/2+0.5)|0)+1),groupnum;
-		for(var i=danmulist.length;i--;){
-			groupnum=Math.floor(danmulist[i].t/pixtime);
-			if(!grouparr[groupnum])grouparr[groupnum]=0;
+		if (!core) return;
+		var dmk = player.danmumark;
+		var tw = dmk.width;
+		var th = dmk.height = 16;
+		danmumarkct.clearRect(0, 0, tw, 16);
+		var pixtime = ((core.player.video.duration * 1000 / tw * 2 + 0.5) | 0);
+		var max = 0;
+		var grouparr = new Array(((tw / 2 + 0.5) | 0) + 1),
+		groupnum;
+		for (var i = danmulist.length; i--;) {
+			groupnum = Math.floor(danmulist[i].t / pixtime);
+			if (!grouparr[groupnum]) grouparr[groupnum] = 0;
 			grouparr[groupnum]++;
-			if(grouparr[groupnum]>max){
-				max=grouparr[groupnum];
+			if (grouparr[groupnum] > max) {
+				max = grouparr[groupnum];
 			}
 		}
-		danmumarkct.strokeStyle="rgb(2, 149, 223)";
-		danmumarkct.fillStyle="rgba(95, 186, 231,0.5)";
-		
-		danmumarkct.moveTo(0,dmk.height);
-		danmumarkct.lineTo(dmk.width,dmk.height);
-		
-		for(var i=grouparr.length;i--;){
-			if(!grouparr[i])grouparr[i]=0;
-			danmumarkct.lineTo(i*2,(1-grouparr[i]/max)*th);
+		danmumarkct.strokeStyle = "rgb(2, 149, 223)";
+		danmumarkct.fillStyle = "rgba(95, 186, 231,0.5)";
+
+		danmumarkct.moveTo(0, dmk.height);
+		danmumarkct.lineTo(dmk.width, dmk.height);
+
+		for (var i = grouparr.length; i--;) {
+			if (!grouparr[i]) grouparr[i] = 0;
+			danmumarkct.lineTo(i * 2, (1 - grouparr[i] / max) * th);
 		}
 		danmumarkct.closePath();
 		danmumarkct.fill();
 		danmumarkct.stroke();
 	}
 	controlfuns.refreshprogresscanvas = function() {
-		if (progressct&&core) {
-			var ct =progressct,video=core.player.video;
+		if (progressct && core) {
+			var ct = progressct,
+			video = core.player.video;
 			if (video) {
 				var Xw = player.progressbar.width,
 				d = video.duration;
 				ct.save();
 				ct.clearRect(0, 0, Xw, 9);
 				//player.progressbar.height=9;
-				ct.lineCap="round";
+				ct.lineCap = "round";
 				//绘制已播放区域
 				ct.beginPath();
 				ct.strokeStyle = '#ffcc66';
-				ct.lineWidth =1;
+				ct.lineWidth = 1;
 				var tr = video.played;
 				for (var i = 0; i < tr.length; i++) {
 					ct.moveTo(tr.start(i) / d * Xw, 8);
@@ -986,33 +989,32 @@ function initPlayer(_in_videoid) {
 				//绘制已缓冲区间
 				ct.beginPath();
 				ct.strokeStyle = '#C0BBBB';
-				ct.lineWidth =3;
+				ct.lineWidth = 3;
 				var tr = video.buffered;
 				for (var i = 0; i < tr.length; i++) {
 					ct.moveTo(tr.start(i) / d * Xw, 6);
 					ct.lineTo(tr.end(i) / d * Xw, 6);
 					ct.stroke();
 				}
-				
+
 				//绘制普通进度条
 				ct.beginPath();
 				ct.strokeStyle = '#66CCFF';
-				ct.lineWidth =5;
+				ct.lineWidth = 5;
 				ct.moveTo(0, 3);
 				ct.lineTo(video.currentTime / d * Xw, 3);
 				//ct.stroke();
-
 				ct.stroke();
 				ct.restore();
 			}
-			
+
 		}
 	}
 	controlfuns.refreshtime = function() {
-		var currentTime = player.assvar.pointingtime||getMin_Sec(core.player.video.currentTime);
+		var currentTime = player.assvar.pointingtime || getMin_Sec(core.player.video.currentTime);
 		totaltime = getMin_Sec(core.player.video.duration);
 		if (currentTime.min >= 0 && currentTime.sec >= 0 && totaltime.min >= 0 && totaltime.sec >= 0) {
-			player.time.innerHTML =(currentTime.min<10?"0"+currentTime.min:currentTime.min)+ ':' + (currentTime.sec<10?"0"+currentTime.sec:currentTime.sec) + '/' + (totaltime.min<10?"0"+totaltime.min:totaltime.min) + ':' + (totaltime.sec<10?"0"+totaltime.sec:totaltime.sec);
+			player.time.innerHTML = (currentTime.min < 10 ? "0" + currentTime.min: currentTime.min) + ':' + (currentTime.sec < 10 ? "0" + currentTime.sec: currentTime.sec) + '/' + (totaltime.min < 10 ? "0" + totaltime.min: totaltime.min) + ':' + (totaltime.sec < 10 ? "0" + totaltime.sec: totaltime.sec);
 		} else {
 			player.time.innerHTML = '视频错误';
 		}
@@ -1144,10 +1146,10 @@ function initPlayer(_in_videoid) {
 	};
 	rangeCenter = {
 		PlaySpeed: function(value) {
-			if (value > 0) core.player.video.playbackRate=value;
+			if (value > 0) core.player.video.playbackRate = value;
 		},
 		StorkeWidth: function(value) {
-			core.player.o.StorkeWidth=value;
+			core.player.o.StorkeWidth = value;
 			setOption('StorkeWidth', value);
 		},
 		ShadowWidth: function(value) {
@@ -1160,7 +1162,7 @@ function initPlayer(_in_videoid) {
 				name: "moveTime",
 				value: moveTime
 			});*/
-			core.moveTime=moveTime;
+			core.moveTime = moveTime;
 			setOption('DanmuSpeed', speed);
 		}
 	};
@@ -1180,9 +1182,8 @@ function initPlayer(_in_videoid) {
 		}
 	};
 
-	function getcorecontent(){
-		_string_=core._string_;
-		getVideoMillionSec=core.getVideoMillionSec;
+	function getcorecontent() {
+		getVideoMillionSec = core.getVideoMillionSec;
 	}
 
 	function initevents() {
@@ -1211,8 +1212,6 @@ function initPlayer(_in_videoid) {
 				core.video.pause();
 			}
 		});
-		var progressmousekey = false,
-		volumemousekey = false;
 		aEL(player.mainbody, 'resize',
 		function() {
 			resetprocess();
@@ -1285,54 +1284,8 @@ function initPlayer(_in_videoid) {
 			}
 		});
 
-		aEL(document, 'mouseup',
-		function(e) {
-			e.preventDefault();
-			progressmousekey = false;
-			volumemousekey = false;
-		});
-		aEL(player.volumerange, 'mousedown',
-		function(e) {
-			e.preventDefault();
-			volumemousekey = true;
-			var y = e.offsetY || e.y || e.layerY;
-			if (y > 200) {
-				player.video.volume = 0;
-			} else if (y < 0) {
-				player.video.volume = 1;
-			} else {
-				player.video.volume = (200 - y) / player.volumerange.offsetHeight;
-			}
-		});
-		aEL(player.volumepercentage, 'mousemove',
-		function(e) {
-			if (volumemousekey) {
-				player.video.volume = 1;
-			}
-		});
-		aEL(player.volumestat, 'mousemove',
-		function(e) {
-			if (volumemousekey) {
-				player.video.volume = 0;
-			}
-		});
-		aEL(player.volumerange, 'mousemove',
-		function(e) {
-			if (volumemousekey) {
-				var y = e.offsetY || e.y || e.layerY;
-				if (y > 200) {
-					player.video.volume = 0;
-				} else if (y < 0) {
-					player.video.volume = 1;
-				} else {
-					player.video.volume = (200 - y) / player.volumerange.offsetHeight;
-				}
-			}
-		});
-		aEL(player.volume, 'mouseleave',
-		function(e) {
-			volumemousekey = false;
-		});
+		
+		
 		/*aEL(player.sidebarSwitch, 'click',
 		function(e) {
 			if (player.videoframe.className.search('sidebarhide_videoframe') != -1) {
@@ -1368,11 +1321,12 @@ function initPlayer(_in_videoid) {
 				danmufuns.send();
 			}
 		});
-		aEL(player.danmuinput,"input",function(){
-			if(player.danmuinput.value!=""){
-				addEleClass(player.sendbox,"forceopacity");
-			}else{
-				removeEleClass(player.sendbox,"forceopacity");
+		aEL(player.danmuinput, "input",
+		function() {
+			if (player.danmuinput.value != "") {
+				addEleClass(player.sendbox, "forceopacity");
+			} else {
+				removeEleClass(player.sendbox, "forceopacity");
 			}
 		});
 		aEL($(player.mainbody, '#fontstylebutton #danmuType'), 'click',
@@ -1520,187 +1474,19 @@ function initPlayer(_in_videoid) {
 
 */
 
-		/*来自框架里视频的事件*/
-		function videoevents() {
-			video = core.player.video;
-			aEL(player.danmuctrl, 'click',
-			function() {
-				if (core.player.danmuframe.style.display == 'none') {
-					//danmufuns.show();
-				} else {
-					//danmufuns.hide();
-					//danmufuns.clear();
-				}
-			});
-			aEL(player.videoiframe, 'mouseover',
-			function() {
-				core.focus();
-			});
-		aEL(player.progress, 'mouseleave',
-		function(e) {
-			player.assvar.pointingtime = null;
-			controlfuns.refreshtime();
-		});
-			aEL(player.progress, 'mousemove',
-			function(e) {
-				e.preventDefault();
-				if(!core)return;
-				var x = e.offsetX || e.layerX;
-				var time = x / player.progress.offsetWidth * core.player.video.duration;
-				if (progressmousekey) {
-					core.player.video.currentTime = time;
-				}
-				player.assvar.pointingtime =getMin_Sec(time);
-				controlfuns.refreshtime();
-				controlfuns.refreshprogresscanvas();
-			});
-			aEL(player.progress, 'mousedown',
-			function(e) {
-				e.preventDefault();
-				progressmousekey = true;
-				var x = e.offsetX || e.layerX;
-				core.player.video.currentTime = x / player.progress.offsetWidth * core.player.video.duration;
-			});
-			aEL(video, 'loadedmetadata',
-			function(e) {
-				controlfuns.refreshtime();
-				controlfuns.refreshDanmuMark();
-				player.videopreload.parentNode.removeChild(player.videopreload);
-			});
-			aEL(video, 'volumechange',
-			function(e) {
-				controlfuns.volumechange();
-			});
-			aEL(video, 'ended',
-			function(e) {
-				controlfuns.ended();
-			});
-			aEL(video, 'pause',
-			function(e) {
-				controlfuns.pause();
-			});
-			aEL(video, 'play',
-			function(e) {
-				controlfuns.refreshprogresscanvas();
-			});
-			aEL(video, 'timeupdate',
-			function(e) {
-				controlfuns.refreshprogresscanvas();
-				controlfuns.refreshtime();
-			});
-			aEL(video, 'seeked',
-			function(e) {
-				controlfuns.refreshprogresscanvas();
-			});
-			aEL(video, 'playing',
-			function(e) {
-				controlfuns.playing();
-			});
-			aEL(video, 'loadstart',
-			function(e) {
-				controlfuns.refreshprogresscanvas();
-			});
-			aEL(video, 'waiting',
-	function() {
-		console.info("事件:媒体缓冲中");
-		tip('缓冲中..');
-	});
-		}
-
 		/*消息传递处理中心*/
-		aEL(window, 'message',
+		/*aEL(window, 'message',
 		function(e) {
 			//console.log(e.data);
 			if (SiteDomain == "*" || (SiteDomain.search(e.origin) != -1)) {
 				if (e.data.type) {
-					//console.log(e);
 					switch (e.data.type) {
-						/*case "CTRL":{
-							switch(e.data.msg){
-								//case "play"
-							}
-							break;
-						}*/
 					case "EVENT":
 						{
 							switch (e.data.msg) {
 							case "ready":
 								{
-									console.info("弹幕核心已加载");
-									core = e.source;
-									getcorecontent();
-									player.video = core.player.video;
-									Message=function(type, content) {
-										var msg = {
-											type: type,
-											msg: content
-										};
-										core.postMessage(msg, "*");
-									}
-									player.EC.fireEvent("danmucoreloaded");
-									videoevents();
-									loadvideo();
-									loaddanmu();
-									initSwitch();
-									initRange();
-									break;
-								}
-							/*case "play":
-								{
-									controlfuns.refreshprogresscanvas();
-									break;
-								}*/
-							/*case "pause":
-								{
-									controlfuns.pause();
-									break;
-								}*/
-							/*case "ended":
-								{
-									controlfuns.ended();
-									break;
-								}*/
-							/*case "loadedmetadata":
-								{
-									controlfuns.refreshtime();
-									controlfuns.refreshDanmuMark();
-									player.videopreload.parentNode.removeChild(player.videopreload);
-									break;
-								}*/
-							/*case "volumechange":
-								{
-									controlfuns.volumechange();
-									break;
-								}*/
-							/*case "loadstart":
-								{
-									controlfuns.refreshprogresscanvas();
-									break;
-								}*/
-							/*case "playing":
-								{
-									controlfuns.playing();
-									break;
-								}*/
-							/*case "seeked":
-								{
-									controlfuns.refreshprogresscanvas();
-									break;
-								}*/
-							/*case "timeupdate":
-								{
-									controlfuns.refreshprogresscanvas();
-									controlfuns.refreshtime();
-									break;
-								}*/
-							case "waiting":
-								{
-
-									break;
-								}
-							case "error":
-								{
-
+									
 									break;
 								}
 							}
@@ -1711,26 +1497,181 @@ function initPlayer(_in_videoid) {
 							console.log(e.data.msg);
 							break;
 						}
-						/*case "CONSOLE":{
-							console.log(e.data.msg);
-							break;
-						}*/
-					case "CALLBACK":
-						{
-							if (callbackArray[e.data.msg.id]) {
-								callbackArray[e.data.id](e.data.msg.
-								return);
-								callbackArray.splice(e.data.id, 1);
-							}
-							break;
-						}
 					}
 				} else {
 					console.log(e);
 				}
 			}
+		});*/
+	}
+	/*来自框架里视频的事件*/
+	function videoevents() {
+		video = core.player.video;
+		aEL(player.danmuctrl, 'click',
+		function() {
+			if (core.player.danmuframe.style.display == 'none') {
+				//danmufuns.show();
+			} else {
+				//danmufuns.hide();
+				//danmufuns.clear();
+			}
+		});
+		/*aEL(player.videoiframe, 'mouseover',
+			function() {
+				core.focus();
+			});*/
+
+		var progressmousekey = false,
+		volumemousekey = false;
+		aEL(player.progress, 'mouseleave',
+		function(e) {
+			player.assvar.pointingtime = null;
+			controlfuns.refreshtime();
+		});
+		aEL(player.progress, 'mousemove',
+		function(e) {
+			e.preventDefault();
+			if (!core) return;
+			var x = e.offsetX || e.layerX;
+			var time = x / player.progress.offsetWidth * core.player.video.duration;
+			if (progressmousekey) {
+				core.player.video.currentTime = time;
+			}
+			player.assvar.pointingtime = getMin_Sec(time);
+			controlfuns.refreshtime();
+			controlfuns.refreshprogresscanvas();
+		});
+		aEL(player.volumerange, 'mousedown',
+		function(e) {
+			e.preventDefault();
+			volumemousekey = true;
+			var y = e.offsetY || e.y || e.layerY;
+			if (y > 200) {
+				player.video.volume = 0;
+			} else if (y < 0) {
+				player.video.volume = 1;
+			} else {
+				player.video.volume = (200 - y) / player.volumerange.offsetHeight;
+			}
+		});
+
+		aEL(player.volumepercentage, 'mousemove',
+		function(e) {
+			if (volumemousekey) {
+				player.video.volume = 1;
+			}
+		});
+
+		aEL(player.volumestat, 'mousemove',
+		function(e) {
+			if (volumemousekey) {
+				player.video.volume = 0;
+			}
+		});
+
+		aEL(player.volumerange, 'mousemove',
+		function(e) {
+			if (volumemousekey) {
+				var y = e.offsetY || e.y || e.layerY;
+				if (y > 200) {
+					player.video.volume = 0;
+				} else if (y < 0) {
+					player.video.volume = 1;
+				} else {
+					player.video.volume = (200 - y) / player.volumerange.offsetHeight;
+				}
+			}
+		});
+
+		aEL(player.volume, 'mouseleave',
+		function(e) {
+			volumemousekey = false;
+		});
+		aEL(document, 'mouseup',
+		function(e) {
+			e.preventDefault();
+			progressmousekey = false;
+			volumemousekey = false;
+		});
+		aEL(player.progress, 'mousedown',
+		function(e) {
+			e.preventDefault();
+			progressmousekey = true;
+			var x = e.offsetX || e.layerX;
+			core.player.video.currentTime = x / player.progress.offsetWidth * core.player.video.duration;
+		});
+		aEL(video, 'loadedmetadata',
+		function(e) {
+			controlfuns.refreshtime();
+			controlfuns.refreshDanmuMark();
+			player.videopreload.parentNode.removeChild(player.videopreload);
+		});
+		aEL(video, 'volumechange',
+		function(e) {
+			controlfuns.volumechange();
+		});
+		aEL(video, 'ended',
+		function(e) {
+			controlfuns.ended();
+		});
+		aEL(video, 'pause',
+		function(e) {
+			controlfuns.pause();
+		});
+		aEL(video, 'play',
+		function(e) {
+			controlfuns.refreshprogresscanvas();
+		});
+		aEL(video, 'timeupdate',
+		function(e) {
+			controlfuns.refreshprogresscanvas();
+			controlfuns.refreshtime();
+		});
+		aEL(video, 'seeked',
+		function(e) {
+			controlfuns.refreshprogresscanvas();
+		});
+		aEL(video, 'playing',
+		function(e) {
+			controlfuns.playing();
+		});
+		aEL(video, 'loadstart',
+		function(e) {
+			controlfuns.refreshprogresscanvas();
+		});
+		aEL(video, 'waiting',
+		function() {
+			console.info("事件:媒体缓冲中");
+			tip('缓冲中..');
 		});
 	}
+
+	/*自定义事件*/
+
+	function customEvents() {
+		player.EC.addEvent("CoreReady",
+		function() {
+			console.info("弹幕核心已加载");
+			core = player.core;
+			getcorecontent();
+			player.video = core.player.video;
+			Message = function(type, content) {
+				var msg = {
+					type: type,
+					msg: content
+				};
+				core.message(msg);
+			}
+			player.EC.fireEvent("CoreLoaded");
+			videoevents();
+			loadvideo();
+			loaddanmu();
+			initSwitch();
+			initRange();
+			//core.COL.Debug.on();
+		});
+	}
+	customEvents();
 	setdom();
 	loadoption();
 	initInput();
