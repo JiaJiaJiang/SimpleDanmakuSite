@@ -2,7 +2,7 @@
 $option = $options;
 if (isID($option[0])) {
   $_SESSION['access'.$option[0]]=md5(uniqid());
-function superdanmuTab(){
+/*function superdanmuTab(){
 ?>
     <div id="supertabchoose"><div id="chooseText">字</div><div id="chooseCode">码</div></div>
     <div id="commonTools" style="position: absolute;height: 26px;width: 100%;top: 0px;left: 0px;font-size: 13px;background-color: #66ccff;">
@@ -15,8 +15,8 @@ function superdanmuTab(){
     <div id="SuperTextTab" class="SuperTab">高级字幕</div>
     <div id="SupeCodeTab" class="SuperTab">代码弹幕</div>
 <?php
-}
-function optioneles(){
+}*/
+/*function optioneles(){
 ?>
                 <div>
                      <h3> 播放器设置</h3>
@@ -50,7 +50,7 @@ function optioneles(){
                       </div>
                  </div>
 <?php
-}
+}*/
 function videopreload(){ ?>
 <div class="videopreload" id="videopreload">
       <div class="videopreloadanimationframe">
@@ -59,20 +59,21 @@ function videopreload(){ ?>
 </div>
  <?php
 }
-function movebar(){
+function menu(){
 ?>
  <?php
 }?>
 
 
 
-<div  class="playermainbody" allowfullscreen="true" type="danmuplayer" videoid="<?php echo $option[0];?>">
+<div  class="playermainbody" allowfullscreen="true" type="danmuplayer" videoid="<?php echo $option[0];?>" playersse="<?php echo $_SESSION['access'.$option[0]];?>">
             <div id="videoframe">
-                    <iframe src="core/index.html" id="videoiframe" border=0></iframe>
-                 <?php movebar();?>
+                    <div id="videoframe"></div>
+                 <?php menu();?>
+                 <div id="tipbox"></div>
                 <?php videopreload();?>
             </div>
-            <div id="sidebar">
+            <!--div id="sidebar">
                 <div id="ctrlpannel">
                 <div id="playcount">播放数:获取中..</div>
                 <div id="danmucount">弹幕数:获取中..</div>
@@ -87,14 +88,12 @@ function movebar(){
                        <div id="danmus"></div>
                    </div>
                    <div id="superdanmueditor" class="tabpage">
-<?php superdanmuTab();?>
                    </div>
                  <div id="optionpannel" class="tabpage">
-<?php optioneles();?>
                  </div>
                 </div>
                 
-            </div>
+            </div-->
             <div id="sendbox">
                 <input id="danmuinput" name="danmuinput" />
                 <div id="fontstylebutton">₣<div id="fontpannel">

@@ -8,11 +8,15 @@ function newCOL() {
 		/*主canvas*/
 		/*The main canvas*/
 		canvas: null,
-		/*canvas的绘图上下文*/
+		/*The eventable obj canvas*/
+		eventobjcanvas: null,
 		/*Canvas' context*/
 		context: null,
-		buffercanvas: null,
-		buffercontext: null,
+		/*The eventable obj canvas' context*/
+		eocct: null,
+		/*buffercanvas: null,*/
+		//buffercontext: null,
+		/*default font*/
 		font: {
 			fontStyle: null,
 			fontWeight: null,
@@ -23,22 +27,31 @@ function newCOL() {
 			fontSize: "15px",
 			fontFamily: "Arial"
 		},
+		/*The current main context*/
 		currentcontext: null,
+		/*currentcontext's abbr*/
 		cct: null,
+		/*Eventable objs' color*/
+		colorarray: [],
 		mouseleft: false,
 		mouseright: false,
 		mousecenter: false,
 		mouseX: null,
 		mouseY: null,
+		/*The currently focused on obj*/
 		focus: null,
+		/*If the main can is on focus*/
 		canvasonfocus: false,
+		/*root obj*/
 		document: null,
 		onoverElement: null,
-		simpleMouseCheckMode: false,
+		//simpleMouseCheckMode: false,//bug
+		/*whether to use initiative matrix*/
 		MatrixTransformMode: false,
-		mousestatuechanged:true,
+		matrixchanged: true,
 		tmpGraphID: 0,
 		tmpEventID: 0,
+		lastmovedtime: null,
 		fps: {
 			c: 0,
 			v: 0,
@@ -80,6 +93,13 @@ function newCOL() {
 	COL.generateGraphID = function() {
 		return (++COL.tmpGraphID);
 	};
+	COL.initeventobjcanvas = function() {
+		COL.eocct = (COL.eventobjcanvas = document.createElement("canvas")).getContext("2d");
+	};
+	COL.adjustcanvas = function() {
+		COL.eventobjcanvas.width = COL.document.width = COL.width = COL.canvas.offsetWidth;
+		COL.eventobjcanvas.height = COL.document.height = COL.height = COL.canvas.offsetHeight;
+	}
 	COL.imageSmoothing = {
 		on: function() {
 			if (COL.buffercontext) COL.buffercontext.imageSmoothingEnabled = true;
@@ -144,20 +164,40 @@ function newCOL() {
 		COL.setrelPosition();
 		canvas_dom.width = canvas_dom.offsetWidth;
 		canvas_dom.height = canvas_dom.offsetHeight;
+		COL.initeventobjcanvas();
 		/*Solve events*/
 		var aEL = COL.tools.addEventListener;
 		aEL(canvas_dom, "mouseover",
 		function(e) {
 			COL.canvasonfocus = true;
-			COL.mousestatuechanged=true;
+			//COL.mousestatuechanged = true;
 		});
 		aEL(canvas_dom, "mousemove",
 		function(e) {
 			//e.preventDefault();
+			COL.mousePosition.fun(e);
+			var idata = COL.eocct.getImageData(COL.mouseX, COL.mouseY, 1, 1).data;
+			//console.log(idata);
+			var color = idata[0] * 1000000 + idata[1] * 1000 + idata[2];
+			COL.newonoverElement = COL.colorarray[color];
+			if (COL.onoverElement != COL.newonoverElement) {
+				if (COL.onoverElement) {
+					var eve = COL.event();
+					eve.target = COL.onoverElement;
+					COL.onoverElement.fireEvent("mouseout", eve);
+					COL.tosign.click = COL.tosign.centerclick = COL.tosign.rightcilck = false;
+				}
+				COL.onoverElement = COL.newonoverElement;
+				if (COL.onoverElement) {
+					var eve = COL.event();
+					eve.target = COL.onoverElement;
+					COL.onoverElement.fireEvent("mouseover", eve);
+				}
+
+			}
 			var eve = COL.event();
 			eve.target = COL.onoverElement;
-			COL.mousestatuechanged=true;
-			COL.mousePosition.fun(e);
+			//COL.mousestatuechanged = true;
 			if (COL.onoverElement) {
 				COL.onoverElement.fireEvent("mousemove", eve);
 			}
@@ -165,7 +205,7 @@ function newCOL() {
 		aEL(canvas_dom, "mousedown",
 		function(e) {
 			COL.canvasonfocus = true;
-			COL.mousestatuechanged=true;
+			//COL.mousestatuechanged = true;
 			//e.preventDefault();
 			var eve = COL.event();
 			eve.target = COL.onoverElement;
@@ -192,7 +232,7 @@ function newCOL() {
 		});
 		aEL(canvas_dom, "mouseup",
 		function(e) {
-			COL.mousestatuechanged=true;
+			//COL.mousestatuechanged = true;
 			var eve = COL.event();
 			eve.target = COL.onoverElement;
 			eve.button = e.button;
@@ -222,7 +262,7 @@ function newCOL() {
 		});
 		aEL(canvas_dom, "mouseout",
 		function() {
-			COL.mousestatuechanged=true;
+			//COL.mousestatuechanged = true;
 			COL.e.mouseoutcanvas();
 		});
 		aEL(document, "mousedown",
@@ -245,15 +285,12 @@ function newCOL() {
 			COL.e.mouseoutcanvas();
 		});
 
-		aEL(canvas_dom, "resize",
+		/*aEL(canvas_dom, "resize",
 		function() {
-			COL.document.width = canvas_dom.width = COL.width = canvas_dom.offsetWidth;
-			COL.document.height = canvas_dom.height = COL.height = canvas_dom.offsetHeight;
-			if (COL.buffercanvas) {
-				COL.buffercanvas.width = canvas_dom.offsetWidth;
-				COL.buffercanvas.height = canvas_dom.offsetHeight;
-			}
-		});
+			console.log(123)
+			COL.adjustcanvas();
+			COL.draw();
+		});*/
 
 		var _mousewheele = (COL.tools.getBrowser() == "firefox") ? "DOMMouseScroll": "mousewheel";
 		aEL(canvas_dom, _mousewheele,
@@ -324,11 +361,13 @@ function newCOL() {
 		COL.document.height = canvas_dom.height;
 		COL.drawlist = [COL.document];
 		COL.MatrixTransform.off();
+		COL.adjustcanvas();
 	};
 
 	COL.MatrixTransform = {
 		on: function() {
 			COL.MatrixTransformMode = true;
+			COL.matrixchanged=true;
 			COL.transform = COL.optionalFun.transformDirect;
 		},
 		off: function() {
@@ -337,11 +376,11 @@ function newCOL() {
 		}
 	}
 
-	COL.setBuffCanvas = function(buf) {
+	/*COL.setBuffCanvas = function(buf) {
 		COL.buffercanvas = buf;
 		COL.buffercontext = COL.buffercanvas.getContext("2d");
 		COL.currentcontext = COL.buffercontext || COL.context;
-	};
+	};*/
 
 	COL.Graph = {
 		New: function(opjson) {
@@ -460,6 +499,7 @@ function newCOL() {
 		Eventable: function(graph) {
 			graph.eventable = true;
 			graph.overPath = null;
+			graph.pricolor = COL.tools.get_a_unique_color(graph);
 			graph.events = {};
 			graph.addEvent = COL.Graph.commonFunction.Event.addEvent;
 			graph.removeEvent = COL.Graph.commonFunction.Event.removeEvent;
@@ -555,7 +595,7 @@ function newCOL() {
 				newobj.parentNode = null;
 				newobj.childNode = [];
 				newobj.drawlist = [];
-				newobj.GraphID=COL.generateGraphID();
+				newobj.GraphID = COL.generateGraphID();
 				return newobj;
 			},
 			clone: function() {
@@ -578,69 +618,75 @@ function newCOL() {
 			},
 			removeChild: function(graph) {
 				if (this.childNode[graph.GraphID]) {
-				graph.parentNode = null;
-				this.childNode[graph.GraphID] = null;
-				delete this.childNode[graph.GraphID];
-				var ind=this.drawlist.lastIndexOf(graph);
-				if(ind>=0){
-					this.drawlist.splice(ind, 1);
+					graph.parentNode = null;
+					this.childNode[graph.GraphID] = null;
+					delete this.childNode[graph.GraphID];
+					var ind = this.drawlist.lastIndexOf(graph);
+					if (ind >= 0) {
+						this.drawlist.splice(ind, 1);
+					}
 				}
-			}
 			},
 			setMatrix: function(floatarrayMatrix) {
+				COL.matrixchanged = true;
 				if (!floatarrayMatrix) {
 					var rotate = this.rotate * 0.0174532925,
 					cos = Math.cos(rotate),
 					sin = Math.sin(rotate);
 					if (!this.matrix) this.matrix = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
-					this.matrix.set(COL.tools.multiplyMatrix([this.zoom.x, 0, 0, 0, this.zoom.y, 0, 0, 0, 0], [cos, -sin, 0, sin, cos, 0, 0, 0, 0], [1, 0, this.x + this.rotatecenter.x - this.positionpoint.x, 0, 1, this.y + this.rotatecenter.y - this.positionpoint.y, 0, 0, 0]));
+					this.matrix.set(COL.tools.multiplyMatrix(
+						[1, 0, -this.rotatecenter.x, 0, 1, -this.rotatecenter.y,0,0,0],
+						[this.zoom.x, 0, 0, 0, this.zoom.y, 0, 0, 0, 0], 
+						[cos, -sin, 0, sin, cos, 0, 0, 0, 0], 
+						[1, 0, this.x + this.rotatecenter.x - this.positionpoint.x, 0, 1, this.y + this.rotatecenter.y - this.positionpoint.y, 0, 0, 0]
+						));
 				} else {
 					this.matrix = floatarrayMatrix;
 				}
 			},
-			isPointInPath:function(ct,cObj){
+			isPointInPath: function(ct, cObj) {
 				if (cObj.overPath) {
-								cObj.overPath(ct);
-							} else if (cObj.drawfunction) {
-								cObj.drawfunction(ct);
-							} else {
-								COL.tools.defaultPathFun(ct, cObj);
-							}
-							if (ct.isPointInPath(COL.mouseX, COL.mouseY)) {
-								COL.newonoverElement = cObj;
-							}
+					cObj.overPath(ct);
+				} else if (cObj.drawfunction) {
+					cObj.drawfunction(ct);
+				} else {
+					COL.tools.defaultPathFun(ct, cObj);
+				}
+				if (ct.isPointInPath(COL.mouseX, COL.mouseY)) {
+					COL.newonoverElement = cObj;
+				}
 			},
-			drawDebugstat:function(cct){
+			drawDebugstat: function(cct) {
 				cct.save();
-			cct.setTransform(1, 0, 0, 1, 0, 0);
-			cct.font = "16px Arial";
-			cct.textBaseline = "bottom";
-			cct.globalCompositeOperation = "lighter";
-			cct.fillStyle = "red";
-			cct.fillText("mouseX:" + COL.mouseX + " Y:" + COL.mouseY + " mouseL:" + COL.mouseleft + " C:" + COL.mousecenter + " R:" + COL.mouseright + " FPS:" + COL.fps.v + " Items:" + COL.Debug.itemcount, 0, COL.canvas.height);
-			cct.fillText("onmouseoverGraphID:" + (COL.onoverElement ? COL.onoverElement.GraphID: "null") + " onfocusGraphID:" + (COL.focus ? COL.focus.GraphID: "null"), 0, COL.canvas.height - 20);
-			cct.strokeStyle = "red";
-			cct.globalCompositeOperation = "source-over";
-			cct.moveTo(COL.mouseX, COL.mouseY + 6);
-			cct.lineTo(COL.mouseX, COL.mouseY - 6);
-			cct.moveTo(COL.mouseX - 6, COL.mouseY);
-			cct.lineTo(COL.mouseX + 6, COL.mouseY);
-			cct.stroke();
-			cct.restore();
-			COL.fps.c++;
+				cct.setTransform(1, 0, 0, 1, 0, 0);
+				cct.font = "16px Arial";
+				cct.textBaseline = "bottom";
+				cct.globalCompositeOperation = "lighter";
+				cct.fillStyle = "red";
+				cct.fillText("mouseX:" + COL.mouseX + " Y:" + COL.mouseY + " mouseL:" + COL.mouseleft + " C:" + COL.mousecenter + " R:" + COL.mouseright + " FPS:" + COL.fps.v + " Items:" + COL.Debug.itemcount, 0, COL.canvas.height);
+				cct.fillText("onmouseoverGraphID:" + (COL.onoverElement ? COL.onoverElement.GraphID: "null") + " onfocusGraphID:" + (COL.focus ? COL.focus.GraphID: "null"), 0, COL.canvas.height - 20);
+				cct.strokeStyle = "red";
+				cct.globalCompositeOperation = "source-over";
+				cct.moveTo(COL.mouseX, COL.mouseY + 6);
+				cct.lineTo(COL.mouseX, COL.mouseY - 6);
+				cct.moveTo(COL.mouseX - 6, COL.mouseY);
+				cct.lineTo(COL.mouseX + 6, COL.mouseY);
+				cct.stroke();
+				cct.restore();
+				COL.fps.c++;
 			},
 			t: {
 				vary: function(ct) {
-					if(this.baseline)ct.textBaseline = this.baseline;
-					if(this.textborderWidth)ct.lineWidth = this.textborderWidth;
-					if(this.textborderColor)ct.strokeStyle = this.textborderColor;
+					if (this.baseline) ct.textBaseline = this.baseline;
+					if (this.textborderWidth) ct.lineWidth = this.textborderWidth;
+					if (this.textborderColor) ct.strokeStyle = this.textborderColor;
 					ct.fillStyle = this.color || COL.font.color || "#000";
 					if (this.shadowBlur > 0) {
 						ct.font = this.font;
 						ct.shadowBlur = this.shadowBlur;
-						if(this.shadowColor)ct.shadowColor = this.shadowColor;
-						if(this.shadowOffset.x)ct.shadowOffsetX = this.shadowOffset.x;
-						if(this.shadowOffset.y)ct.shadowOffsetY = this.shadowOffset.y;
+						if (this.shadowColor) ct.shadowColor = this.shadowColor;
+						if (this.shadowOffset.x) ct.shadowOffsetX = this.shadowOffset.x;
+						if (this.shadowOffset.y) ct.shadowOffsetY = this.shadowOffset.y;
 					}
 					ct.font = this.font;
 					if (this.linedirection === 0) {
@@ -748,15 +794,15 @@ function newCOL() {
 								w = tw > w ? tw: w;
 							}
 							imgobj.width = (this.width = (this.maxWidth >= w) ? this.maxWidth: w) + addedwidth;
-							imgobj.height = (this.height = this.varylist.length *  (this.lineHeight > this.fontSize ? this.lineHeight: this.fontSize)) + addedheight;
+							imgobj.height = (this.height = this.varylist.length * (this.lineHeight > this.fontSize ? this.lineHeight: this.fontSize)) + addedheight;
 						} else if (this.linedirection == 1) {
 							for (var i = 0; i < this.varylist.length; i++) {
 								tw = this.varylist[i].split("").length;
 								w = tw > w ? tw: w;
 							}
 							w *= this.fontSize;
-							 imgobj.width =(this.width = this.varylist.length *  (this.lineHeight > this.fontSize ? this.lineHeight: this.fontSize))+addedwidth;
-							 imgobj.height =(this.height = (this.maxWidth >= w) ? this.maxWidth: w)+addedheight;
+							imgobj.width = (this.width = this.varylist.length * (this.lineHeight > this.fontSize ? this.lineHeight: this.fontSize)) + addedwidth;
+							imgobj.height = (this.height = (this.maxWidth >= w) ? this.maxWidth: w) + addedheight;
 						}
 
 					} else {
@@ -837,6 +883,10 @@ function newCOL() {
 				if (graph.parentNode) {
 					graph.parentNode.removeChild(graph);
 				}
+				if (typeof graph.pricolor == "object") {
+					var a = graph.pricolor;
+					COL.colorarray.splice(a[0] * 1000000 + a[1] * 1000 + a[2], 1);
+				}
 				delete graph;
 				return true;
 			}
@@ -850,11 +900,11 @@ function newCOL() {
 				cObj = d[i];
 				ct.save();
 				COL.transform(ct, cObj);
-				if(COL.Debug.stat){
-					ct.moveTo(0,3);
-					ct.lineTo(0,-3);
-					ct.moveTo(3,0);
-					ct.lineTo(-3,0);
+				if (COL.Debug.stat) {
+					ct.moveTo(0, 3);
+					ct.lineTo(0, -3);
+					ct.moveTo(3, 0);
+					ct.lineTo( - 3, 0);
 					ct.stroke();
 				}
 				if (cObj.opacity !== null) ct.globalAlpha = cObj.opacity;
@@ -883,18 +933,16 @@ function newCOL() {
 				if (cObj.beforedrawfun) cObj.beforedrawfun(ct);
 				if (cObj.backgroundColor) {
 					ct.fillStyle = cObj.backgroundColor;
-					ct.fillRect( - cObj.rotatecenter.x, -cObj.rotatecenter.y, cObj.width, cObj.height);
+					ct.fillRect(0, 0, cObj.width, cObj.height);
 				}
 				switch (cObj.drawtype) {
 				case "function":
 					{
-						ct.transform(1,0,0,1,- cObj.rotatecenter.x,-cObj.rotatecenter.y);
 						if (cObj.drawfunction) cObj.drawfunction(ct);
 						break;
 					}
 				case "image":
 					{
-						ct.transform(1,0,0,1,- cObj.rotatecenter.x,-cObj.rotatecenter.y);
 						if (cObj.imageobj && cObj.imageobj.width && cObj.imageobj.height) {
 							ct.drawImage(cObj.imageobj, 0, 0);
 						}
@@ -903,7 +951,6 @@ function newCOL() {
 					}
 				case "text":
 					{
-						ct.transform(1,0,0,1,- cObj.rotatecenter.x,-cObj.rotatecenter.y);
 						if (cObj.realtimeVary) {
 							ct.save();
 							cObj.vary(ct);
@@ -911,12 +958,12 @@ function newCOL() {
 						} else {
 							if (cObj.imageobj && cObj.imageobj.width && cObj.imageobj.height) {
 								ct.save();
-								ct.transform(1,0,0,1,- cObj.plusoffsetX, -cObj.plusoffsetY);
+								ct.transform(1, 0, 0, 1, -cObj.plusoffsetX, -cObj.plusoffsetY);
 								ct.drawImage(cObj.imageobj, 0, 0);
-								if(COL.Debug.stat){
-									ct.strokeStyle="#ccc";
+								if (COL.Debug.stat) {
+									ct.strokeStyle = "#ccc";
 									ct.strokeRect(0, 0, cObj.imageobj.width, cObj.imageobj.height);
-									ct.transform(1,0,0,1, cObj.plusoffsetX, cObj.plusoffsetY);
+									ct.transform(1, 0, 0, 1, cObj.plusoffsetX, cObj.plusoffsetY);
 								}
 								ct.restore();
 							}
@@ -925,27 +972,6 @@ function newCOL() {
 
 						break;
 					}
-				}
-				ct.save();
-				if (cObj.eventable) {
-					if (COL.simpleMouseCheckMode) {
-						if (COL.mouseX&&COL.mouseY
-							) {
-							if(COL.mouseX+ cObj.positionpoint.x  <= cObj.x+ cObj.width &&
-							 COL.mouseY +cObj.positionpoint.y <= cObj.y+ cObj.height&&
-							  COL.mouseX+cObj.positionpoint.x>= cObj.x && 
-							COL.mouseY+ cObj.positionpoint.y>= cObj.y 
-							){
-								if(COL.mousestatuechanged){
-									COL.Graph.commonFunction.isPointInPath(ct,cObj);
-								}
-							}
-						}
-					}else if(COL.mousestatuechanged){
-						COL.Graph.commonFunction.isPointInPath(ct,cObj);
-						// COL.mousestatuechanged=false;
-					}
-					
 				}
 				if (COL.Debug.stat) {
 					COL.Debug.itemcount++;
@@ -992,20 +1018,60 @@ function newCOL() {
 					}
 					ct.restore();
 				}
-				ct.restore();
+				//ct.restore();
 				if (cObj.afterdrawfun) cObj.afterdrawfun(ct);
 				ct.restore();
-				ct.transform(1,0,0,1,- cObj.rotatecenter.x, -cObj.rotatecenter.y);
-				//ct.translate( - cObj.rotatecenter.x, -cObj.rotatecenter.y);
 				if (cObj.childNode.length) {
 					COL.drawElement(cObj.drawlist, ct);
 				}
 				ct.restore();
 			}
 		}
-
+	};
+	/*
+	事件对象绘制函数
+	用来把有事件的对象用特定颜色画到隐藏画布上，供鼠标判定用
+	绘制规则：
+		如果对象有eventRange函数来描述事件响应范围，那么将调用这个函数并传入参数(context,颜色)，由此函数绘制对象色块
+		如果没有eventRange函数，function类型的对象无法被识别，图片和文字类型的对象默认使用所在矩形范围做响应范围
+	*/
+	COL.drawEventobj = function(d, ct) {
+		for (var i = 0; i < d.length; i++) {
+			if (d[i].display) {
+				cObj = d[i];
+				ct.save();
+				COL.transform(ct, cObj);
+				//ct.transform(1, 0, 0, 1, -cObj.rotatecenter.x, -cObj.rotatecenter.y);
+				ct.save();
+				if (cObj.eventable) {
+					var color = "rgb(" + cObj.pricolor[0] + "," + cObj.pricolor[1] + "," + cObj.pricolor[2] + ")";
+					if (typeof(cObj.eventRange) == "function") {
+						cObj.eventRange(ct, color);
+					} else {
+						switch (cObj.drawtype) {
+						case "image":
+						case "text":
+							{
+								ct.fillStyle = color;
+								ct.fillRect(0, 0, cObj.width, cObj.height);
+								break;
+							}
+						}
+					}
+				}
+				ct.restore();
+				if (cObj.childNode.length) {
+					COL.drawEventobj(cObj.drawlist, ct);
+				}
+				ct.restore();
+			}
+		}
 	};
 
+	COL.F_drawEventobj = function() {
+		COL.eocct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
+		COL.drawEventobj(COL.drawlist, COL.eocct);
+	}
 	/*把队列中的图形按index绘制出来*/
 	/*draw all graphs whose [display=true]*/
 	// var cct;
@@ -1015,26 +1081,17 @@ function newCOL() {
 		COL.Debug.itemcount = 0;
 		if (COL.autoClear) {
 			cct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
-			if (COL.buffercontext) COL.buffercontext.clearRect(0, 0, COL.document.width, COL.document.height);
 		}
 		COL.drawElement(COL.drawlist, COL.currentcontext);
-		if (COL.Debug.stat) {
-			COL.Graph.commonFunction.drawDebugstat(cct);
+		if (COL.matrixchanged === true || COL.MatrixTransformMode === false) {
+			setTimeout(COL.F_drawEventobj, 0);
+			COL.matrixchanged = false;
 		}
-		COL.mousestatuechanged=false;
-		if (COL.newonoverElement!=null&&COL.newonoverElement != COL.onoverElement) {
-			if (COL.onoverElement) {
-				var eve = COL.event();
-				eve.target = COL.onoverElement;
-				COL.onoverElement.fireEvent("mouseout", eve);
-				COL.tosign.click = COL.tosign.centerclick = COL.tosign.rightcilck = false;
-			}
-			COL.onoverElement = COL.newonoverElement;
-			if (COL.onoverElement) {
-				var eve = COL.event();
-				eve.target = COL.onoverElement;
-				COL.onoverElement.fireEvent("mouseover", eve);
-			}
+		if (COL.Debug.stat) {
+			cct.globalAlpha = 0.2;
+			cct.drawImage(COL.eventobjcanvas, 0, 0);
+			cct.globalAlpha = 1;
+			COL.Graph.commonFunction.drawDebugstat(cct);
 		}
 	};
 
@@ -1043,10 +1100,9 @@ function newCOL() {
 			if (obj.matrix) {
 				ct.transform(obj.matrix[0], obj.matrix[1], obj.matrix[3], obj.matrix[4], obj.matrix[2], obj.matrix[5]);
 			}
-
 		},
 		transformLinear: function(ct, obj) {
-			ct.transform(1,0,0,1,obj.x + obj.rotatecenter.x - obj.positionpoint.x, obj.y + obj.rotatecenter.y - obj.positionpoint.y);
+			ct.transform(1, 0, 0, 1, obj.x + obj.rotatecenter.x - obj.positionpoint.x, obj.y + obj.rotatecenter.y - obj.positionpoint.y);
 			ct.rotate(obj.rotate * 0.017453);
 			ct.scale(obj.zoom.x, obj.zoom.y);
 		}
@@ -1070,12 +1126,13 @@ function newCOL() {
 	};
 
 	COL.tools = {
+		matrix:new Float32Array(9),
 		multiplyMatrix: function() {
 			var mats = arguments;
 			if (mats) {
 				if (mats.length > 1) {
 					var mp, mn;
-					var ta = new Float32Array(9);
+					var ta = COL.tools.matrix;
 					for (var i = mats.length; i--;) {
 						var pm = i - 1;
 						if (pm >= 0) {
@@ -1087,7 +1144,7 @@ function newCOL() {
 							ta[3] = mp[3] * (mn[0] + mp[4]) + mp[5] * mn[6];
 							ta[4] = mp[3] * mn[1] + mp[4] * mn[4] + mp[5] * mn[7];
 							ta[5] = mp[3] * mn[2] + (mp[4] + mn[8]) * mn[5];
-							ta[8] = ta[7] = ta[6] = 0;
+							//ta[8] = ta[7] = ta[6] = 0;
 							mats[pm] = ta;
 						}
 					}
@@ -1184,6 +1241,22 @@ function newCOL() {
 		paixurule: function(a, b) { //index的排序规则
 			return a.z_index - b.z_index;
 		},
+		get_a_color: function() {
+			return new Uint8Array([COL.tools.rand(0, 255), COL.tools.rand(0, 255), COL.tools.rand(0, 255)]);
+		},
+		get_a_unique_color: function(e) {
+			if (!COL.document.pricolor) {
+				COL.colorarray[255255255] = COL.document;
+				return new Uint8Array([255, 255, 255]);
+			}
+			var a, num;
+			do {
+				a = COL.tools.get_a_color();
+				num = a[0] * 1000000 + a[1] * 1000 + a[2];
+			} while ( COL . colorarray [ num ] != undefined);
+			COL.colorarray[num] = e;
+			return a;
+		},
 		arraybyZ_index: function(graph) { //让图形的子元素排序
 			if (graph.childNode) {
 				graph.drawlist = graph.childNode.slice(0);
@@ -1242,16 +1315,16 @@ function newCOL() {
 		}
 	};
 	return COL;
-} (function() {
+}; (function() {
 	var lastTime = 0;
 	var vendors = ['ms', 'moz', 'webkit', 'o'];
 	for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
 		window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
 		window.cancelRequestAnimationFrame = window[vendors[x] + 'CancelRequestAnimationFrame'];
 	}
-	if (!window.requestAnimationFrame) window.requestAnimationFrame = function(callback, element,interval) {
+	if (!window.requestAnimationFrame) window.requestAnimationFrame = function(callback, element, interval) {
 		var currTime = new Date().getTime();
-		var timeToCall =interval||( Math.max(0, 1000 / 60 - (currTime - lastTime)));
+		var timeToCall = interval || (Math.max(0, 1000 / 60 - (currTime - lastTime)));
 		callback(0);
 		var id = window.setTimeout(function() {
 			callback(currTime + timeToCall);
@@ -1264,4 +1337,3 @@ function newCOL() {
 		clearTimeout(id);
 	};
 } ());
-

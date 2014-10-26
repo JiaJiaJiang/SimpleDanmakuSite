@@ -143,10 +143,8 @@ border: none;
 	position: absolute;
 	left: 0px;
 	top: 0px;
-	width: calc(100% - 300px);
+	width: 100% ;
 	height: calc(100% - 50px);
-	width: -webkit-calc(100% - 300px);
-	height: -webkit-calc(100% - 50px);
 	overflow: hidden;
 }
 .playermainbody #videoframe #video {
@@ -410,8 +408,7 @@ z-index: 3;
 	position: absolute;
 	bottom: 25px;
 	left: 0px;
-	width: calc(100% - 300px);
-	width: -webkit-calc(100% - 300px);
+	width: 100%;
 	height: 25px;
 }
 .playermainbody #sendbox #fontstylebutton {
@@ -587,6 +584,7 @@ z-index: 3;
 	overflow: hidden;
 	width: 300px;
 	top: 0px;
+	display: none;
 }
 .playermainbody #sidebar #ctrlpannel {
 	position: absolute;
@@ -1034,4 +1032,40 @@ animation:tip_in_ani 4s linear 0s forwards;
 }
 .forceopacity{
 	opacity: 1 !important;
+}
+
+#videoframe {
+	background-color: #000;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+ #videoframe #video {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	cursor: pointer;
+}
+ #videoframe #danmuframe {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	cursor: pointer;
+}
+ #videoframe #divdanmulayer {
+	left: 0px;
+	top: 0px;
+}
+ #videoframe #danmuframe #danmulayer {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
 }

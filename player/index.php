@@ -9,6 +9,7 @@ if (!isID($vid))exit;
 		<meta charset="utf-8">
 		<link rel="stylesheet" type="text/css" href="danmu.css">
 		<script src="../command.js"></script>
+		<script type="text/javascript" src="plugin.php"></script>
 		<script src="danmu.js"></script>
 	</head>
 	<body style="margin:0px;padding:0px;">
