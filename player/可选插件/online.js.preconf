@@ -1,1 +1,1 @@
-danmakuliveserver="ws://弹幕服务器地址:9889";
+var danmakuliveserver="ws://弹幕服务器地址:9889";
