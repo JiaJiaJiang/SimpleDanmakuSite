@@ -41,8 +41,8 @@ function DanmuCore() {
 		(player.danmulayer = c_ele("canvas")).id = "danmulayer";
 		(player.video = c_ele("video")).id = "video";
 		player.danmuframe.appendChild(player.danmulayer);
-		parentPlayer.videoframe.appendChild(player.video);
-		parentPlayer.videoframe.appendChild(player.danmuframe);
+		parentPlayer.videoframein.appendChild(player.video);
+		parentPlayer.videoframein.appendChild(player.danmuframe);
 		parentPlayer.core.video=player.video;
 		/*player.videoframe = d_select('#videoframe');
 		player.danmuframe = d_select(player.videoframe, '#danmuframe');
@@ -118,7 +118,8 @@ function DanmuCore() {
 		}
 		if (t >= timepoint) {
 			for (; timepoint <= t; timepoint += 10) {
-				if (timeline[timepoint]) danmufuns.fire(timepoint);
+				if (timeline[timepoint]) 
+					setTimeout(danmufuns.fire,0,timepoint); 
 			}
 		} else {
 			return;
@@ -132,12 +133,12 @@ function DanmuCore() {
 
 	var danmufuns=this.danmufuns = {
 		createCommonDanmu: function(danmuobj) {
-			if (danmuobj.hasfirstshowed === 0) {
+			/*if (danmuobj.hasfirstshowed === 0) {
 				danmuobj.hasfirstshowed = 1;
 			} else if (danmuobj.hasfirstshowed == 1) {
 				danmuobj.hasfirstshowed = null;
 				return;
-			}
+			}*/
 			var color = isHexColor(danmuobj.co) ? ('#' + danmuobj.co) : '#fff';
 			var bordercolor = (danmuobj.co == '000000') ? '#fff': '#000';
 			setTimeout(function() {
@@ -199,6 +200,7 @@ function DanmuCore() {
 					var lineset = TextDanmu.lineHeight * TextDanmu.varylist.length - 10;
 					TextDanmu.backgroundColor = 'rgba(255,255,255,0.4)';
 				}
+				parentPlayer.EC.fireEvent("danmucreated",TextDanmu);
 				TextDanmu.danmuobj = danmuobj;
 				COL.Graph.Eventable(TextDanmu);
 				TextDanmu.addEvent('mousedown',
@@ -242,7 +244,7 @@ function DanmuCore() {
 			},
 			stop: function() {
 				if (danmulayerAnimationFrame) {
-					danmucontainer.display = false;
+					//danmucontainer.display = false;
 					cancelAnimationFrame(danmulayerAnimationFrame);
 					danmulayerAnimationFrame = 0;
 					//player.danmuframe.style.display = 'none';
@@ -730,7 +732,7 @@ function DanmuCore() {
 									videosrc[i] = _string_.removesidespace(videosrc[i]);
 									s.src = videosrc[i];
 									player.video.appendChild(s);
-									console.info('指定视频地址:', videosrc[i]);
+									Dinfo('指定视频地址:', videosrc[i]);
 								}
 							}
 							break;
@@ -748,7 +750,7 @@ function DanmuCore() {
 				}
 			} 
 		}else {
-				console.log(e);
+				Dlog(e);
 		}
 	}
 }

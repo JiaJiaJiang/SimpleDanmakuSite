@@ -2,8 +2,8 @@
 Belong to iTisso
 Coder:LuoJia
  */
-const DanmuPlayerVersion = "0.4.0";
-const SiteDomain = "";
+var DanmuPlayerVersion = "0.4.0";
+var SiteDomain = "";
 cmd_url="../command.php"; 
 function select_do(fun) {
 	if (typeof fun != "function") {
@@ -34,10 +34,10 @@ function d_selectall(query) {
 		root = document;
 	}
 	arr = root.querySelectorAll(arguments[0]);
-	arr.__proto__.do = select_do;
+	arr.do = select_do;
 	return arr;
 }
-const $ = d_select,
+var $ = d_select,
 $$ = d_selectall;
 function c_ele(tag) {
 	return document.createElement(tag);
@@ -207,7 +207,7 @@ function initPlayer(_in_videoid) {
 	danmuarray = [],
 	danmucount,
 	ready = false;
-
+	var playersse;
 	var danmumarkcan,danmumarkct;
 	var Message = function() {},
 	core;
@@ -255,6 +255,7 @@ function initPlayer(_in_videoid) {
 		player.volumestat = $(player.mainbody, '#controler #volume #voluemstat');
 		danmumarkcan=$("#danmumark");
 		danmumarkct=danmumarkcan.getContext("2d");
+		playersse=player.mainbody.getAttribute("playersse");
 	}
 	function tip(str){
 		var td=c_ele("div");

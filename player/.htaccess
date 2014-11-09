@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteBase /player
+RewriteCond %{REQUEST_FILENAME} ^plugins.cache.php$
+RewriteCond plugins.cache.js -d
+RewriteRule ^.*$ plugins.cache.js

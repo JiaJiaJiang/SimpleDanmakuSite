@@ -12,7 +12,8 @@ function cmd(command, bool, callback) { //bool为是否需要等待返回参数
 	xmlhttp.onreadystatechange = function() {
 		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 			if (!bool) {
-				console.log("异步接收到了命令:" + command + "的成功回应\n执行回调函数");
+				if(cmd.output===true)
+				console.info("%c异步接收到了命令:" + command + "的成功回应\n执行回调函数","background:#4FB5FF;");
 				if(typeof(callback)=="function"){
 					callback(xmlhttp.responseText);
 				}
@@ -25,13 +26,13 @@ function cmd(command, bool, callback) { //bool为是否需要等待返回参数
 	command = command.replace(/(^\s*)|(\s*$)/g, "");
 	command= command.replace("+", "%plus");
 	xmlhttp.send("cmd=" + command);
-	console.log("命令:" + command);
+	if(cmd.output===true)console.log("%c命令:" + command,"background:#4FB5FF;");
 	if (bool) {
 		while (! (xmlhttp.responseText)) {}
 		return xmlhttp.responseText;
 	}
 }
-
+cmd.output=false;
 function cmd_unitrans(string) {
 	if (typeof(string) == "string") {
 		return  escape(escape(string));
@@ -39,7 +40,7 @@ function cmd_unitrans(string) {
 		return string;
 	}
 	else {
-		console.log(string);
+		if(cmd.output===true)console.warn("%c"+string,"background:#4FB5FF;");
 	}
 }
 function transarg(str){
