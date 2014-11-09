@@ -28,13 +28,10 @@ if (isID($vid))
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <script>var playersse="<?php echo $_SESSION['access'.$vid];?>";</script>
-    <script src="../command.js"></script>
-    <script src="danmu.js"></script>
     <link rel="stylesheet" type="text/css" href="danmu.css">
 </head>
 <body>
-<div  class="playermainbody" allowfullscreen="true" type="danmuplayer">
+<div  class="playermainbody" allowfullscreen="true" type="danmuplayer" playersse="<?php echo $_SESSION['access'.$vid];?>">
             <div id="videoframe">
                     <iframe id="videoiframe" border=0></iframe>
                     <div id="ctrlcovre">
@@ -90,7 +87,7 @@ if (isID($vid))
                     <canvas id="danmumark"></canvas>
                     <div id="progersscover"></div>
                 </div>
-                <div id="time"></div>
+                <div id="time">载入中</div>
                 <div id="danmuctrl" title="显示/隐藏弹幕"><?php danmubutton();?></div>
                 <div id="volume" title="音量">
                     <div id="voluemstat">Д</div>
@@ -106,9 +103,13 @@ if (isID($vid))
         <script>
         console.log("视频id:"+<?php echo $vid;?>);
         cmd_url="../command.php"; 
-        initPlayer(<?php echo $vid;?>);
         </script>
 
+    <script src="../command.js"></script>
+    <script src="danmu.js"></script>
+    <script>
+    initPlayer(<?php echo $vid;?>);
+    </script>
 </body>
 </html>
 <?php

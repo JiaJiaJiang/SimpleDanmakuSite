@@ -7,7 +7,7 @@ Global $SQL;
 connectSQL();
 $result=$SQL->query("SELECT title,count FROM video WHERE id=".$vid);
 $get=$result->fetch_object();
-$title=mb_convert_encoding($get->title, "utf-8", "auto");
+$title=htmlentities(mb_convert_encoding($get->title, "utf-8", "auto"),ENT_QUOTES,"UTF-8");
 $count=$get->count;
 $result=$SQL->query("SELECT COUNT(*) from danmu WHERE videoid=".$vid);
 $get=$result->fetch_object();
@@ -61,9 +61,28 @@ margin: 19px;
 position: absolute;
 right: 10px;
 		}
+		#newwindowplayerbutton{
+			position: absolute;
+top: 0px;
+right: 0px;
+font-size: 24px;
+background-color: #EDEDED;
+cursor: pointer;
+width: 27px;
+height: 27px;
+line-height: 27px;
+text-align: center;
+		}
 		</style>
+		<script>
+		function openFullPlayer(){
+			var w=window.open("player/?id=<?php echo $vid;?>",'<?php echo $title;?>',"width=900,height=580,menubar=no,toolbar=no, location=no,directories=no,status=no,scrollbars=no,resizable=yes");
+			w.document.title='<?php echo $title;?>';
+		}
+		</script>
 	</head>
 	<body>
+	<div id="newwindowplayerbutton" onclick="openFullPlayer()">⿻测试中</div>
 	<div id="videostat">
 	<h1 id="title"><?php echo $title;?></h1>
 	<div id="info"><span>播放数:<?php echo $count;?></span>   <span>弹幕数:<?php echo $danmucount;?></span></div>

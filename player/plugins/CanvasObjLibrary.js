@@ -110,7 +110,7 @@ function newCOL() {
 			COL.context.imageSmoothingEnabled = false;
 		}
 	};
-	COL.setrelPosition = function() {
+	/*COL.setrelPosition = function() {
 		switch (COL.tools.getBrowser()) {
 		case "msie":
 		case "trident":
@@ -131,7 +131,7 @@ function newCOL() {
 			}
 		}
 
-	};
+	};*/
 
 	/*创建图形用的画布*/
 	/*A canvas to create picture*/
@@ -161,7 +161,6 @@ function newCOL() {
 	/*set main canvas*/
 	COL.setCanvas = function(canvas_dom) {
 		COL.canvas = canvas_dom;
-		COL.setrelPosition();
 		canvas_dom.width = canvas_dom.offsetWidth;
 		canvas_dom.height = canvas_dom.offsetHeight;
 		COL.initeventobjcanvas();
@@ -175,7 +174,9 @@ function newCOL() {
 		aEL(canvas_dom, "mousemove",
 		function(e) {
 			//e.preventDefault();
-			COL.mousePosition.fun(e);
+			//COL.mousePosition.fun(e);
+			COL.mouseX=e.layerX;
+			COL.mouseY=e.layerY;
 			var idata = COL.eocct.getImageData(COL.mouseX, COL.mouseY, 1, 1).data;
 			//console.log(idata);
 			var color = idata[0] * 1000000 + idata[1] * 1000 + idata[2];
@@ -207,6 +208,8 @@ function newCOL() {
 			COL.canvasonfocus = true;
 			//COL.mousestatuechanged = true;
 			//e.preventDefault();
+			COL.mouseX=e.layerX;
+			COL.mouseY=e.layerY;
 			var eve = COL.event();
 			eve.target = COL.onoverElement;
 			eve.button = e.button;
@@ -603,7 +606,7 @@ function newCOL() {
 				return newobj;
 			},
 			addChild: function(graph) {
-				if (graph.GraphID) {
+				if (graph.GraphID&&!this.childNode[graph.GraphID]) {
 					//console.log(graph.GraphID)
 					//this.childNode.push(graph);
 					this.childNode[graph.GraphID] = graph;
@@ -1107,10 +1110,8 @@ function newCOL() {
 			ct.scale(obj.zoom.x, obj.zoom.y);
 		}
 	};
-	COL.mousePosition = {
+	/*COL.mousePosition = {
 		fun: null,
-		offsetx: 0,
-		offsety: 0,
 		chrome: function(e) {
 			COL.mouseX = e.offsetX;
 			COL.mouseY = e.offsetY;
@@ -1123,7 +1124,7 @@ function newCOL() {
 			COL.mouseX = e.layerX;
 			COL.mouseY = e.layerY;
 		}
-	};
+	};*/
 
 	COL.tools = {
 		matrix:new Float32Array(9),

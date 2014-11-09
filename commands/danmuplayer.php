@@ -68,7 +68,7 @@ function menu(){
 
 <div  class="playermainbody" allowfullscreen="true" type="danmuplayer" videoid="<?php echo $option[0];?>" playersse="<?php echo $_SESSION['access'.$option[0]];?>">
             <div id="videoframe">
-                    <div id="videoframe"></div>
+                    <div id="videoframein"></div>
                  <?php menu();?>
                  <div id="tipbox"></div>
                 <?php videopreload();?>
@@ -133,7 +133,7 @@ function menu(){
                 <div id="progress">
                     <canvas id="danmumark"></canvas>
                     <canvas id="progressbar"></canvas>
-                    <div id="progersscover"></div>
+                    <div id="progresscover"></div>
                 </div>
                 <div id="time"></div>
                 <div id="danmuctrl" title="显示/隐藏弹幕">⊙</div>
