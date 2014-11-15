@@ -1,0 +1,3 @@
+[submodule "SelfDanmakuSite_LiveServer"]
+	path = SelfDanmakuSite_LiveServer
+	url = git@github.com:iTisso/SelfDanmakuSite_LiveServer.git
