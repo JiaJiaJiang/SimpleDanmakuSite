@@ -159,6 +159,56 @@ function out($str){
 	flush();
 	ob_flush();
 }
+function cutdownjs($content){
+    $open='';
+    $randpre=uniqid().uniqid().uniqid();
+    $cou=0;
+    $strarray=array();
+    while(preg_match("/\'|\"|(?:\/\*)|(?:\/\/)/",$content,$open)){ 
+            switch ($open[0]) {
+                case "'":case "\"":/*找到单引号开口，推进字符串数组*/
+                    {
+                        if(preg_match("/(\'|\").*?(?<!\\\\)\\1/s",$content,$strarr)){
+                            $strid=$randpre.$cou;
+                            $cou++;
+                            $strarray[$strid]=$strarr[0];
+                            $content = preg_replace("/(\'|\").*?(?<!\\\\)\\1/s",$strid, $content,1);
+                        }else{
+                       	 	//找不到引号对说明代码有问题，直接退出并报错
+                        		trigger_error("文件引号不成对，文件缩减停止",E_USER_ERROR);
+                        		exit;
+                        }
+                        break;
+                    }
+                case '/*':/*找到块注释开口，删了它*/
+                    {
+                    		if(preg_match('/\/\*.*?\*\//s',$content)){
+                        		$content = preg_replace('/\/\*.*?\*\//s', '', $content,1);
+                    		}else{
+                        		trigger_error("块注释符号不成对，文件缩减停止",E_USER_ERROR);
+                        		exit;
+                        }
+                        break;
+                    }
+                
+                case '//':/*找到行注释开口，删了它*/
+                    {
+                        $content = preg_replace('/\/\/.*$/m', '', $content,1);
+                        break;
+                    }
+            }
+    }
+    $content = preg_replace("/^[\t\s]+/m",'', $content); /*去除每行前的tab和空格*/
+    $content = preg_replace("/^[\r\n]+/m",'', $content); /*去除空白行*/
+    $specahrs='\:\{\=\+\-\*\/\,\.\;\|\?\\\\\[\]\>\<\&\)';
+    $content = preg_replace("/[\t\s]*([$specahrs])[\t\s]*/",'$1', $content);
+    $content = preg_replace("/[\r\n]*([$specahrs])[\r\n]*/",'$1', $content);
+    /*最后把字符串全替换回去*/
+    foreach($strarray as $id => $str){
+        $content = preg_replace("/$id/", $str, $content,1);
+    }
+    return $content;
+}
 function getpluginsjs($dir="player/plugins"){
 	$newline= array("\r\n", "\r");
 	$pluglist=array();
@@ -174,12 +224,7 @@ function getpluginsjs($dir="player/plugins"){
   				if(file_exists("$dir/$file.conf")){
   					$filecontent.=PHP_EOL.file_get_contents("$dir/$file.conf");
   				}
-				//$filecontent = preg_replace('/\/\/[^.*\".*[^\"]+?.*]*$/m',PHP_EOL, $filecontent);
-				//$filecontent = preg_replace('/\/\/[^.*\'.*[^\']+?.*]*$/m',PHP_EOL, $filecontent);
-				$filecontent = preg_replace('/\/\*[\s\S]*?(?<!")\*\/(?!")/', '', $filecontent);
-				$filecontent = preg_replace("/^\t+/m",'', $filecontent); 
-				$filecontent = preg_replace("/^[\r\n]+/m",'', $filecontent); 
-				$filecontent =base64_encode($filecontent);
+				$filecontent =base64_encode(cutdownjs($filecontent));
   				$file=@mb_convert_encoding($file,'utf-8', 'auto');
   				$pluglist[$file]=$filecontent;
 			}
@@ -198,11 +243,11 @@ function getpluginsjs($dir="player/plugins"){
 		}catch(e){
 			Derror("%c"+plugname+"加载失败","background-color: #001F35;color:#fff");
 			Derror(e);
-			//Dlog(base64.decode(plugs[plugname]));
+			Dlog(base64.decode(plugs[plugname]));
 		}
 	}
 ';
-			$content.='};var console_output=false;function Dlog(){if(console_output===true)console.log.apply(console,arguments)}function Dinfo(){if(console_output===true)console.info.apply(console,arguments)}function Derror(){if(console_output===true)console.info.apply(console,arguments)}function Dwarn(){if(console_output===true)console.warn.apply(console,arguments)}function Ddir(){if(console_output===true)console.dir.apply(console,arguments)}';
+			$content.="};var console_output=false;(function(){for(var i in console){eval('window.D'+i+' = function() {if (console_output === true) console.'+i+'.apply(console, arguments)}')}}());";
 			return $content;
 }
 ?>
