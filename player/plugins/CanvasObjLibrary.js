@@ -972,7 +972,6 @@ function newCOL() {
 							}
 
 						}
-
 						break;
 					}
 				}
@@ -1044,7 +1043,6 @@ function newCOL() {
 				cObj = d[i];
 				ct.save();
 				COL.transform(ct, cObj);
-				//ct.transform(1, 0, 0, 1, -cObj.rotatecenter.x, -cObj.rotatecenter.y);
 				ct.save();
 				if (cObj.eventable) {
 					var color = "rgb(" + cObj.pricolor[0] + "," + cObj.pricolor[1] + "," + cObj.pricolor[2] + ")";
@@ -1110,21 +1108,6 @@ function newCOL() {
 			ct.scale(obj.zoom.x, obj.zoom.y);
 		}
 	};
-	/*COL.mousePosition = {
-		fun: null,
-		chrome: function(e) {
-			COL.mouseX = e.offsetX;
-			COL.mouseY = e.offsetY;
-		},
-		ie: function(e) {
-			COL.mouseX = e.offsetX;
-			COL.mouseY = e.offsetY;
-		},
-		firefox: function(e) {
-			COL.mouseX = e.layerX;
-			COL.mouseY = e.layerY;
-		}
-	};*/
 
 	COL.tools = {
 		matrix:new Float32Array(9),
@@ -1145,7 +1128,6 @@ function newCOL() {
 							ta[3] = mp[3] * (mn[0] + mp[4]) + mp[5] * mn[6];
 							ta[4] = mp[3] * mn[1] + mp[4] * mn[4] + mp[5] * mn[7];
 							ta[5] = mp[3] * mn[2] + (mp[4] + mn[8]) * mn[5];
-							//ta[8] = ta[7] = ta[6] = 0;
 							mats[pm] = ta;
 						}
 					}

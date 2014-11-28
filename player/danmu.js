@@ -7,9 +7,8 @@ var SiteDomain = "*";
 var defaultOption = {
 	TwoDCodeDanmu: true,
 	ThreeDCodeDanmu: true,
-	ProgressDanmumark: false,
-	StorkeWidth: 0.4,
-	ShadowWidth: 10,
+	StorkeWidth: 0.25,
+	ShadowWidth: 0,
 	DanmuSpeed: 5,
 	Debug: false,
 	DefaultHideSideBar: false,
@@ -47,6 +46,12 @@ function d_selectall(query) {
 	arr = root.querySelectorAll(arguments[0]);
 	arr.do = select_do;
 	return arr;
+}
+function $Attr(obj,attrs){
+	if(typeof attrs!="object")return;
+	for (var i in attrs){
+		obj[i]=attrs[i];
+	}
 }
 var $ = d_select,
 $$ = d_selectall;
@@ -113,17 +118,6 @@ function getMin_Sec_By_Million(time) {
 	t.sec = Math.floor(time - t.min * 60);
 	return t;
 }
-function setOption(name, value) {
-	if ((typeof name != 'string')) {
-		Derror('错误的设置参数');
-		return false;
-	}
-	if (localstoragesupport) {
-		window.localStorage['playeroption:' + name] = value;
-	} else {
-		setCookie('playeroption:' + name, value);
-	}
-}
 /*function changeTabTo(){
 
 }*/
@@ -145,27 +139,49 @@ function setOption(name, value) {
 		}
 	}
 }*/
-function getOption(name) {
+var optioncache={};
+function setOption(name, value) {
+	if ((typeof name != 'string')) {
+		Derror('错误的设置参数');
+		return false;
+	}
+	if (localstoragesupport) {
+		window.localStorage['playeroption:' + name] = value;
+	} else {
+		setCookie('playeroption:' + name, value);
+	}
+	optioncache[name]=value;
+}
+function getOption(name,type) {
+	if(optioncache[name]!=undefined)return optioncache[name];
+	var value;
 	if (localstoragesupport) {
 		var re = window.localStorage['playeroption:' + name];
 		if (re) {
-			return window.localStorage['playeroption:' + name];
-		} else {
-			if (defaultOption[name]) {
-				return defaultOption[name];
-			} else {
-				return false;
-			}
+			value=re;
 		}
 	} else {
 		var re;
 		if (re = getCookie('playeroption:' + name)) {
-			return re;
-		} else {
+			value=re;
+		} 
+	}
+	if(!value){
 			if (defaultOption[name]) {
-				return defaultOption[name];
+				value=defaultOption[name];
 			} else {
 				return false;
+			}
+		}
+	if(!type){return optioncache[name]=value;}else{
+		switch(type){
+			case "number":{
+				return optioncache[name]=Number(value);
+				break;
+			}
+			case "bool":{
+				return optioncache[name]=value?true:false;
+				break;
 			}
 		}
 	}
@@ -297,7 +313,7 @@ default = (e.defaultvalue || e.defaultvalue === 0) ? e.defaultvalue: e.value;
 		e.preventDefault();
 		if (e.button === 0) {
 			this.ranging = true;
-			var x =  e.layerX;
+			var x = e.offsetX || e.layerX;
 			this.point.style.left = x + 'px';
 			var va = this.min + (x / this.offsetWidth) * (this.max - this.min);
 			this.sendValue(this.name, va);
@@ -314,7 +330,7 @@ default = (e.defaultvalue || e.defaultvalue === 0) ? e.defaultvalue: e.value;
 	}
 	e.onmousemove = function(e) {
 		e.preventDefault();
-		var x = e.layerX;
+		var x = e.offsetX ||e.layerX;
 		if (this.ranging) {
 			this.point.style.left = x + 'px';
 			var va = this.min + (x / this.offsetWidth) * (this.max - this.min);
@@ -412,16 +428,14 @@ function initPlayer(_in_videoid) {
 	function setdom() {
 		player.displaystat = 'normal';
 		player.mainbody = $('.playermainbody[videoid="' + videoid + '"]');
-		mainbody = player.mainbody;
+		var mainbody = player.mainbody;
 		player.controler = $(mainbody, '#controler');
 		player.colorinput = $(mainbody, '#colorinput');
 		player.colorview = $(mainbody, '#colorview');
 		player.sendcover = $(mainbody, '#sendbox #sendboxcover');
 		player.danmuctrl = $(mainbody, '#controler #danmuctrl');
-		//player.danmucount = $(mainbody, '#sidebar #ctrlpannel #danmucount');
 		player.danmuinput = $(mainbody, '#sendbox #danmuinput');
 		player.danmucontantor = $(mainbody, '#danmus');
-		//player.danmulistbutton = $(mainbody, '#sidebar #ctrlpannel #danmulistbutton');
 		player.fullscreen = $(mainbody, '#controler #fullscreen');
 		player.loop = $(mainbody, '#controler #loop');
 		player.optionbutton = $(mainbody, '#optionbutton');
@@ -436,17 +450,11 @@ function initPlayer(_in_videoid) {
 		player.timepoint = $(mainbody, '#controler #progress #timepoint');
 		player.time = $(mainbody, '#controler #time');
 		player.tipbox = $(player.mainbody, '#tipbox');
-		//player.tabpages = d_selectall(mainbody, '.tabpage');
-		//player.ctrlbuttons = d_selectall(mainbody, '.ctrlbutton');
 		player.sidebarSwitch = $(mainbody, '#controler #sidebarctrl');
-		//player.sidebar = $(mainbody, '#sidebar');
 		player.sendbox = $(mainbody, '#sendbox');
-		//player.statboard = $(mainbody, '#sidebar #ctrlpannel #statboard');
-		//player.superdanmubutton = $(mainbody, '#sidebar #ctrlpannel #superdanmubutton');
-		/*player.video = $(player.mainbody, '#videoframe #video');*/
+		player.sendbutton=$(mainbody, '#sendbox #sendbutton');
 		player.videoframe = $(mainbody, '#videoframe');
 		player.videoframein = $(mainbody, '#videoframein');
-		//player.videoiframe = $(player.videoframe, '#videoiframe');
 		player.videopreload = $(player.videoframe, '#videopreload');
 		player.videopreload.textdiv = $(videopreload, '.videopreloadanimation');
 		player.volume = $(mainbody, '#controler #volume');
@@ -454,7 +462,6 @@ function initPlayer(_in_videoid) {
 		player.volumevalue = $(mainbody, '#controler #volume #range div');
 		player.volumepercentage = $(mainbody, '#controler #volume span');
 		player.volumestat = $(mainbody, '#controler #volume #stat');
-		//player.loadinfo.ctx = player.loadinfo.getContext('2d');
 		//makeTabGroup([[player.danmulistbutton, $(player.sidebar, '#danmupool')], [player.superdanmubutton, $(player.sidebar, '#superdanmueditor')], [player.optionbutton, player.optionpannel]]);
 		//makeTabGroup([[$(player.sidebar, '#chooseText'), $(player.sidebar, '#SuperTextTab')], [$(player.sidebar, '#chooseCode'), $(player.sidebar, '#SupeCodeTab')]]);
 		player.danmumark = $(mainbody, "#danmumark");
@@ -485,25 +492,6 @@ function initPlayer(_in_videoid) {
 		},
 		20);
 	}
-	/*function setDefaultOption() {
-		var ver = DanmuPlayerVersion;
-		if (getOption('DefaultSetted') != ver) {
-			var settings = {
-				DefaultSetted: 'true',
-				TwoDCodeDanmu: 'true',
-				ThreeDCodeDanmu: 'true',
-				PlaySpeed: '1',
-				ProgressDanmumark: 'false',
-				DivCommonDanmu: 'false'
-			}
-			for (var st in settings) {
-				if (getOption(st) == false) {
-					setOption(st, settings[st]);
-				}
-			}
-			setOption('DefaultSetted', ver);
-		}
-	}*/
 	function loadoption() {
 		//console.log("加载设置");
 		newstat('加载设置');
@@ -571,33 +559,6 @@ function initPlayer(_in_videoid) {
 			});
 		});
 	}
-	/*function createDanmuDiv(obj) {
-		var danmudiv = c_ele('div');
-		danmudiv.className = 'danmudiv';
-		danmudiv.danmuid = obj.id||"";
-		danmudiv.time = obj.t;
-		danmudiv.type = obj.ty;
-		var time = getMin_Sec_By_Million(obj.t);
-		danmudiv.innerHTML = '<span class="danmutime">' + (time.min < 10 ? '0' + time.min: time.min) + ':' + (time.sec < 10 ? '0' + time.sec: time.sec) + '</span> <span class="danmucontent" title="' + obj.c + '">' + obj.c + '</span> <span class="danmudate">' + obj.d + '</span>';
-		if (obj.ty == 4) {
-			//高级弹幕
-			danmudiv.style.backgroundColor = '#CCC';
-		}
-		if (obj.ty == 5) {
-			//字幕
-			danmudiv.style.backgroundColor = 'green';
-		}
-		player.danmucontantor.appendChild(danmudiv);
-	}*/
-	/*function listdanmu(danmuobj) {
-		if (danmuobj) {
-			createDanmuDiv(danmuobj);
-		} else {
-			for (var i = 0; i < danmulist.length; i++) {
-				createDanmuDiv(danmulist[i]);
-			}
-		}
-	}*/
 	function loaddanmu() {
 		//console.log("加载弹幕");
 		newstat('加载弹幕');
@@ -802,21 +763,19 @@ function initPlayer(_in_videoid) {
 				danmuobj.s = danmuStyle.fontsize;
 				danmuobj.ty = type;
 				danmuobj.sended = true;
-				//danmuobj.hasfirstshowed = 0;
 				var date = new Date();
 				date.day = (date.getDate() < 10) ? '0' + date.getDate() : date.getDate();
 				date.month = date.getMonth() + 1;
 				date.month = (date.month < 10) ? '0' + date.month: date.month;
 				danmuobj.d = date.getFullYear() + '-' + date.month + '-' + date.day;
-				core.danmufuns.initnewDanmuObj(danmuobj);
-				//createDanmuDiv(danmuobj);
-				//core.danmufuns.createCommonDanmu(danmuobj, core.danmufuns.getTunnel(danmuobj.ty, danmuobj.s));
-				danmulist.push(danmuobj);
-				//danmucount++;
-				danmufuns.refreshnumber();
-				//controlfuns.refreshDanmumark();
 				player.EC.fireEvent("senddanmu",danmuobj);
-				autocmd('adddanmu', (videoid), type, c, time, color || 'NULL', danmuStyle.fontsize, playersse,
+				core.danmufuns.initnewDanmuObj(danmuobj);
+				if(!core.player.assvar.isPlaying){
+					core.danmufuns.createCommonDanmu(danmuobj, core.danmufuns.getTunnel(danmuobj.ty, danmuobj.s));
+				}
+				danmulist.push(danmuobj);
+				danmufuns.refreshnumber();
+				autocmd('adddanmu', (videoid), danmuobj.ty, danmuobj.c, danmuobj.t, danmuobj.c || 'NULL', danmuStyle.fontsize, playersse,
 				function(response) {
 					danmuobj.id= Number(response);
 					if (typeof danmuobj.id=="number") {
@@ -857,6 +816,7 @@ function initPlayer(_in_videoid) {
 		},
 		refreshnumber: function() {
 			if (danmulist.length >= 0) {
+				danmucount=danmulist.length;
 				//player.danmucount.innerHTML = '弹幕数:' + danmucount;
 			} else {
 				//player.danmucount.innerHTML = '弹幕错误';
@@ -955,12 +915,10 @@ function initPlayer(_in_videoid) {
 				max = grouparr[groupnum];
 			}
 		}
-		danmumarkct.strokeStyle = "rgb(2, 149, 223)";
-		danmumarkct.fillStyle = "rgba(95, 186, 231,0.5)";
-
+		danmumarkct.strokeStyle = "rgb(2,149,223)";
+		danmumarkct.fillStyle = "rgba(95,186,231,0.5)";
 		danmumarkct.moveTo(0, dmk.height);
 		danmumarkct.lineTo(dmk.width, dmk.height);
-
 		for (var i = grouparr.length; i--;) {
 			if (!grouparr[i]) grouparr[i] = 0;
 			danmumarkct.lineTo(i * 2, (1 - grouparr[i] / max) * th);
@@ -1024,27 +982,7 @@ function initPlayer(_in_videoid) {
 			player.time.innerHTML = '视频错误';
 		}
 	}
-	/*controlfuns.sidebar_hide = function() {
-		if (player.videoframe.className.search('sidebarhide_videoframe') == -1) {
-			//console.log("隐藏边栏");
-			addEleClass(player.videoframe, 'sidebarhide_videoframe');
-			addEleClass(player.sendbox, 'sidebarhide_videoframe');
-			addEleClass(player.sidebar, 'sidebarhide_sidebar');
-			resetprocess();
-		}
-	}
-	controlfuns.sidebar_show = function() {
-		//console.log("显示边栏");
-		removeEleClass(player.videoframe, 'sidebarhide_videoframe');
-		removeEleClass(player.sendbox, 'sidebarhide_videoframe');
-		removeEleClass(player.sidebar, 'sidebarhide_sidebar');
-		window.danmusidebarstat = true;
-		resetprocess();
-	}*/
 
-	/*CB={
-		//currentTime:
-	}*/
 	controlfuns.zimueditMode = {
 		on: function() {},
 		off: function() {}
@@ -1117,37 +1055,6 @@ function initPlayer(_in_videoid) {
 				setOption('ProgressDanmumark', 'false');
 			}
 		},
-		/*DivCommonDanmu: {
-			type: "core",
-			on: function() {
-				core.danmufuns.danmumoverAnimation.stop();
-				core.player.o.divcommondanmu = true;
-				core.danmufuns.danmumoverAnimation.start();
-				core.danmucontainer.display = false;
-				core.danmufuns.clear();
-				core.danmufuns.mover = core.danmufuns.moverfun.div;
-				core.danmufuns.createCommonDanmu =core. danmufuns.createCommonDanmufun.div;
-				//core.console.log(danmufuns.createCommonDanmu)
-				core.danmufuns.clear = core.danmufuns.clearfun.div;
-				player.o.divcommondanmu = true;
-				player.switchs['RealtimeVary'].disable();
-				setOption('DivCommonDanmu', 'true');
-			},
-			off: function() {
-				core.danmufuns.danmulayerAnimation.start();
-				core.danmufuns.danmumoverAnimation.stop();
-				core.player.o.divcommondanmu = false;
-				core.danmufuns.danmumoverAnimation.start();
-				core.danmucontainer.display = true;
-				core.danmufuns.clear();
-				core.danmufuns.mover = core.danmufuns.moverfun.canvas;
-				core.danmufuns.createCommonDanmu = core.danmufuns.createCommonDanmufun.canvas;
-				core.danmufuns.clear = core.danmufuns.clearfun.canvas;
-				player.o.divcommondanmu = false;
-				player.switchs['RealtimeVary'].enable();
-				setOption('DivCommonDanmu', 'false');
-			}
-		}*/
 	};
 	rangeCenter = {
 		PlaySpeed: function(value) {
@@ -1203,9 +1110,7 @@ function initPlayer(_in_videoid) {
 		});
 		aEL(window, 'resize',
 		function() {
-			if (isFullscreen() || player.displaystat == 'fullpage') {
 				resetprocess();
-			}
 		});
 		aEL(player.play_pause, 'click',
 		function(e) {
@@ -1217,10 +1122,10 @@ function initPlayer(_in_videoid) {
 				core.video.pause();
 			}
 		});
-		aEL(player.mainbody, 'resize',
+		/*aEL(player.mainbody, 'resize',
 		function() {
 			resetprocess();
-		});
+		});*/
 
 		aEL(player.progress, 'contextmenu',
 		function(e) {
@@ -1316,7 +1221,7 @@ function initPlayer(_in_videoid) {
 				}
 			}
 		});
-		aEL($(player.mainbody, '#sendbox #sendbutton'), 'click',
+		aEL(player.sendbutton, 'click',
 		function(e) {
 			danmufuns.send();
 		});
@@ -1443,88 +1348,20 @@ function initPlayer(_in_videoid) {
 				Dinfo('取消静音');
 			}
 		});
-		/*aEL(video, 'play',
-		function() {
-			//console.log("事件:播放");
-			controlfuns.refreshprogresscanvas();
-			//controlfuns.play();
-		});
-		aEL(video, 'pause',
-		function() {
-			//console.log("事件:暂停");
-			//newstat("暂停");
-			player.assvar.isPlaying = false;
-			controlfuns.pause();
-		});
-		aEL(video, 'ended',
-		function() {
-			console.log('事件:播放结束');
-			controlfuns.ended();
-		});
-		aEL(video, 'loadedmetadata',
-		function() {
-			console.log('事件:加载视频元信息');
-			player.o.totaltime = video.duration;
-			//获取媒体总时间
-			controlfuns.refreshtime();
-			controlfuns.refreshDanmuMark();
-			videoinfo.width=player.video.offsetWidth;
-			videoinfo.height=player.video.offsetHeight;
-			videoinfo.CrownHeight=videoinfo.width/videoinfo.height;
-			//console.log("宽:"+videoinfo.width+" 高:"+videoinfo.height+" 宽高比:"+videoinfo.CrownHeight)
-			player.video.style.height=player.video.style.width="100%";
-			resetprocess();
-			player.videopreload.parentNode.removeChild(player.videopreload);
-		});
+		
 
-*/
-
-		/*消息传递处理中心*/
-		/*aEL(window, 'message',
-		function(e) {
-			//console.log(e.data);
-			if (SiteDomain == "*" || (SiteDomain.search(e.origin) != -1)) {
-				if (e.data.type) {
-					switch (e.data.type) {
-					case "EVENT":
-						{
-							switch (e.data.msg) {
-							case "ready":
-								{
-									
-									break;
-								}
-							}
-							break;
-						}
-					case "MESSAGE":
-						{
-							console.log(e.data.msg);
-							break;
-						}
-					}
-				} else {
-					console.log(e);
-				}
-			}
-		});*/
 	}
 	/*来自框架里视频的事件*/
 	function videoevents() {
 		video = core.player.video;
 		aEL(player.danmuctrl, 'click',
 		function() {
-			if (core.player.danmuframe.style.display == 'none') {
-				//danmufuns.show();
+			if (core.player.danmucontainer.display ===true) {
+				core.player.danmucontainer.display=false;
 			} else {
-				//danmufuns.hide();
-				//danmufuns.clear();
+				core.player.danmucontainer.display=true;
 			}
 		});
-		/*aEL(player.videoiframe, 'mouseover',
-			function() {
-				core.focus();
-			});*/
 
 		var progressmousekey = false,
 		volumemousekey = false;
@@ -1537,7 +1374,7 @@ function initPlayer(_in_videoid) {
 		function(e) {
 			e.preventDefault();
 			if (!core) return;
-			var x = e.layerX;
+			var x = e.offsetX ||e.layerX;
 			var time = x / player.progress.offsetWidth * core.player.video.duration;
 			if (progressmousekey) {
 				core.player.video.currentTime = time;
@@ -1610,6 +1447,7 @@ function initPlayer(_in_videoid) {
 			controlfuns.refreshtime();
 			controlfuns.refreshDanmuMark();
 			player.videopreload.parentNode.removeChild(player.videopreload);
+			player.EC.fireEvent("video_loadedmetadata",player);
 		});
 		aEL(video, 'volumechange',
 		function(e) {

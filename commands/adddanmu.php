@@ -42,6 +42,9 @@ if (count($option) == 7) {
         echo "Error:时间错误";
         errorlog("adddanmu","Error time");
         exit;
+    }else {
+        $time=intval($time);
+        $time=floor($time/10)*10;
     }
     if ($color != "NULL") {
             preg_match("/[\w\d]{6}/i", $color, $matches);
