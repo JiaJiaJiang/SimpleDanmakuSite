@@ -4,6 +4,9 @@ session_start();
 if(!@$_SESSION['logged'])$_SESSION['logged']=false;
 function connectSQL(){
 	Global $SQL;
+	if(@$SQL!=NULL){
+		return true;
+	}
 	$SQL=@mysqli_connect(sqlAddress,sqlUser,sqlPass,dbname);
 if (!$SQL)
   {
@@ -17,6 +20,18 @@ if (!$SQL)
   }
   $SQL->query("SET NAMES utf8");
   return true;
+}
+function ColumnExists($table,$key){
+	Global $SQL;
+	if(!$SQL){
+		connectSQL();
+	}
+	$result=$SQL->query("describe $table $key");
+	$result=$result->fetch_array();
+      if($result===NULL){
+      	return false;
+      }
+      return true;
 }
 function getDomain($url){
 	preg_match("/.+:\/\/(.+)\/*/", $url,$m);

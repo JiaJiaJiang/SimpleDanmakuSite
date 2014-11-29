@@ -36,6 +36,8 @@ if($SQL->query("CREATE TABLE IF NOT EXISTS `".dbname."`.`video` (
   `title` text NOT NULL,
   `address` mediumtext NOT NULL,
   `count` int(10) unsigned NOT NULL DEFAULT '0',
+  `coveraddress` mediumtext DEFAULT NULL,
+  `description` mediumtext DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ")===true){

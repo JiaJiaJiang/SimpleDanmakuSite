@@ -86,6 +86,10 @@ if ($command) {
                 if($argname){//查找参数名
                     if($ind<$count-1){//如果不是最后一个
                         //如果下一个不是参数名或标记就当作参数值
+                        if(array_key_exists($argname,$args)){
+                            trigger_error("参数名重复：$argname",E_USER_ERROR);
+                            exit;
+                        }
                         if(!isArgName($options[$ind+1])||!isFlag($options[$ind+1])){
                             $args[$argname]=$options[$ind+1];
                         }else{//不然使参数名对应的值为""
