@@ -28,7 +28,7 @@ needLogin();
 	clearplaycount			【控制台】清除指定id视频的播放数
 	cleardanmu			【控制台】清除某个视频的所有弹幕
 	commanddir			【控制台】查看commands文件夹下的命令
-	deldanmu			【控制台】使用id删除一条弹幕
+	deldanmu			【控制台】使用id删除弹幕
 	delvideo			【控制台】删除视频
 	editvideo			【控制台】修改视频信息
 	findvideo			【控制台】查找视频
@@ -40,6 +40,7 @@ needLogin();
 	listdanmu			【控制台】列出指定视频的所有弹幕       
 	login 				【控制台】登录(无help)
 	teststr				【控制台】测试命令到服务器后是什么样子(无help)
+	updateDB			【控制台】升级数据库
 	vinfoframe			【控制台】获取某id视频的视频信息页面iframe代码
 
 `号的使用:
