@@ -156,6 +156,7 @@ font-family: "微软雅黑","黑体";
 				}else{
 					div.style.opacity=0.4;
 				}
+				div.style.backgroundImage="url('"+cvadd+"')";
 			}
 			div.style.backgroundImage="url('"+cvadd+"')";
 			bgimg.src=cvadd;
