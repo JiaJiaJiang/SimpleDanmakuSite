@@ -73,7 +73,7 @@ if ($command) {
         {
             global $options;
             global $cmdstring;
-            $cmdstring=$cmd;
+            $cmdstring=base64_decode($cmd);
             $options = explode(" ", $cmd);
             $script  =unescape(recovminus(str_replace("%plus","+",array_shift($options))));
             //echo $options[2]."\n";

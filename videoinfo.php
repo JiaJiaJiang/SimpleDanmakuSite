@@ -145,12 +145,11 @@ font-family: "微软雅黑","黑体";
 	<script>
 	var body=document.body,cvadd="<?php echo $cv;?>";
 	if(cvadd){
-		window.onmouseover=function(){
+		var load=function(){
 			var bgimg=new Image(),div=document.createElement("div"),on=true;
 			div.id="bg";
 			body.appendChild(div);
 			bgimg.onload=function(){//利用统一资源机制把此img和背景设置成同样的资源，此处onload即表示背景图也加载好了,我真是太机智了
-				console.log("背景已载入");
 				if(on==true){
 					div.style.opacity=0.7;
 				}else{
@@ -169,6 +168,7 @@ font-family: "微软雅黑","黑体";
 				div.style.opacity=0.4;
 			}
 		}
+		window.onload=load;
 	}
 	</script>
 	<?php } ?>

@@ -10,14 +10,14 @@ if (@$option[0]) {
     if (connectSQL()) {
         Global $SQL;
         $stmt = mysqli_stmt_init($SQL);
-        mysqli_stmt_prepare($stmt, "SELECT id,title,address,count FROM video WHERE title REGEXP ?");
+        mysqli_stmt_prepare($stmt, "SELECT id,title,address,count,coveraddress,description FROM video WHERE title REGEXP ?");
         mysqli_stmt_bind_param($stmt, "s", $option[0]);
         mysqli_stmt_execute($stmt);
-        mysqli_stmt_bind_result($stmt,$id,$title,$address, $count);
+        mysqli_stmt_bind_result($stmt,$id,$title,$address, $count,$coveraddress,$description);
         echo "<table>";
-            out("<tr><th>ID</th><th>播放数</th><th>标题</th><th>地址</th></tr>");
+            out("<tr><th>ID</th><th>播放数</th><th>标题</th><th>地址</th><th>封面地址</th><th>描述</th></tr>");
         while(mysqli_stmt_fetch($stmt)){
-            out("<tr><td>".$id."</td><td>".$count."</td><td>".$title."</td><td>".$address."</td></tr>");
+            out("<tr><td>".$id."</td><td>".$count."</td><td>".$title."</td><td>".$address."</td><td>".$coveraddress."</td><td>".$description."</td></tr>");
         }
         echo "</table>";
        out("查找完毕,共".$stmt->num_rows."条");
