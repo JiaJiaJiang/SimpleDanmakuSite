@@ -74,7 +74,7 @@ if ($command) {
             global $options;
             global $cmdstring;
             $cmdstring=base64_decode($cmd);
-            $options = explode(" ", $cmd);
+            $options = explode(" ", $cmdstring);
             $script  =unescape(recovminus(str_replace("%plus","+",array_shift($options))));
             //echo $options[2]."\n";
             $count=count($options);

@@ -45,7 +45,7 @@ function cmd(command, bool, callback) { //bool为是否需要等待返回参数
 	command=transarg(command);
 	command = command.replace(/(^\s*)|(\s*$)/g, "");
 	command= command.replace("+", "%plus");
-	xmlhttp.send("cmd=" + base64.encode(command);
+	xmlhttp.send("cmd=" + base64.encode(command));
 	if(cmd.output===true)console.log("%c命令:" + command,"background:#4FB5FF;");
 	if (bool) {
 		while (! (xmlhttp.responseText)) {}
