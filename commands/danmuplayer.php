@@ -76,7 +76,7 @@ function menu(){
                     <span>100</span>
                 </div>
                 <div id="loop" title="循环" class="button">∞</div>
-                <div id="info" class="button">〄<div id="infobox"></div></div>
+                <div id="unknownbutton" class="button">〄</div>
                 <div id="fullscreen" title="全屏" class="button">全<div id="fullpage" title="填满页面">页</div></div>
             </div>
         </div><?php

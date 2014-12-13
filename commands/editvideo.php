@@ -3,7 +3,8 @@ needLogin();
 global $args;
 header("Content-Type:text/html", true);
 if(hasFlag("help")){
-    echo "editvideo用于修改视频\n         <b>editvideo -id 视频id [-t 视频标题] [-url 视频地址]</b>\nt(标题),url(视频源),cv(封面地址),des(视频描述)参数至少需要一个\n此命令不能改id和播放数";
+    echo "editvideo用于修改视频\n         <b>editvideo -id 视频id 其他参数</b>\n    -t 视频标题\n    -url 视频地址\n    -cv 封面地址\n    -des 视频描述
+    \nt(标题),url(视频源),cv(封面地址),des(视频描述)参数至少需要一个\n此命令不能改id和播放数";
     exit;
 }
 if (@$args["id"]) {
