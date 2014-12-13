@@ -34,8 +34,10 @@ function ColumnExists($table,$key){
       return true;
 }
 function getDomain($url){
-	preg_match("/.+:\/\/(.+)\/*/", $url,$m);
-	return $m[1]?$m[1]:false;
+	if(preg_match("/^(?:http|https)\:\/\/([^\/\:]+)?\/{0,1}/", $url,$m)){
+		return $m[1];
+	}
+	return false;
 }
 function logfile($filename,$log){
 	$f=fopen("log/".$filename,"a");
@@ -262,7 +264,7 @@ function getpluginsjs($dir="player/plugins"){
 		}
 	}
 ';
-			$content.="};var console_output=false;(function(){for(var i in console){eval('window.D'+i+' = function() {if (console_output === true) console.'+i+'.apply(console, arguments)}')}}());";
+			$content.="};window.console_output=false;(function(){for(var i in console){eval('window.D'+i+' = function() {if (console_output === true) console.'+i+'.apply(console, arguments)}')}}());";
 			return $content;
 }
 ?>

@@ -1,3 +1,0 @@
-EC.addEvent("playerloaded",function(){
-	
-});

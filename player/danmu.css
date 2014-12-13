@@ -6,24 +6,6 @@ html {
  filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
 	-webkit-filter: grayscale(100%);
 }
-.divbottomdanmu {
-	text-align: left !important;
-}
-.divtopdanmu {
-	text-align: left !important;
-}
-.divtextdanmu {
-	font-family: "'微软雅黑' "黑体"";
-	white-space: pre;
-	letter-spacing: 0;
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-o-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-	/*transition: right 5s linear, left 5s linear;*/
-}
 .danmuContextMenu {
 	background-color: rgba(255,255,255,0.8);
 	border: 0.2px solid rgba(211, 188, 188, 0.91);
@@ -285,7 +267,7 @@ z-index: 3;
 	cursor: pointer;
 	height: 100%;
 	width: 25px;
-	
+	user-select: none;
 }
 .playermainbody #controler #danmuctrl {
 	right: 100px;
@@ -294,6 +276,7 @@ z-index: 3;
 }
 .playermainbody #controler #volume {
 	right: 75px;
+	z-index: 300;
 }
 .playermainbody #controler #danmuctrl:hover, .playermainbody #controler #volume:hover {
 	overflow: visible;
@@ -348,15 +331,15 @@ z-index: 3;
 .playermainbody #controler #loop:hover {
 	color: #33B888 !important;
 }
-.playermainbody #controler #info{
+.playermainbody #controler #unknownbutton{
 	right: 25px;
 	font-size: 16px;
 	line-height: 25px;
 }
-.playermainbody #controler #info:hover{
+/*.playermainbody #controler #info:hover{
 	overflow: visible;
-}
-.playermainbody #controler #infobox{
+}*/
+/*.playermainbody #controler #infobox{
 	position: absolute;
 background-color: rgba(255, 255, 255, 0.75);
 height: 100px;
@@ -368,7 +351,7 @@ right: -22px;
 border: 1px solid #C0C0C0;
 box-shadow: 1px 1px 6px #CAADAD;
 cursor: default;
-}
+}*/
 .playermainbody #controler #fullscreen {
 	right: 0px;
 	font-size: 16px;
@@ -984,6 +967,7 @@ height: 220px;
 	position: absolute;
 bottom: 30px;
 right: 0px;
+user-select: none;
 }
 #tipbox .tip{
 position: relative;

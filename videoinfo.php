@@ -24,16 +24,19 @@ foreach ($get as $key => $value) {
 		<meta charset="utf-8"/>
 		<title><?php echo $title;?></title>
 		<style>
+		html{
+			overflow: hidden;
+		}
 		#title{
 			margin: 0px 7px;
 		}
 		#info{
 padding-left: 30px;
 		}
-		#go{
-position: fixed;
+		.go{
+			position: fixed;
 bottom: 10px;
-right: 10px;
+right: 80px;
 display: block;
 background-color: #66ccff;
 color: #fff;
@@ -45,9 +48,21 @@ line-height: 50px;
 text-align: center;
 text-decoration: none;
 transition:background-color 0.5s;
+
 		}
-		#go:hover{
+		#gomini{
+right: 80px;
+background-color: #66ccff;
+		}
+		#gofull{
+right: 10px;
+background-color: #406C81;
+		}
+		#gomini:hover{
 background-color: #74B0CE;
+		}
+		#gofull:hover{
+background-color: #6293A9;
 		}
 		#videostat{
 			width: 400px;
@@ -88,15 +103,8 @@ font-size: medium;
 color: #594D4D;
 		}
 		</style>
-		<script>
-		function openFullPlayer(){
-			var w=window.open("player/?id=<?php echo $vid;?>",'<?php echo $title;?>',"width=900,height=580,menubar=no,toolbar=no, location=no,directories=no,status=no,scrollbars=no,resizable=yes");
-			w.document.title='<?php echo $title;?>';
-		}
-		</script>
 	</head>
 	<body>
-	<div id="newwindowplayerbutton" onclick="openFullPlayer()">⿻</div>
 	<div id="videostat">
 		<h1 id="title"><?php echo $title;?></h1>
 		<div id="info"><span>播放数:<?php echo $count;?></span>   <span>弹幕数:<?php echo $danmucount;?></span>
@@ -104,7 +112,8 @@ color: #594D4D;
 		</div>
 		<h1 id="vid"><i>#<?php echo $vid;?></i></h1>
 	</div>
-		<a id="go" target="_self" href="<?php echo 'miniplayer/player.php?id='.$vid;?>">载入</a>
+		<a id="gomini" class="go" target="_self" href="<?php echo 'miniplayer/player.php?id='.$vid;?>">简易</a>
+		<a id="gofull" class="go" target="_self" href="<?php echo 'player/?id='.$vid;?>">完整</a>
 	</body>
 	<?php if(@$cv){?>
 	<style>

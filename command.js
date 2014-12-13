@@ -30,22 +30,17 @@ function cmd(command, bool, callback) { //bool为是否需要等待返回参数
 				break;
 			}
 		}
-		/*if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-			if (!bool) {
-				if(cmd.output===true)
-				console.info("%c异步接收到了命令:" + command + "的成功回应\n执行回调函数","background:#4FB5FF;");
-				if(typeof(callback)=="function"){
-					callback(xmlhttp.responseText);
-				}
-			}
-		}*/
 	}
 	xmlhttp.open("POST", cmd_url,!bool);
 	xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	command=transarg(command);
 	command = command.replace(/(^\s*)|(\s*$)/g, "");
-	command= command.replace("+", "%plus");
-	xmlhttp.send("cmd=" + base64.encode(command));
+	//command= command.replace("+", "%plus");
+	query="cmd=" + base64.encode(command);
+	if(window.signasconsole===true){
+		query+="&fromconsole=1";
+	}
+	xmlhttp.send(query);
 	if(cmd.output===true)console.log("%c命令:" + command,"background:#4FB5FF;");
 	if (bool) {
 		while (! (xmlhttp.responseText)) {}
@@ -55,7 +50,7 @@ function cmd(command, bool, callback) { //bool为是否需要等待返回参数
 cmd.output=false;
 function cmd_unitrans(string) {
 	if (typeof(string) == "string") {
-		return  escape(escape(string));
+		return  escape(string);
 	}else if(typeof string=="number"){
 		return string;
 	}

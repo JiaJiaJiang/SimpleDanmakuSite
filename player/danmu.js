@@ -71,26 +71,11 @@ var _string_ = {
 };
 function aEL(dom, e, fun) {
 	//添加事件监听
-	if (dom.addEventListener) dom.addEventListener(e, fun, false);
-	else if (dom.attachEvent) dom.attachEvent('on' + e, fun);
-	else {
-		dom['on' + e] = fun;
-	}
+	dom.addEventListener(e, fun, false)
 }
-function guessmime(url) {
-	//猜测媒体mime类型
-	var mimelist = {
-		'mp4': 'video/mp4',
-		'mp3': 'audio/mp3',
-		'wav': 'audio/x-wav',
-		'webm': 'video/webm'
-	};
-	var ext = getext(url);
-	if (mimelist[ext]) {
-		return mimelist[ext];
-	} else {
-		return false;
-	}
+function rEL(dom, e, fun) {
+	//删除事件监听
+	dom.removeEventListener(e, fun);
 }
 function getext(url) {
 	//获取后缀
@@ -107,16 +92,13 @@ function getext(url) {
 }
 function getMin_Sec(time) {
 	var t = {};
-	t.min = Math.floor(time / 60);
-	t.sec = Math.floor(time - t.min * 60);
+	t.min =(time-(time%60))/60;
+	t.sec = Math.floor(time%60);
 	return t;
 }
 function getMin_Sec_By_Million(time) {
 	time /= 1000;
-	var t = {};
-	t.min = Math.floor(time / 60);
-	t.sec = Math.floor(time - t.min * 60);
-	return t;
+	return getMin_Sec(time);
 }
 /*function changeTabTo(){
 
@@ -411,10 +393,10 @@ function initPlayer(_in_videoid) {
 	ready = false;
 	var playersse;
 	player.EC = new SimpleEvent();
-	player.EC.debug=true;
 	if (typeof loadplugins == "function") {
 		loadplugins(player.EC);
-		player.EC.fireEvent("pluginsloaded");
+		player.EC.fireEvent("pluginsloaded",player);
+		//插件行为从这里开始有效
 	}
 	player.videoid=videoid;
 	var core;
@@ -438,8 +420,6 @@ function initPlayer(_in_videoid) {
 		player.danmucontantor = $(mainbody, '#danmus');
 		player.fullscreen = $(mainbody, '#controler #fullscreen');
 		player.loop = $(mainbody, '#controler #loop');
-		player.optionbutton = $(mainbody, '#optionbutton');
-		player.optionpannel = $(mainbody, '#optionpannel');
 		player.play_pause = $(mainbody, '#play_pause');
 		player.playcount = $(mainbody, '#playcount');
 		player.progress = $(mainbody, '#progress');
@@ -473,6 +453,7 @@ function initPlayer(_in_videoid) {
 		playersse = player.mainbody.getAttribute("playersse"); 
 		(player.core = new window.danmuplayer.DanmuCore()).bind(player);
 		player.EC.fireEvent("CoreReady",player);
+		console.dir(player);
 	}
 	/*function setPlayOption() {
 		player.o.recycle = false;
@@ -1537,6 +1518,4 @@ function initPlayer(_in_videoid) {
 
 var i喵i = '不要卖萌눈_눈';
 /*自定义事件发射器*/
-eval(function(p,a,c,k,e,r){e=function(c){return c.toString(36)};if('0'.replace(0,e)==0){while(c--)r[e(c)]=k[c];k=[function(e){return r[e]||e}];e=function(){return'[3-9abd-u]'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('b SimpleEvent(){3.n=1;3.6={};3.9=false;3.a="background-color: #C1D579;";3.addEvent=b(4,g,h){5(e 4!="o"){5(3.9===7)d.p("%c事件名不是字符串:"+4,3.a);i}5(!3.6[4]||e 3.6[4].q!="b"){3.6[4]=[];5(3.9===7)d.j("%c添加事件:"+4,3.a)}5(h===7)g.h=7;i[4,3.6[4][3.6[4].push(g)-1].id=3.n++,g]};3.removeEvent=b(8){5(!8||e 8!="r"||!8.q)i;5(3.6[8[0]]&&3.6[8[0]].s){t k=3.6[8[0]].s(8[2]);5(k>=0){3.6.splice(k,1);5(3.9===7)d.j("%c移除事件:"+8[0],3.a)}}l 5(3.9===7){d.u("%c移除未定义的事件:"+8[0],3.a)}};3.fireEvent=b(4,m){5(e 4!="o"){5(3.9===7)d.p("%c事件名不是字符串:"+4,3.a);i}5(3.9===7){d.j("%c发射事件:"+4,3.a)}5((e 3.6[4])=="r"){t th=3;5(3.9===7){d.j("%c事件触发事件列表:"+4,3.a)}3.6[4].forEach(b(f){5(e f=="b"){5(f.h===7){f(m)}l{setTimeout(b(){f(m)},0)}}})}l 5(3.9===7){d.u("%c无事件处理:"+4,3.a)}}}',[],31,'|||this|ename|if|eventlist|true|eobj|debug|spebgcolor|function||console|typeof|value|fun|block|return|info|ind|else|argobj|eventid|string|error|join|object|indexOf|var|warn'.split('|'),0,{}));
-
-(function(global){'use strict';var log=function(){},padding='=',chrTable='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',binTable=[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,62,-1,-1,-1,63,52,53,54,55,56,57,58,59,60,61,-1,-1,-1,0,-1,-1,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,-1,-1,-1,-1,-1,-1,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,-1,-1,-1,-1,-1];if(global.console&&global.console.log){log=function(message){global.console.log(message)}}function utf8Encode(str){var bytes=[],offset=0,length,char;str=encodeURI(str);length=str.length;while(offset<length){char=str[offset];offset+=1;if('%'!==char){bytes.push(char.charCodeAt(0))}else{char=str[offset]+str[offset+1];bytes.push(parseInt(char,16));offset+=2}}return bytes}function utf8Decode(bytes){var chars=[],offset=0,length=bytes.length,c,c2,c3;while(offset<length){c=bytes[offset];c2=bytes[offset+1];c3=bytes[offset+2];if(128>c){chars.push(String.fromCharCode(c));offset+=1}else if(191<c&&c<224){chars.push(String.fromCharCode(((c&31)<<6)|(c2&63)));offset+=2}else{chars.push(String.fromCharCode(((c&15)<<12)|((c2&63)<<6)|(c3&63)));offset+=3}}return chars.join('')}function encode(str){var result='',bytes=utf8Encode(str),length=bytes.length,i;for(i=0;i<(length-2);i+=3){result+=chrTable[bytes[i]>>2];result+=chrTable[((bytes[i]&0x03)<<4)+(bytes[i+1]>>4)];result+=chrTable[((bytes[i+1]&0x0f)<<2)+(bytes[i+2]>>6)];result+=chrTable[bytes[i+2]&0x3f]}if(length%3){i=length-(length%3);result+=chrTable[bytes[i]>>2];if((length%3)===2){result+=chrTable[((bytes[i]&0x03)<<4)+(bytes[i+1]>>4)];result+=chrTable[(bytes[i+1]&0x0f)<<2];result+=padding}else{result+=chrTable[(bytes[i]&0x03)<<4];result+=padding+padding}}return result}function decode(data){var value,code,idx=0,bytes=[],leftbits=0,leftdata=0;for(idx=0;idx<data.length;idx++){code=data.charCodeAt(idx);value=binTable[code&0x7F];if(-1===value){log('WARN: Illegal characters (code='+code+') in position '+idx)}else{leftdata=(leftdata<<6)|value;leftbits+=6;if(leftbits>=8){leftbits-=8;if(padding!==data.charAt(idx)){bytes.push((leftdata>>leftbits)&0xFF)}leftdata&=(1<<leftbits)-1}}}if(leftbits){log('ERROR: Corrupted base64 string');return null}return utf8Decode(bytes)}global.base64={encode:encode,decode:decode}}(window));
+eval(function(p,a,c,k,e,r){e=function(c){return c.toString(36)};if('0'.replace(0,e)==0){while(c--)r[e(c)]=k[c];k=[function(e){return r[e]||e}];e=function(){return'[3-9abd-u]'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('b SimpleEvent(){3.n=1;3.6={};3.9=false;3.a="background-color: #C1D579;";3.addEvent=b(4,g,h){5(e 4!="o"){5(3.9===7)d.p("%c事件名不是字符串:"+4,3.a);i}5(!3.6[4]||e 3.6[4].q!="b"){3.6[4]=[];5(3.9===7)d.j("%c添加事件:"+4,3.a)}5(h===7)g.h=7;i[4,3.6[4][3.6[4].push(g)-1].id=3.n++,g]};3.removeEvent=b(8){5(!8||e 8!="r"||!8.q)i;5(3.6[8[0]]&&3.6[8[0]].s){t k=3.6[8[0]].s(8[2]);5(k>=0){3.6[8[0]].splice(k,1);5(3.9===7)d.j("%c移除事件:"+8[0],3.a)}}l 5(3.9===7){d.u("%c移除未定义的事件:"+8[0],3.a)}};3.fireEvent=b(4,m){5(e 4!="o"){5(3.9===7)d.p("%c事件名不是字符串:"+4,3.a);i}5(3.9===7){d.j("%c发射事件:"+4,3.a)}5((e 3.6[4])=="r"){t th=3;5(3.9===7){d.j("%c事件触发事件列表:"+4,3.a)}3.6[4].forEach(b(f){5(e f=="b"){5(f.h===7){f(m)}l{setTimeout(b(){f(m)},0)}}})}l 5(3.9===7){d.u("%c无事件处理:"+4,3.a)}}}',[],31,'|||this|ename|if|eventlist|true|eobj|debug|spebgcolor|function||console|typeof|value|fun|block|return|info|ind|else|argobj|eventid|string|error|join|object|indexOf|var|warn'.split('|'),0,{}));

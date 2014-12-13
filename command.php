@@ -14,6 +14,10 @@ if ($command) {
     }
     header("Access-Control-Allow-Origin:".$allow);
     /*在这里增加一些命令或许可检测*/
+    if(array_key_exists("fromconsole",$_GET)||array_key_exists("fromconsole",$_POST)){
+        global $fromconsole;
+        $fromconsole=true;
+    }
     if (true) { //查找指令前判断是否要执行
         function decodeChar($val){
             $val=$val[0];
@@ -75,8 +79,7 @@ if ($command) {
             global $cmdstring;
             $cmdstring=base64_decode($cmd);
             $options = explode(" ", $cmdstring);
-            $script  =unescape(recovminus(str_replace("%plus","+",array_shift($options))));
-            //echo $options[2]."\n";
+            $script  =unescape(recovminus(array_shift($options)));
             $count=count($options);
             //查找有名字的参数
             global $args;
@@ -111,13 +114,13 @@ if ($command) {
             //恢复参数值
             for ($ind = $count; $ind--; ) {
                 //恢复字符串和+号
-                $options[$ind] =unescape(recovminus(str_replace("%plus","+",$options[$ind])));
+                $options[$ind] =unescape(recovminus($options[$ind]));
             }
             foreach ($args as $key => $value) {
-                 $args[$key] =unescape(recovminus(str_replace("%plus","+",$value)));
+                 $args[$key] =unescape(recovminus($value));
             }
             foreach ($flags as $key => $value) {
-                $flags[$key] =unescape(recovminus(str_replace("%plus","+",$value)));
+                $flags[$key] =unescape(recovminus($value));
             }
 
             if (is_file("commands/" . $script . ".php")) {
