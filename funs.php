@@ -4,6 +4,9 @@ session_start();
 if(!@$_SESSION['logged'])$_SESSION['logged']=false;
 function connectSQL(){
 	Global $SQL;
+	if(@$SQL!=NULL){
+		return true;
+	}
 	$SQL=@mysqli_connect(sqlAddress,sqlUser,sqlPass,dbname);
 if (!$SQL)
   {
@@ -18,9 +21,23 @@ if (!$SQL)
   $SQL->query("SET NAMES utf8");
   return true;
 }
+function ColumnExists($table,$key){
+	Global $SQL;
+	if(!$SQL){
+		connectSQL();
+	}
+	$result=$SQL->query("describe $table $key");
+	$result=$result->fetch_array();
+      if($result===NULL){
+      	return false;
+      }
+      return true;
+}
 function getDomain($url){
-	preg_match("/.+:\/\/(.+)\/*/", $url,$m);
-	return $m[1]?$m[1]:false;
+	if(preg_match("/^(?:http|https)\:\/\/([^\/\:]+)?\/{0,1}/", $url,$m)){
+		return $m[1];
+	}
+	return false;
 }
 function logfile($filename,$log){
 	$f=fopen("log/".$filename,"a");
@@ -247,7 +264,7 @@ function getpluginsjs($dir="player/plugins"){
 		}
 	}
 ';
-			$content.="};var console_output=false;(function(){for(var i in console){eval('window.D'+i+' = function() {if (console_output === true) console.'+i+'.apply(console, arguments)}')}}());";
+			$content.="};window.console_output=false;(function(){for(var i in console){eval('window.D'+i+' = function() {if (console_output === true) console.'+i+'.apply(console, arguments)}')}}());";
 			return $content;
 }
 ?>

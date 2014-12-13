@@ -28,7 +28,7 @@ needLogin();
 	clearplaycount			【控制台】清除指定id视频的播放数
 	cleardanmu			【控制台】清除某个视频的所有弹幕
 	commanddir			【控制台】查看commands文件夹下的命令
-	deldanmu			【控制台】使用id删除一条弹幕
+	deldanmu			【控制台】使用id删除弹幕
 	delvideo			【控制台】删除视频
 	editvideo			【控制台】修改视频信息
 	findvideo			【控制台】查找视频
@@ -40,6 +40,7 @@ needLogin();
 	listdanmu			【控制台】列出指定视频的所有弹幕       
 	login 				【控制台】登录(无help)
 	teststr				【控制台】测试命令到服务器后是什么样子(无help)
+	updateDB			【控制台】升级数据库
 	vinfoframe			【控制台】获取某id视频的视频信息页面iframe代码
 
 `号的使用:
@@ -48,7 +49,6 @@ needLogin();
 `号在普通键盘上的ESC键下面，大概长这个样：<div style="display: inline-block;border: 1px solid #fff;width: 40px;height: 40px;line-height: 20px;font-size: 20px;padding: 5px;">~<br>`</div>
 如果出现这样【命令 `lala sdad asdah aklsdhf a什么的】的情况，将会把从`号开始的所有字符当作一个参数转义，你可以在发送命令前用【echo `你要发的命令`】来预览将会发给服务器的转义后命令
 也可以用teststr命令代替原命令查看服务器接收到的具体参数
-<span class="red">如果你的命令里包含&符号，请务必加上`来转义，否则命令无法正常使用</span>
 
 <span class="red">所有命令均无再次确认过程和撤销技能，所以请不要手滑</span>
 

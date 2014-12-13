@@ -14,6 +14,10 @@ if ($command) {
     }
     header("Access-Control-Allow-Origin:".$allow);
     /*在这里增加一些命令或许可检测*/
+    if(array_key_exists("fromconsole",$_GET)||array_key_exists("fromconsole",$_POST)){
+        global $fromconsole;
+        $fromconsole=true;
+    }
     if (true) { //查找指令前判断是否要执行
         function decodeChar($val){
             $val=$val[0];
@@ -73,10 +77,9 @@ if ($command) {
         {
             global $options;
             global $cmdstring;
-            $cmdstring=$cmd;
-            $options = explode(" ", $cmd);
-            $script  =unescape(recovminus(str_replace("%plus","+",array_shift($options))));
-            //echo $options[2]."\n";
+            $cmdstring=base64_decode($cmd);
+            $options = explode(" ", $cmdstring);
+            $script  =unescape(recovminus(array_shift($options)));
             $count=count($options);
             //查找有名字的参数
             global $args;
@@ -86,6 +89,10 @@ if ($command) {
                 if($argname){//查找参数名
                     if($ind<$count-1){//如果不是最后一个
                         //如果下一个不是参数名或标记就当作参数值
+                        if(array_key_exists($argname,$args)){
+                            trigger_error("参数名重复：$argname",E_USER_ERROR);
+                            exit;
+                        }
                         if(!isArgName($options[$ind+1])||!isFlag($options[$ind+1])){
                             $args[$argname]=$options[$ind+1];
                         }else{//不然使参数名对应的值为""
@@ -107,13 +114,13 @@ if ($command) {
             //恢复参数值
             for ($ind = $count; $ind--; ) {
                 //恢复字符串和+号
-                $options[$ind] =unescape(recovminus(str_replace("%plus","+",$options[$ind])));
+                $options[$ind] =unescape(recovminus($options[$ind]));
             }
             foreach ($args as $key => $value) {
-                 $args[$key] =unescape(recovminus(str_replace("%plus","+",$value)));
+                 $args[$key] =unescape(recovminus($value));
             }
             foreach ($flags as $key => $value) {
-                $flags[$key] =unescape(recovminus(str_replace("%plus","+",$value)));
+                $flags[$key] =unescape(recovminus($value));
             }
 
             if (is_file("commands/" . $script . ".php")) {

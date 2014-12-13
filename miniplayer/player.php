@@ -28,7 +28,7 @@ if (isID($vid))
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <link rel="stylesheet" type="text/css" href="danmu.css">
+    <link rel="stylesheet" type="text/css" href="danmu.css?<?php echo @filemtime('danmu.css');?>">
 </head>
 <body>
 <div  class="playermainbody" allowfullscreen="true" type="danmuplayer" playersse="<?php echo $_SESSION['access'.$vid];?>">
@@ -105,8 +105,8 @@ if (isID($vid))
         cmd_url="../command.php"; 
         </script>
 
-    <script src="../command.js"></script>
-    <script src="danmu.js"></script>
+    <script src="../command.js?<?php echo @filemtime('../command.js');?>"></script>
+        <script src="danmu.js?<?php echo @filemtime('danmu.js');?>"></script>
     <script>
     initPlayer(<?php echo $vid;?>);
     </script>
