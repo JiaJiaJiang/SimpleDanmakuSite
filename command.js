@@ -1,4 +1,4 @@
-var  cmd_url="/command.php"; 
+var  cmd_url="../command.php"; 
 function cmd(command, bool, callback) { //bool为是否需要等待返回参数
 	if (typeof(bool) != "boolean") {
 		bool = true;
