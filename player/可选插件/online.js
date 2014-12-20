@@ -2,6 +2,10 @@
 发送弹幕成功后把弹幕推送给其它客户端
 在线人数功能
 */
+var menudiv;
+var plugin_online_onlinecount=0;
+EC.addEvent("CoreReady",
+function(player) {
 function clone(obj){
   if(typeof(obj) != 'object') return obj;
   if(obj == null) return obj;
@@ -10,8 +14,6 @@ function clone(obj){
     myNewObj[i] = clone(obj[i]);
   return myNewObj;
 }
-EC.addEvent("CoreReady",
-function(player) {
 	if (danmakuliveserver) {
 		var breakcount=0;
 		document.styleSheets[document.styleSheets.length-1].insertRule(".dmmarknewflash{height:100%;width:1px;background-color: #66ccff;opcacity:1;position:absolute;top:0px;transition: opacity 5s;}",0);
@@ -31,10 +33,13 @@ function(player) {
 			};
 			socket.onmessage = function(data) {
 				var msg = JSON.parse(data.data);
-				//Dinfo("消息get:%O%c", msg, olcolecolor);
 				switch (msg.type) {
 				case "ol":
 					{
+						if(menudiv){
+							menudiv.innerHTML="观众:"+msg.data;
+						}
+						plugin_online_onlinecount=Number(msg.data);
 						Dinfo("%c在线人数:" + msg.data, olcolecolor);
 						break;
 					}
@@ -67,6 +72,10 @@ function(player) {
 			};
 			socket.onclose = function(data) {
 				Dinfo("%c连接关闭", olcolecolor);
+				if(menudiv){
+					menudiv.innerHTML="与在线服务器断开连接";
+				}
+				plugin_online_onlinecount=0;
 				socket = null;
 				breakcount++;
 				if(breakcount<=10){
@@ -88,9 +97,26 @@ function(player) {
 			}
 		});
 
+		
+
 		EC.addEvent("danmucreated",function(t){
 			if(t.danmuobj.ol===true)
 			t.backgroundColor="rgba(205, 140, 1, 0.4)";
 		},true);
 	}
+});
+EC.addEvent("menuready",
+function(m) {
+	m.addTab("home","〓");
+	setTimeout(function(){
+		var d=m.tags["home"].addBlock("onlinenumber");
+		menudiv=d;
+		$Attr(d.style,{fontSize:"30px",paddingLeft:"7px",backgroundColor:"rgba(48, 44, 44, 0.33)"});
+		d.innerHTML="连接中...";
+		setInterval(function(){
+			if(plugin_online_onlinecount>0){
+				menudiv.innerHTML="观众:"+plugin_online_onlinecount;
+			}
+		},1000);
+	},500);
 });

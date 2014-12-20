@@ -133,8 +133,6 @@ border: none;
 	position: absolute;
 	left: 0px;
 	top: 0px;
-	/*width: 100%;
-	height: 100%;*/
 	cursor: pointer;
 }
 .playermainbody #videoframe #danmuframe {
@@ -165,6 +163,7 @@ border: none;
 	height: 25px;
 	border-top: 1px solid #D3D3D3;
 	width: 100%;
+	z-index: 300;
 }
 .playermainbody #controler #play_pause {
 	cursor: pointer;
@@ -239,7 +238,6 @@ width: 100%;
 height: 9px;
 left: 0px;
 top: 0px;
-z-index: 2;
 }
 .playermainbody #controler #progress #progersscover {
 position: absolute;
@@ -247,7 +245,6 @@ width: 100%;
 height: 100%;
 left: 0px;
 top: 0px;
-z-index: 3;
 }
 .playermainbody #controler #time {
 	position: absolute;
@@ -276,7 +273,6 @@ z-index: 3;
 }
 .playermainbody #controler #volume {
 	right: 75px;
-	z-index: 300;
 }
 .playermainbody #controler #danmuctrl:hover, .playermainbody #controler #volume:hover {
 	overflow: visible;
@@ -300,7 +296,6 @@ z-index: 3;
 	width: 25px;
 	overflow: hidden;
 	cursor: pointer;
-	z-index: 2;
 	background-color: #66CCFF;
 }
 .playermainbody #controler #volume #range div {
@@ -336,22 +331,6 @@ z-index: 3;
 	font-size: 16px;
 	line-height: 25px;
 }
-/*.playermainbody #controler #info:hover{
-	overflow: visible;
-}*/
-/*.playermainbody #controler #infobox{
-	position: absolute;
-background-color: rgba(255, 255, 255, 0.75);
-height: 100px;
-width: 246px;
-bottom: 29px;
-border-radius: 8px;
-z-index: 500;
-right: -22px;
-border: 1px solid #C0C0C0;
-box-shadow: 1px 1px 6px #CAADAD;
-cursor: default;
-}*/
 .playermainbody #controler #fullscreen {
 	right: 0px;
 	font-size: 16px;
@@ -548,414 +527,6 @@ cursor: default;
 	height: 100%;
 	background-color: rgba(226, 226, 226, 0.64);
 }
-.playermainbody #sidebar {
-	background-color: #F8F8F8;
-	position: absolute;
-	right: 0px;
-	height: calc(100% - 25px);
-	height: -webkit-calc(100% - 25px);
-	overflow: hidden;
-	width: 300px;
-	top: 0px;
-	display: none;
-}
-.playermainbody #sidebar #ctrlpannel {
-	position: absolute;
-	width: 100%;
-	height: 90px;
-	background-color: #F8F8F8;
-	left: 0px;
-	top: 0px;
-	z-index: 20;
-	border-bottom: 1px solid #ccc;
-}
-.playermainbody #sidebar #ctrlpannel #statboard {
-	position: absolute;
-	width: 115px;
-	height: 60px;
-	right: 0px;
-	border-bottom: 1px solid #ccc;
-	border-left: 1px solid #ccc;
-	word-break: break-all;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	color: #8A8888;
-	font-size: 12px;
-}
-user agent stylesheetdiv {
-	display: block;
-}
-.playermainbody #sidebar #ctrlpannel #playcount {
-	position: absolute;
-	width: 93px;
-	height: 17px;
-	text-align: left;
-	left: 0px;
-	border-bottom: 1px solid #ccc;
-	border-right: 1px solid #ccc;
-	line-height: 16px;
-	overflow: hidden;
-	font-size: 12px;
-	padding-left: 3px;
-}
-.playermainbody #sidebar #ctrlpannel #danmucount {
-	position: absolute;
-	width: 93px;
-	height: 17px;
-	top: 18px;
-	text-align: left;
-	left: 0px;
-	border-bottom: 1px solid #ccc;
-	border-right: 1px solid #ccc;
-	line-height: 16px;
-	overflow: hidden;
-	font-size: 12px;
-	padding-left: 3px;
-}
-.playermainbody #sidebar #tabpages {
-	position: absolute;
-	width: 100%;
-	height: calc(100% - 90px);
-	height: -webkit-calc(100% - 90px);
-	left: 0px;
-	overflow-y: auto;
-	bottom: 0px;
-}
-.playermainbody #sidebar #tabpages .tabpage {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	left: 0px;
-	top: 0px;
-}
-.playermainbody #sidebar #tabpages #danmupool {
-	cursor: default;
-	color: rgba(44, 44, 44, 0.7);
-}
-.playermainbody #sidebar #tabpages #danmupool #tabletop {
-	position: absolute;
-	width: 100%;
-	overflow: hidden;
-	left: 0px;
-	top: 0px;
-	height: 20px;
-	font-size: 13px;
-	background-color: #ccc;
-	line-height: 20px;
-}
-#danmupool span {
-	position: absolute;
-	text-overflow: ellipsis;
-	display: block;
-	height: 20px;
-	white-space: nowrap;
-	overflow: hidden;
-}
-#danmupool .danmutime {
-	left: 3px;
-	width: 43px;
-}
-#danmupool .danmucontent {
-	left: 46px;
-	width: calc(100% - 128px);
-}
-#danmupool .danmudate {
-	right: 2px;
-	width: 78px;
-}
-#danmupool #danmus {
-	position: absolute;
-	top: 20px;
-	width: 100%;
-	height: calc(100% - 20px);
-	overflow-x: hidden;
-	overflow-y: auto;
-}
-#danmupool .danmudiv {
-	position: relative;
-	height: 20px;
-	font-size: 13px;
-	cursor: pointer;
-	width: 100%;
-}
-#danmupool .danmudiv:hover {
-	background-color: rgba(123,456,789,0.5);
-}
-.playermainbody #sidebar #tabpages #superdanmueditor {
-	display: none;
-}
-.playermainbody #sidebar #tabpages #optionpannel {
-	display: none;
-}
-.playermainbody #sidebar #optionpannel h3 {
-	margin: 2px 8px;
-	font-size: 16px;
-	cursor: pointer;
-	background-color: #F3F3F3;
-}
-.playermainbody #optionpannel h3+div {
-	display: none;
-}
-.playermainbody #sidebar #optionpannel span {
-	display: block;
-	padding-left: 3px;
-	position: relative;
-	margin: 5px 15px;
-	font-size: 13px;
-}
-.playermainbody #sidebar #ctrlpannel .ctrlbutton {
-	position: absolute;
-	bottom: 0px;
-	transition: background-color 0.1s;
-	font-size: 15px;
-	text-align: center;
-	border-left: 1px solid #ccc;
-	background-color: rgba(231, 231, 231, 1);
-	height: 29px;
-	width: 33.33%;
-	line-height: 30px;
-	cursor: pointer;
-}
-.playermainbody #sidebar #ctrlpannel .ctrlbutton:hover {
-	background-color: rgba(243, 243, 243, 1);
-}
-.playermainbody #sidebar #ctrlpannel #danmulistbutton {
-	left: 0px;
-}
-.playermainbody #sidebar #ctrlpannel #superdanmubutton {
-	left: 33.3%;
-}
-.playermainbody #sidebar #ctrlpannel #optionbutton {
-	left: 66.6%;
-}
-.tabpage div[type="switch"] .switch_center {
-	transition: left 0.1s, right 0.1s;
-}
-.tabpage div[type="switch"] {
-	cursor: pointer;
-	position: absolute !important;
-	right: 16px;
-	top: 0px;
-	width: 56px;
-	height: 19px;
-	overflow: hidden;
-}
-.tabpage .switch_center {
-	position: absolute;
-	height: 100%;
-	width: 15px;
-	background-color: #ccc;
-}
-.tabpage .switch_left {
-	height: 100%;
-	width: 55px;
-	position: absolute;
-	right: 100%;
-}
-.tabpage .switch_right {
-	height: 100%;
-	width: 55px;
-	position: absolute;
-	left: 100%;
-}
-.tabpage div[type="range"] {
-	cursor: pointer;
-	position: relative!important;
-	top: 0px;
-	height: 14px;
-	width: 94%;
-	height: 20px;
-}
-.tabpage div[type="range"] .rangePoint {
-	position: absolute !important;
-	top: 0px;
-	width: 2px;
-	height: 100%;
-	background-color: #66ccff;
-}
-.tabpage div[type="range"] .rangebg {
-	position: absolute !important;
-	top: calc(100% / 2 - 2px);
-	width: 100%;
-	height: 3px;
-	background-color: #CCC;
-}
-.tabpage div[type="range"] .rangeCover {
-	position: absolute !important;
-	top: 0px;
-	left: 0px;
-	height: 100%;
-	width: 100%;
-}
-.playermainbody #sidebar #superdanmueditor #supertabchoose {
-	background-color: #A6A6E6;
-	z-index: 100;
-	position: absolute;
-	top: 10px;
-	left: -23px;
-	width: 27px;
-	height: 50px;
-	cursor: pointer;
-	transition: left 0.1s;
-}
-.playermainbody #sidebar #superdanmueditor #supertabchoose:hover {
-	left: 0px;
-}
-.playermainbody #sidebar #supertabchoose div {
-	position: absolute;
-	width: 100%;
-	color: #fff;
-	height: 25px;
-	text-align: center;
-	line-height: 25px;
-	left: 0px;
-	transition: background-color 0.1s;
-}
-.playermainbody #sidebar #superdanmueditor #chooseText {
-	top: 0px;
-}
-.playermainbody #sidebar #chooseText:hover {
-	background-color: rgba(110, 123, 129, 0.67);
-}
-.playermainbody #sidebar #superdanmueditor #chooseCode {
-	top: 25px;
-}
-.playermainbody #sidebar #chooseCode:hover {
-	background-color: rgba(38, 134, 123, 0.83);
-}
-.playermainbody #sidebar .SuperTab {
-	position: relative;
-	margin-top: 26px;
-	width: 100%;
-}
-.playermainbody #sidebar #SuperTextTab {
-	background-color: #ccc;
-}
-.playermainbody #sidebar #SupeCodeTab {
-	background-color: #000;
-	display: none;
-}
-
-
-
-.playermainbody .movebar{
-background-color: rgba(255, 255, 255, 0.78);
-position: absolute;
-height: 100%;
-width: 194px;
-left: 20%;
-border-left: 5px solid rgba(133, 138, 135, 0.24) !important;
-border-radius: 3px;
-border-right: 1px solid #ccc;
-}
-.playermainbody .movebar #itemsbar{
-	max-height: 100%;
-	height: auto;
-	position: relative;
-}
-.playermainbody .movebar #functionPannel{
-	
-}
-
-
-.playermainbody .videopreload {
-position: absolute;
-width: 100%;
-height: 100%;
-font-family: 'Times New Roman';
-text-align: left;
-background-color: #FFF;
-left: 0px;
-top: 0px;
-}
-
-.videopreloadanimation {
-  position: absolute;
-  font-family: 'Times New Roman';
-  text-align: center;
-  color: rgb(0, 0, 0);
-  font-size: 80px;
-  left: 18px;
-  width: 306px;
-  height: 94px;
-}
-
-.videopreloadanimationframe{
-position: absolute;
-font-family: 'Times New Roman';
-font-size: 80px;
-color: #000;
-text-align: center;
-line-height: 220px;
-left: calc(50% - 170px);
-top: calc(50% - 162px);
-width: 340px;
-height: 220px;
-}
-
-.shakeanimation {
-  -webkit-animation: gwd-gen-o0bsgwdanimation_gwd-keyframes 1.3s linear 0s infinite forwards;
-  -moz-animation: gwd-gen-o0bsgwdanimation_gwd-keyframes 1.3s linear 0s infinite forwards;
-  animation: gwd-gen-o0bsgwdanimation_gwd-keyframes 1.3s linear 0s infinite forwards;
-}
-
-@-webkit-keyframes gwd-gen-o0bsgwdanimation_gwd-keyframes {
-  0% { top: 58px; left: 17px;  -webkit-transform: matrix3d(0.9922411674, 0.1243280566, 0, 0, -0.1243280566, 0.9922411674, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -webkit-animation-timing-function: linear; }
-  7.69231% { top: 37px; left: 2px;  -webkit-transform: matrix3d(0.9975433551, -0.0700518, 0, 0, 0.0700518, 0.9975433551, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -webkit-animation-timing-function: linear; }
-  15.3846% { top: 78px; left: 27px;  -webkit-transform: matrix3d(0.996151754, -0.0876452109, 0, 0, 0.0876452109, 0.996151754, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -webkit-animation-timing-function: linear; }
-  23.0769% { top: 54px; left: 18px;  -webkit-transform: matrix3d(0.9989344322, -0.0461519241, 0, 0, 0.0461519241, 0.9989344322, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -webkit-animation-timing-function: linear; }
-  30.7692% { top: 85px; left: 18px;  -webkit-transform: matrix3d(0.9534801102, -0.0929042167, -0.2867829946, 0, 0.09697771, 0.9952865536, 0, 0, 0.2854312583, -0.0278115581, 0.957995571, 0, 0, 0, 0, 1); -webkit-animation-timing-function: linear; }
-  38.4615% { top: 61px; left: 25px;  -webkit-transform: matrix3d(0.999120723, 0.0419258968, 0, 0, -0.0419258968, 0.999120723, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -webkit-animation-timing-function: linear; }
-  46.1538% { top: 69px; left: 16px;  -webkit-transform: matrix3d(0.9922411674, 0.1243280566, 0, 0, -0.1243280566, 0.9922411674, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -webkit-animation-timing-function: linear; }
-  53.8462% { top: 54px; left: 21px;  -webkit-transform: matrix3d(0.9879359428, -0.1548630779, 0, 0, 0.1548630779, 0.9879359428, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -webkit-animation-timing-function: linear; }
-  61.5385% { top: 77px; left: 11px;  -webkit-transform: matrix3d(0.997279872, -0.0737079164, 0, 0, 0.0737079164, 0.997279872, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -webkit-animation-timing-function: linear; }
-  69.2308% { top: 52px; left: 17px;  -webkit-transform: matrix3d(0.9897877681, 0.1425488477, 0, 0, -0.1425488477, 0.9897877681, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -webkit-animation-timing-function: linear; }
-  76.9231% { top: 61px; left: 3px;  -webkit-transform: matrix3d(0.9850062042, -0.1725189194, 0, 0, 0.1725189194, 0.9850062042, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -webkit-animation-timing-function: linear; }
-  84.6154% { top: 70px; left: 31px;  -webkit-transform: matrix3d(0.9999924496, -0.0038859566, 0, 0, 0.0038859566, 0.9999924496, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -webkit-animation-timing-function: linear; }
-  92.3077% { top: 52px; left: 26px;  -webkit-transform: matrix3d(0.9723628325, 0.004036916, 0.2334399826, 0, 0.03544095, 0.9857116913, -0.1646705824, 0, -0.2307692813, 0.1683928887, 0.95832634, 0, 0, 0, 0, 1); -webkit-animation-timing-function: linear; }
-  100% { top: 72px; left: 19px;  -webkit-transform: matrix3d(0.9922411674, 0.1243280566, 0, 0, -0.1243280566, 0.9922411674, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -webkit-animation-timing-function: linear; }
-}
-@-moz-keyframes gwd-gen-o0bsgwdanimation_gwd-keyframes {
-  0% { top: 58px; left: 17px;  -moz-transform: matrix3d(0.9922411674, 0.1243280566, 0, 0, -0.1243280566, 0.9922411674, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -moz-animation-timing-function: linear; }
-  7.69231% { top: 37px; left: 2px;  -moz-transform: matrix3d(0.9975433551, -0.0700518, 0, 0, 0.0700518, 0.9975433551, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -moz-animation-timing-function: linear; }
-  15.3846% { top: 78px; left: 27px;  -moz-transform: matrix3d(0.996151754, -0.0876452109, 0, 0, 0.0876452109, 0.996151754, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -moz-animation-timing-function: linear; }
-  23.0769% { top: 54px; left: 18px;  -moz-transform: matrix3d(0.9989344322, -0.0461519241, 0, 0, 0.0461519241, 0.9989344322, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -moz-animation-timing-function: linear; }
-  30.7692% { top: 85px; left: 18px;  -moz-transform: matrix3d(0.9534801102, -0.0929042167, -0.2867829946, 0, 0.09697771, 0.9952865536, 0, 0, 0.2854312583, -0.0278115581, 0.957995571, 0, 0, 0, 0, 1); -moz-animation-timing-function: linear; }
-  38.4615% { top: 61px; left: 25px;  -moz-transform: matrix3d(0.999120723, 0.0419258968, 0, 0, -0.0419258968, 0.999120723, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -moz-animation-timing-function: linear; }
-  46.1538% { top: 69px; left: 16px;  -moz-transform: matrix3d(0.9922411674, 0.1243280566, 0, 0, -0.1243280566, 0.9922411674, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -moz-animation-timing-function: linear; }
-  53.8462% { top: 54px; left: 21px;  -moz-transform: matrix3d(0.9879359428, -0.1548630779, 0, 0, 0.1548630779, 0.9879359428, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -moz-animation-timing-function: linear; }
-  61.5385% { top: 77px; left: 11px;  -moz-transform: matrix3d(0.997279872, -0.0737079164, 0, 0, 0.0737079164, 0.997279872, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -moz-animation-timing-function: linear; }
-  69.2308% { top: 52px; left: 17px;  -moz-transform: matrix3d(0.9897877681, 0.1425488477, 0, 0, -0.1425488477, 0.9897877681, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -moz-animation-timing-function: linear; }
-  76.9231% { top: 61px; left: 3px;  -moz-transform: matrix3d(0.9850062042, -0.1725189194, 0, 0, 0.1725189194, 0.9850062042, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -moz-animation-timing-function: linear; }
-  84.6154% { top: 70px; left: 31px;  -moz-transform: matrix3d(0.9999924496, -0.0038859566, 0, 0, 0.0038859566, 0.9999924496, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -moz-animation-timing-function: linear; }
-  92.3077% { top: 52px; left: 26px;  -moz-transform: matrix3d(0.9723628325, 0.004036916, 0.2334399826, 0, 0.03544095, 0.9857116913, -0.1646705824, 0, -0.2307692813, 0.1683928887, 0.95832634, 0, 0, 0, 0, 1); -moz-animation-timing-function: linear; }
-  100% { top: 72px; left: 19px;  -moz-transform: matrix3d(0.9922411674, 0.1243280566, 0, 0, -0.1243280566, 0.9922411674, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); -moz-animation-timing-function: linear; }
-}
-@keyframes gwd-gen-o0bsgwdanimation_gwd-keyframes {
-  0% { top: 58px; left: 17px;  transform: matrix3d(0.9922411674, 0.1243280566, 0, 0, -0.1243280566, 0.9922411674, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); animation-timing-function: linear; }
-  7.69231% { top: 37px; left: 2px;  transform: matrix3d(0.9975433551, -0.0700518, 0, 0, 0.0700518, 0.9975433551, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); animation-timing-function: linear; }
-  15.3846% { top: 78px; left: 27px;  transform: matrix3d(0.996151754, -0.0876452109, 0, 0, 0.0876452109, 0.996151754, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); animation-timing-function: linear; }
-  23.0769% { top: 54px; left: 18px;  transform: matrix3d(0.9989344322, -0.0461519241, 0, 0, 0.0461519241, 0.9989344322, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); animation-timing-function: linear; }
-  30.7692% { top: 85px; left: 18px;  transform: matrix3d(0.9534801102, -0.0929042167, -0.2867829946, 0, 0.09697771, 0.9952865536, 0, 0, 0.2854312583, -0.0278115581, 0.957995571, 0, 0, 0, 0, 1); animation-timing-function: linear; }
-  38.4615% { top: 61px; left: 25px;  transform: matrix3d(0.999120723, 0.0419258968, 0, 0, -0.0419258968, 0.999120723, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); animation-timing-function: linear; }
-  46.1538% { top: 69px; left: 16px;  transform: matrix3d(0.9922411674, 0.1243280566, 0, 0, -0.1243280566, 0.9922411674, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); animation-timing-function: linear; }
-  53.8462% { top: 54px; left: 21px;  transform: matrix3d(0.9879359428, -0.1548630779, 0, 0, 0.1548630779, 0.9879359428, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); animation-timing-function: linear; }
-  61.5385% { top: 77px; left: 11px;  transform: matrix3d(0.997279872, -0.0737079164, 0, 0, 0.0737079164, 0.997279872, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); animation-timing-function: linear; }
-  69.2308% { top: 52px; left: 17px;  transform: matrix3d(0.9897877681, 0.1425488477, 0, 0, -0.1425488477, 0.9897877681, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); animation-timing-function: linear; }
-  76.9231% { top: 61px; left: 3px;  transform: matrix3d(0.9850062042, -0.1725189194, 0, 0, 0.1725189194, 0.9850062042, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); animation-timing-function: linear; }
-  84.6154% { top: 70px; left: 31px;  transform: matrix3d(0.9999924496, -0.0038859566, 0, 0, 0.0038859566, 0.9999924496, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); animation-timing-function: linear; }
-  92.3077% { top: 52px; left: 26px;  transform: matrix3d(0.9723628325, 0.004036916, 0.2334399826, 0, 0.03544095, 0.9857116913, -0.1646705824, 0, -0.2307692813, 0.1683928887, 0.95832634, 0, 0, 0, 0, 1); animation-timing-function: linear; }
-  100% { top: 72px; left: 19px;  transform: matrix3d(0.9922411674, 0.1243280566, 0, 0, -0.1243280566, 0.9922411674, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); animation-timing-function: linear; }
-}
-.gwd-gen-o0bsgwdanimation-gen-animation0keyframe {
-  top: 58px;
-  left: 17px;
-  width: 306px;
-  height: 94px;
-  -webkit-transform: matrix3d(0.9922411674, 0.1243280566, 0, 0, -0.1243280566, 0.9922411674, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-  -moz-transform: matrix3d(0.9922411674, 0.1243280566, 0, 0, -0.1243280566, 0.9922411674, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-  transform: matrix3d(0.9922411674, 0.1243280566, 0, 0, -0.1243280566, 0.9922411674, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-}
 #danmumark{
 	position: absolute;
 	bottom: 0px;
@@ -1032,10 +603,10 @@ animation:tip_in_ani 4s linear 0s forwards;
 	overflow: hidden;
 	cursor: pointer;
 }
- #videoframe #divdanmulayer {
+/* #videoframe #divdanmulayer {
 	left: 0px;
 	top: 0px;
-}
+}*/
  #videoframe #danmuframe #danmulayer {
 	position: absolute;
 	left: 0px;

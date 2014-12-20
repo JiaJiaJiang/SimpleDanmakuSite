@@ -58,6 +58,9 @@ $$ = d_selectall;
 function c_ele(tag) {
 	return document.createElement(tag);
 }
+function addStyle(cssstr){
+	document.styleSheets[document.styleSheets.length-1].insertRule(cssstr,0);
+}
 var _string_ = {
 	removesidespace: function(string) {
 		if (typeof string == 'string') {
@@ -69,6 +72,9 @@ var _string_ = {
 		}
 	}
 };
+function rand(min, max) {
+	return (min + Math.random() * (max - min)+0.5)|0;
+}
 function aEL(dom, e, fun) {
 	//添加事件监听
 	dom.addEventListener(e, fun, false)
@@ -435,8 +441,6 @@ function initPlayer(_in_videoid) {
 		player.sendbutton=$(mainbody, '#sendbox #sendbutton');
 		player.videoframe = $(mainbody, '#videoframe');
 		player.videoframein = $(mainbody, '#videoframein');
-		player.videopreload = $(player.videoframe, '#videopreload');
-		player.videopreload.textdiv = $(videopreload, '.videopreloadanimation');
 		player.volume = $(mainbody, '#controler #volume');
 		player.volumerange = $(mainbody, '#controler #volume #range');
 		player.volumevalue = $(mainbody, '#controler #volume #range div');
@@ -451,9 +455,9 @@ function initPlayer(_in_videoid) {
 		//player.loadinfo.height = player.progress.offsetHeight; 
 		(player.danmuContextMenu = c_ele('div')).className = 'textContextMenu';
 		playersse = player.mainbody.getAttribute("playersse"); 
+		player.EC.fireEvent("PlayerReady",player);
 		(player.core = new window.danmuplayer.DanmuCore()).bind(player);
 		player.EC.fireEvent("CoreReady",player);
-		console.dir(player);
 	}
 	/*function setPlayOption() {
 		player.o.recycle = false;
@@ -508,10 +512,6 @@ function initPlayer(_in_videoid) {
 			} catch(e) {
 				newstat('地址获取错误');
 				player.EC.fireEvent("VideoAddressParseError");
-				//player.playcount.innerHTML = '视频错误';
-				player.videopreload.textdiv.innerHTML = '(๑• . •๑)';
-				removeEleClass(player.videopreload.textdiv, "shakeanimation");
-				player.videopreload.textdiv.parentNode.style.top = "calc(50% - 110px)";
 				return;
 			}
 			var count = json.count;
@@ -1427,7 +1427,6 @@ function initPlayer(_in_videoid) {
 		function(e) {
 			controlfuns.refreshtime();
 			controlfuns.refreshDanmuMark();
-			player.videopreload.parentNode.removeChild(player.videopreload);
 			player.EC.fireEvent("video_loadedmetadata",player);
 		});
 		aEL(video, 'volumechange',

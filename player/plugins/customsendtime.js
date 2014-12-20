@@ -5,7 +5,7 @@
 EC.addEvent("video_loadedmetadata",function(p){
 	var inputstat=false,maxtime=p.video.duration*1000;
 	p.sendbutton.style.zIndex=1;
-	document.styleSheets[document.styleSheets.length-1].insertRule(".danmutimeinput{height:100%;width:70px;background-color: #E77C7D;position:absolute;top:0px;right:-10px;transition:right 0.5s,opacity 0.7s;opacity:0;color:#fff;border:none;z-index:0;}",0);
+	addStyle(".danmutimeinput{height:100%;width:70px;background-color: #E77C7D;position:absolute;top:0px;right:-10px;transition:right 0.5s,opacity 0.7s;opacity:0;color:#fff;border:none;z-index:0;}");
 	var timeinput=c_ele("input");
 	$Attr(timeinput,{className:"danmutimeinput",type:"number",step:"10",min:"0",max:maxtime,title:"弹幕时间(毫秒)\n中键点击发送框隐藏"});
 	p.sendbox.appendChild(timeinput);

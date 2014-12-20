@@ -532,6 +532,7 @@ function DanmuCore() {
 			videoinfo.CrownHeight = videoinfo.width / videoinfo.height;
 			player.video.style.height = player.video.style.width = "100%";
 			fitdanmulayer();
+			parentPlayer.EC.fireEvent("videoready");
 			/*player.videopreload.parentNode.removeChild(player.videopreload);*/
 		});
 		aEL(video, 'volumechange',

@@ -175,8 +175,8 @@ function newCOL() {
 		function(e) {
 			//e.preventDefault();
 			//COL.mousePosition.fun(e);
-			COL.mouseX=e.layerX;
-			COL.mouseY=e.layerY;
+			COL.mouseX = e.layerX;
+			COL.mouseY = e.layerY;
 			var idata = COL.eocct.getImageData(COL.mouseX, COL.mouseY, 1, 1).data;
 			//console.log(idata);
 			var color = idata[0] * 1000000 + idata[1] * 1000 + idata[2];
@@ -208,8 +208,8 @@ function newCOL() {
 			COL.canvasonfocus = true;
 			//COL.mousestatuechanged = true;
 			//e.preventDefault();
-			COL.mouseX=e.layerX;
-			COL.mouseY=e.layerY;
+			COL.mouseX = e.layerX;
+			COL.mouseY = e.layerY;
 			var eve = COL.event();
 			eve.target = COL.onoverElement;
 			eve.button = e.button;
@@ -370,7 +370,7 @@ function newCOL() {
 	COL.MatrixTransform = {
 		on: function() {
 			COL.MatrixTransformMode = true;
-			COL.matrixchanged=true;
+			COL.matrixchanged = true;
 			COL.transform = COL.optionalFun.transformDirect;
 		},
 		off: function() {
@@ -606,17 +606,16 @@ function newCOL() {
 				return newobj;
 			},
 			addChild: function(graph) {
-				if (graph.GraphID&&!this.childNode[graph.GraphID]) {
-					//console.log(graph.GraphID)
-					//this.childNode.push(graph);
+				if (graph.GraphID && !this.childNode[graph.GraphID]) {
 					this.childNode[graph.GraphID] = graph;
-					//this.childNode.pop(graph);
 					graph.parentNode = this;
 					if (this.needsort) {
 						COL.tools.arraybyZ_index(this);
 					} else {
 						this.drawlist.unshift(graph);
 					}
+					this.setMatrix();
+					graph.setMatrix();
 				}
 			},
 			removeChild: function(graph) {
@@ -628,6 +627,7 @@ function newCOL() {
 					if (ind >= 0) {
 						this.drawlist.splice(ind, 1);
 					}
+					COL.matrixchanged=true;
 				}
 			},
 			setMatrix: function(floatarrayMatrix) {
@@ -637,12 +637,7 @@ function newCOL() {
 					cos = Math.cos(rotate),
 					sin = Math.sin(rotate);
 					if (!this.matrix) this.matrix = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
-					this.matrix.set(COL.tools.multiplyMatrix(
-						[1, 0, -this.rotatecenter.x, 0, 1, -this.rotatecenter.y,0,0,0],
-						[this.zoom.x, 0, 0, 0, this.zoom.y, 0, 0, 0, 0], 
-						[cos, -sin, 0, sin, cos, 0, 0, 0, 0], 
-						[1, 0, this.x + this.rotatecenter.x - this.positionpoint.x, 0, 1, this.y + this.rotatecenter.y - this.positionpoint.y, 0, 0, 0]
-						));
+					this.matrix.set(COL.tools.multiplyMatrix([1, 0, -this.rotatecenter.x, 0, 1, -this.rotatecenter.y, 0, 0, 0], [this.zoom.x, 0, 0, 0, this.zoom.y, 0, 0, 0, 0], [cos, -sin, 0, sin, cos, 0, 0, 0, 0], [1, 0, this.x + this.rotatecenter.x - this.positionpoint.x, 0, 1, this.y + this.rotatecenter.y - this.positionpoint.y, 0, 0, 0]));
 				} else {
 					this.matrix = floatarrayMatrix;
 				}
@@ -682,88 +677,89 @@ function newCOL() {
 				vary: function(ct) {
 					if (this.baseline) ct.textBaseline = this.baseline;
 					if (this.textborderWidth) ct.lineWidth = this.textborderWidth;
-					if (this.textborderColor) ct.strokeStyle = this.textborderColor;
-					ct.fillStyle = this.color || COL.font.color || "#000";
-					if (this.shadowBlur > 0) {
+						if (this.textborderColor) ct.strokeStyle = this.textborderColor;
+						ct.fillStyle = this.color || COL.font.color || "#000";
+						if (this.shadowBlur > 0) {
+							ct.font = this.font;
+							ct.shadowBlur = this.shadowBlur;
+							if (this.shadowColor) ct.shadowColor = this.shadowColor;
+							if (this.shadowOffset.x) ct.shadowOffsetX = this.shadowOffset.x;
+							if (this.shadowOffset.y) ct.shadowOffsetY = this.shadowOffset.y;
+						}
 						ct.font = this.font;
-						ct.shadowBlur = this.shadowBlur;
-						if (this.shadowColor) ct.shadowColor = this.shadowColor;
-						if (this.shadowOffset.x) ct.shadowOffsetX = this.shadowOffset.x;
-						if (this.shadowOffset.y) ct.shadowOffsetY = this.shadowOffset.y;
-					}
-					ct.font = this.font;
-					if (this.linedirection === 0) {
-						ct.translate(0, this.lineHeight / 2);
-						if (this.columndirection === 0) {
-							for (var i = 0; i < this.varylist.length; i++) {
-								ct.save();
-								if (this.fill) {
-									ct.fillText(this.varylist[i], this.innerX, this.innerY);
-								}
-								if (this.textborderWidth) {
-									ct.shadowBlur = 0;
-									ct.strokeText(this.varylist[i], this.innerX, this.innerY);
-								}
-								ct.restore();
-								ct.translate(0, this.lineHeight);
-							}
-						} else if (this.columndirection == 1) {
-							for (var i = this.varylist.length - 1; i > 0; i--) {
-								ct.save();
-								if (this.fill) {
-									ct.fillText(this.varylist[i], this.innerX, this.innerY);
-								}
-								if (this.textborderWidth) {
-									ct.shadowBlur = 0;
-									ct.strokeText(this.varylist[i], this.innerX, this.innerY);
-								}
-								ct.restore();
-								ct.translate(0, this.lineHeight);
-							}
-						}
-					} else if (this.linedirection == 1) {
-						if (this.columndirection === 0) {
-							for (var i = 0; i < this.varylist.length; i++) {
-								ct.save();
-								ct.translate(i * this.lineHeight, this.fontSize / 2);
-								var thisline = this.varylist[i].split("");
-								for (var im = 0; im < thisline.length; im++) {
+						if (this.linedirection === 0) {
+							ct.translate(0, this.lineHeight / 2);
+							if (this.columndirection === 0) {
+								for (var i = 0; i < this.varylist.length; i++) {
 									ct.save();
-									ct.translate(this.lineHeight - ct.measureText(thisline[im]).width, 0);
 									if (this.fill) {
-										ct.fillText(thisline[im], this.innerX, this.innerY);
+										ct.fillText(this.varylist[i], this.innerX, this.innerY);
 									}
 									if (this.textborderWidth) {
 										ct.shadowBlur = 0;
-										ct.strokeText(thisline[im], this.innerX, this.innerY);
+										ct.strokeText(this.varylist[i], this.innerX, this.innerY);
 									}
 									ct.restore();
-									ct.translate(0, this.fontSize);
+									ct.translate(0, this.lineHeight);
 								}
-								ct.restore();
-							}
-						} else if (this.columndirection == 1) {
-							for (var i = this.varylist.length - 1; i > 0; i--) {
-								ct.save();
-								ct.translate((this.varylist.length - 1 - i) * this.lineHeight, this.fontSize / 2);
-								var thisline = this.varylist[i].split("");
-								for (var im = 0; im < thisline.length; im++) {
+							} else if (this.columndirection == 1) {
+								for (var i = this.varylist.length - 1; i > 0; i--) {
 									ct.save();
-									ct.translate(this.lineHeight - ct.measureText(thisline[im]).width, 0);
 									if (this.fill) {
-										ct.fillText(thisline[im], this.innerX, this.innerY);
+										ct.fillText(this.varylist[i], this.innerX, this.innerY);
 									}
 									if (this.textborderWidth) {
 										ct.shadowBlur = 0;
-										ct.strokeText(thisline[im], this.innerX, this.innerY);
+										ct.strokeText(this.varylist[i], this.innerX, this.innerY);
 									}
 									ct.restore();
-									ct.translate(0, this.fontSize);
+									ct.translate(0, this.lineHeight);
 								}
-								ct.restore();
+							}
+						} else if (this.linedirection == 1) {
+							if (this.columndirection === 0) {
+								for (var i = 0; i < this.varylist.length; i++) {
+									ct.save();
+									ct.translate(i * this.lineHeight, this.fontSize / 2);
+									var thisline = this.varylist[i].split("");
+									for (var im = 0; im < thisline.length; im++) {
+										ct.save();
+										ct.translate(this.lineHeight - ct.measureText(thisline[im]).width, 0);
+										if (this.fill) {
+											ct.fillText(thisline[im], this.innerX, this.innerY);
+										}
+										if (this.textborderWidth) {
+											ct.shadowBlur = 0;
+											ct.strokeText(thisline[im], this.innerX, this.innerY);
+										}
+										ct.restore();
+										ct.translate(0, this.fontSize);
+									}
+									ct.restore();
+								}
+							} else if (this.columndirection == 1) {
+								for (var i = this.varylist.length - 1; i > 0; i--) {
+									ct.save();
+									ct.translate((this.varylist.length - 1 - i) * this.lineHeight, this.fontSize / 2);
+									var thisline = this.varylist[i].split("");
+									for (var im = 0; im < thisline.length; im++) {
+										ct.save();
+										ct.translate(this.lineHeight - ct.measureText(thisline[im]).width, 0);
+										if (this.fill) {
+											ct.fillText(thisline[im], this.innerX, this.innerY);
+										}
+										if (this.textborderWidth) {
+											ct.shadowBlur = 0;
+											ct.strokeText(thisline[im], this.innerX, this.innerY);
+										}
+										ct.restore();
+										ct.translate(0, this.fontSize);
+									}
+									ct.restore();
+								}
 							}
 						}
-					}
+					
 				},
 				prepareText: function() {
 					if ((!this.imageobj) || (!this.imageobj.getContext)) {
@@ -1110,7 +1106,7 @@ function newCOL() {
 	};
 
 	COL.tools = {
-		matrix:new Float32Array(9),
+		matrix: new Float32Array(9),
 		multiplyMatrix: function() {
 			var mats = arguments;
 			if (mats) {
