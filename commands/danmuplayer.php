@@ -2,8 +2,7 @@
 $option = $options;
 if (isID($option[0])) {
   $_SESSION['access'.$option[0]]=md5(uniqid());
-
-function videopreload(){ ?>
+/*function videopreload(){ ?>
 <div class="videopreload" id="videopreload">
       <div class="videopreloadanimationframe">
         <div class="videopreloadanimation shakeanimation">(๑•́ ω •̀๑)</div>
@@ -14,16 +13,12 @@ function videopreload(){ ?>
 function menu(){
 ?>
  <?php
-}?>
-
-
-
+}*/
+?>
 <div  class="playermainbody" allowfullscreen="true" type="danmuplayer" videoid="<?php echo $option[0];?>" playersse="<?php echo $_SESSION['access'.$option[0]];?>">
             <div id="videoframe">
                     <div id="videoframein"></div>
-                 <?php menu();?>
                  <div id="tipbox"></div>
-                <?php videopreload();?>
             </div>
             <div id="sendbox">
                 <input id="danmuinput" name="danmuinput" />
