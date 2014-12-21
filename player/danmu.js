@@ -759,7 +759,7 @@ function initPlayer(_in_videoid) {
 				}
 				danmulist.push(danmuobj);
 				danmufuns.refreshnumber();
-				autocmd('adddanmu', (videoid), danmuobj.ty, danmuobj.c, danmuobj.t, danmuobj.c || 'NULL', danmuStyle.fontsize, playersse,
+				autocmd('adddanmu', (videoid), danmuobj.ty, danmuobj.c, danmuobj.t, danmuobj.co || 'NULL', danmuStyle.fontsize, playersse,
 				function(response) {
 					danmuobj.id= Number(response);
 					if (typeof danmuobj.id=="number") {
