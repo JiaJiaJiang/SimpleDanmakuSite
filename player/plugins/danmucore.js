@@ -67,8 +67,7 @@ function DanmuCore() {
 		zimucontainer = COL.Graph.New();
 		zimucontainer.name = 'zimucontainer';
 		COL.document.addChild(zimucontainer);
-		zimucontainer.zindex(2);
-	}
+		zimucontainer.zindex(2);	}
 
 	function fitdanmulayer() {
 		"use strict";
@@ -95,7 +94,7 @@ function DanmuCore() {
 	function fireinterval() {
 		"use strict";
 		if (timeline[timepoint]) {
-			danmufuns.fire(timepoint);
+			setTimeout(danmufuns.fire,0,timepoint); 
 		}
 		timepoint += 10;
 		if (!player.assvar.isPlaying) {
@@ -111,8 +110,7 @@ function DanmuCore() {
 		}
 		if (t >= timepoint) {
 			for (; timepoint <= t; timepoint += 10) {
-				if (timeline[timepoint]) 
-					setTimeout(danmufuns.fire,0,timepoint); 
+				if (timeline[timepoint]) setTimeout(danmufuns.fire,0,timepoint); 
 			}
 		} else {
 			return;
@@ -318,13 +316,24 @@ function DanmuCore() {
 			if (player.assvar.isPlaying) {
 				var nowtime = (player.video.currentTime * 1000 + 0.5) | 0;
 				if (COL.lastmovedtime == nowtime) return;
+				var node;
+				var movefun=danmufuns.movefun;
 				COL.lastmovedtime = nowtime;
 				moveTime=getOption("DanmuSpeed","number")*1000;
-				var temp;
+				//var temp;
 				for (var i = 0; i < danmucontainer.drawlist.length; i++) {
-					var node = danmucontainer.drawlist[i];
+					node = danmucontainer.drawlist[i];
 					if (! (node && node.imageobj && node.tunnelobj)) continue;
-					switch (node.type) {
+					if(nowtime<node.time){
+						node.time=-(node.time+moveTime-node.lasttime);
+					}
+					setTimeout(movefun,0,node,nowtime);
+				}
+			}
+
+		},
+		movefun:function(node,nowtime){
+			switch (node.type) {
 					case 0:
 						{
 							node.x = (width + node.width) * (1 - (nowtime - node.time) / moveTime / width * 520) - node.width;
@@ -334,8 +343,9 @@ function DanmuCore() {
 							} else if (node.x < -node.width) {
 								node.parentNode.removeChild(node);
 								delete node.tunnelobj;
-								continue;
+								return;
 							}
+							node.lasttime=nowtime;
 							node.setMatrix();
 							break;
 						}
@@ -348,8 +358,9 @@ function DanmuCore() {
 							} else if (node.x > width) {
 								node.parentNode.removeChild(node);
 								delete node.tunnelobj;
-								continue;
+								return;
 							}
+							node.lasttime=nowtime;
 							node.setMatrix();
 							break;
 						}
@@ -360,8 +371,9 @@ function DanmuCore() {
 								delete danmutunnel.bottom[node.tunnelobj[1]][node.tunnelobj[2]];
 								delete node.tunnelobj;
 								COL.cct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
-								continue;
+								return;
 							}
+							node.lasttime=nowtime;
 							break;
 						}
 					case 3:
@@ -371,16 +383,12 @@ function DanmuCore() {
 								delete danmutunnel.top[node.tunnelobj[1]][node.tunnelobj[2]];
 								delete node.tunnelobj;
 								COL.cct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
-								continue;
+								return;
 							}
+							node.lasttime=nowtime;
 							break;
 						}
-					default:
-						continue;
-					}
-				}
 			}
-
 		},
 		initnewDanmuObj: function(danmuobj) {
 			if (typeof danmuobj == 'object') {
@@ -432,12 +440,12 @@ function DanmuCore() {
 	controlfuns.gototime = function() {}
 	controlfuns.loading = function() {}
 	controlfuns.ended = function() {
-		danmutunnel = {
+		/*danmutunnel = {
 			right: [],
 			left: [],
 			bottom: [],
 			top: []
-		}
+		}*/
 		/*danmufuns.clear();*/
 	}
 
@@ -570,11 +578,13 @@ function DanmuCore() {
 		});
 		aEL(video, 'seeked',
 		function() {
-			/*console.log("事件:已跳到新位置");*/
+			//console.log("事件:已跳到新位置");
 			timepoint = getVideoMillionSec();
 			/*EVENT("seeked");*/
 			/*controlfuns.refreshprogresscanvas();*/
-			danmufuns.clear();
+			if(timepoint!=0){
+				danmufuns.clear();
+			}
 		});
 		aEL(video, 'seeking',
 		function() {

@@ -2,16 +2,21 @@ EC.addEvent("CoreReady",function(p){
 	var specol="color:#fff;background:#000";
 	Dinfo("%c执行菜单模块",specol);
 	//菜单标签页样式
-	addStyle("#menu_tagbar{height:100%;width:50px;background-color: rgba(126,160,168,0.9);position:absolute;top:0px;right:0px;transition:right 0.2s;color:#fff;z-index:251;}");
+	addStyle("#menu_tagbar{height:100%;width:50px;background-color: rgba(126,160,168,0.9);position:absolute;top:0px;right:0px;transition:right 0.4s ease 0s;color:#fff;z-index:251;}");
 	//菜单内容框样式
-	addStyle("#menu_contentbar{height:100%;width:250px;background-color: rgba(202, 236, 249,0.8);position:absolute;top:0px;right:50px;overflow:hidden;transition:right 0.2s;color:#fff;z-index:250;}");
+	addStyle("#menu_contentbar{height:100%;width:250px;background-color: rgba(202, 236, 249,0.8);position:absolute;top:0px;right:50px;overflow:hidden;transition:right 0.4s ease 0s;color:#fff;z-index:250;}");
 	//标签容器样式
 	addStyle("#menu_tagcontainer{height:auto;width:50px;overflow:hidden;position:absolute;top:30%;right:0px;color:#fff;}");
 	//标签外壳样式
 	addStyle(".menu_tagdiv{height:50px;width:50px;overflow:hidden;position:relative;cursor:pointer;transition:background-color 0.2s;font-size:40px;line-height:50px;text-align:center;}");
 	addStyle(".menu_tagdiv:hover{background-color:rgba(255,255,255,0.3);}");
 	//区块外壳样式
-	addStyle(".menu_blockdiv{width:100%;right:-100%;overflow:hidden;position:relative;transition:right 0.3s ease-in-out,height 0.2s,opacity 0.2s;display:none;padding:3px;}");
+	addStyle(".menu_blockdiv{width:100%;right:-100%;overflow:hidden;position:relative;transition:right 0.3s ease-in-out,height 0.2s,opacity 0.2s;display:none;}");
+	//按钮样式
+	addStyle(".menu_button{width:100%;position:relative;transition:background-color 0.3s;cursor:pointer;font-size:30px;color:rgb(31, 89, 34);}");
+	//按钮cover样式
+	addStyle(".menu_buttoncover{width:100%;height:100%;position:absolute;transition:opacity 0.3s;opacity:0.4;background-color:#fff;top:0px;left:0px;}");
+	addStyle(".menu_buttoncover:hover{opacity:0.1;}");
 
 	//菜单对象
 	function menuobj(){
@@ -89,15 +94,36 @@ EC.addEvent("CoreReady",function(p){
 				delete m.tags[this.name];
 			}
 		}
-		this.widget={
-			button:function(fun){//按钮被点击即触发一次函数
+		m.widget={
+			button:function(text,fun){//按钮被点击即触发一次函数
+				var but=c_ele("div"),butco=c_ele("div");
+				$Attr(but,{className:"menu_button",innerHTML:"&nbsp;"+text,onclick:fun});
+				butco.className="menu_buttoncover";
+				but.appendChild(butco);
+				return but;
+			},
+			switchbutton:function(text,fun){//参数函数接受0和1两个参数
+				var swi=m.widget.button(text,m.widget.funs.switchbutton);
+				swi.s=0;
+				swi.fun=fun;
+				swi.style.backgroundColor="#ccc";
+				return swi;
+			},
+			range:function(min,max,fun){//参数函数接受滑动时所有的数值
 
 			},
-			switchbutton:function(fun){//参数函数接受0和1两个参数
-
-			},
-			range:function(min,max,fun){//
-
+			funs:{
+				switchbutton:function(){
+					if(this.s===0){
+						this.s=1;
+						this.fun(1);
+						this.style.backgroundColor="rgba(52, 164, 52, 0.55)";
+					}else{
+						this.s=0;
+						this.fun(0);
+						this.style.backgroundColor="rgba(173, 180, 176, 0.69)";
+					}
+				}
 			}
 		};
 		m.tags={};

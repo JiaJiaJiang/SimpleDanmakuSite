@@ -358,6 +358,7 @@ function newCOL() {
 		COL.cct = COL.currentcontext;
 		COL.document = COL.Graph.New();
 		COL.Graph.Eventable(COL.document);
+		//COL.document.overflow="hidden";
 		COL.document.drawtype = "image";
 		COL.document.name = "document";
 		COL.document.width = canvas_dom.width;
@@ -958,7 +959,12 @@ function newCOL() {
 							if (cObj.imageobj && cObj.imageobj.width && cObj.imageobj.height) {
 								ct.save();
 								ct.transform(1, 0, 0, 1, -cObj.plusoffsetX, -cObj.plusoffsetY);
-								ct.drawImage(cObj.imageobj, 0, 0);
+								/*if(!cObj.rotate&&cObj.imageobj.width>canvas_dom.width&&cObj.zoom.x>=1){
+									var befofe=cObj.x-cObj.rotatecenter.x ,after=
+									ct.drawImage(cObj.imageobj,(cObj.x<0)?-cObj.x:0,0,canvas_dom.width,cObj.imageobj.height,0,0,canvas_dom.width-(),cObj.imageobj.height*cObj.zoom.y);
+								}else{*/
+									ct.drawImage(cObj.imageobj, 0, 0);/*
+								}*/
 								if (COL.Debug.stat) {
 									ct.strokeStyle = "#ccc";
 									ct.strokeRect(0, 0, cObj.imageobj.width, cObj.imageobj.height);
