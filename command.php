@@ -108,7 +108,7 @@ if ($command) {
             for($ind = 0; $ind < $count; $ind++){//遍历参数数组
                 $flagname=isFlag($options[$ind]);
                 if($flagname){//查找标记
-                    array_push($flags,$flagname);//把标记名放入flags数组，可用in_array($flags,"标记名")来查找是否存在指定标记
+                    array_push($flags,$flagname);//把标记名放入flags数组，可用in_array("标记名",$flags)来查找是否存在指定标记
                 }
             }
             //恢复参数值

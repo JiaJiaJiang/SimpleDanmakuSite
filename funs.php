@@ -83,6 +83,10 @@ function isID($id){
 }
 function isLogged(){
 	if($_SESSION['logged']===true){
+		if(@ErrorLog){
+			ini_set("display_errors", "On");
+			error_reporting(E_ALL | E_STRICT);
+		}
 		return true;
 	}else{
 		return false;

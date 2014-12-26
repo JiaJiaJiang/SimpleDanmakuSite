@@ -393,9 +393,12 @@ function initPlayer(_in_videoid) {
 	controlfuns = {},
 	danmufuns = {};
 	localstoragesupport = window.localStorage ? true: false;
+	player.info={
+		id:_in_videoid,
+		dc:0
+	};
 	var danmulist = player.danmulist=[],
 	danmuarray = [],
-	danmucount,
 	ready = false;
 	var playersse;
 	player.EC = new SimpleEvent();
@@ -423,20 +426,16 @@ function initPlayer(_in_videoid) {
 		player.sendcover = $(mainbody, '#sendbox #sendboxcover');
 		player.danmuctrl = $(mainbody, '#controler #danmuctrl');
 		player.danmuinput = $(mainbody, '#sendbox #danmuinput');
-		//player.danmucontantor = $(mainbody, '#danmus');
 		player.fullscreen = $(mainbody, '#controler #fullscreen');
 		player.loop = $(mainbody, '#controler #loop');
 		player.play_pause = $(mainbody, '#play_pause');
-		//player.playcount = $(mainbody, '#playcount');
 		player.progress = $(mainbody, '#progress');
 		player.progressbar = $(mainbody, '#progress #progressbar');
 		player.progresscover = $(mainbody, '#progress #progresscover');
 		player.playbutton = $(mainbody, '#play_pause #play');
 		player.pausebutton = $(mainbody, '#play_pause #pause');
-		//player.timepoint = $(mainbody, '#controler #progress #timepoint');
 		player.time = $(mainbody, '#controler #time');
 		player.tipbox = $(player.mainbody, '#tipbox');
-		//player.sidebarSwitch = $(mainbody, '#controler #sidebarctrl');
 		player.sendbox = $(mainbody, '#sendbox');
 		player.sendbutton=$(mainbody, '#sendbox #sendbutton');
 		player.videoframe = $(mainbody, '#videoframe');
@@ -452,16 +451,12 @@ function initPlayer(_in_videoid) {
 		danmumarkct = player.danmumark.getContext("2d");
 		progressct = player.progressbar.getContext("2d");
 		player.progressbar.height = 9;
-		//player.loadinfo.height = player.progress.offsetHeight; 
 		(player.danmuContextMenu = c_ele('div')).className = 'textContextMenu';
 		playersse = player.mainbody.getAttribute("playersse"); 
 		player.EC.fireEvent("PlayerReady",player);
 		(player.core = new window.danmuplayer.DanmuCore()).bind(player);
 		player.EC.fireEvent("CoreReady",player);
 	}
-	/*function setPlayOption() {
-		player.o.recycle = false;
-	}*/
 	function tip(str) {
 		var td = c_ele("div");
 		td.className = "tip";
@@ -478,31 +473,22 @@ function initPlayer(_in_videoid) {
 		20);
 	}
 	function loadoption() {
-		//console.log("加载设置");
-		newstat('加载设置');
+		Dinfo('加载设置');
 		player.o = {},
 		player.assvar = {},
 		player.switchs = {};
-		//player.ZiMu={};
 		player.cacheobj = {};
 		player.assvar.hasZimu = false;
 		player.assvar.hasSuperDanmu = false;
-		//var optioncategory = [],
-		/*tmpcategory = $$(player.optionpannel, 'h3'),
-		tmpoption = $$(player.optionpannel, 'h3+div');
-		for (var i = 0; i < tmpcategory.length; i++) {
-			optioncategory.push([tmpcategory[i], tmpoption[i]]);
-		}*/
 		resetprocess();
 	}
 	function loadvideo() {
 		//console.log("加载视频");
-		newstat('获取视频地址');
-		cmd('getVideoAddress ' + videoid, false,
+		Dinfo('获取视频地址');
+		cmd('getVideo ' + videoid+' --t --des --cv', false,
 		function(a) {
 			if (a == 'Error') {
-				newstat('地址获取错误');
-				player.playcount.innerHTML = '视频错误';
+				Derror('地址获取错误');
 				player.EC.fireEvent("VideoAddressError");
 				return;
 			}
@@ -510,11 +496,16 @@ function initPlayer(_in_videoid) {
 				var json = JSON.parse(a),
 				videosrc = JSON.parse(json.url);
 			} catch(e) {
-				newstat('地址获取错误');
+				Derror('地址获取错误');
 				player.EC.fireEvent("VideoAddressParseError");
 				return;
 			}
-			var count = json.count;
+			player.info.title=json.t;
+			player.info.count=json.count;
+			player.info.des=json.des;
+			player.info.cv=json.cv;
+			player.EC.fireEvent("VideoInfoGet",player);
+
 			player.videoaddress = [];
 			for (var no in videosrc) {
 				if (videosrc[no] && videosrc[no].length) {
@@ -527,11 +518,8 @@ function initPlayer(_in_videoid) {
 				}
 			}
 			if (!player.videoaddress[0]) {
-				newstat('地址获取错误');
+				Derror('地址获取错误');
 				return;
-			}
-			if ((count = Number(count)) >= 0) {
-				//player.playcount.innerHTML = '播放数:' + count;
 			}
 			Dinfo('得到视频地址:', videosrc);
 			Message("CTRL", {
@@ -541,42 +529,32 @@ function initPlayer(_in_videoid) {
 		});
 	}
 	function loaddanmu() {
-		//console.log("加载弹幕");
-		newstat('加载弹幕');
-		//danmufuns.show();
+		Dinfo('加载弹幕');
 		cmd('getDanmu ' + videoid, false,
 		function(a) {
 			if (a == 'Error') {
-				newstat('弹幕加载失败');
-				player.danmucount.innerHTML = '弹幕错误';
+				Derror('弹幕加载失败');
 				return;
 			}
 			try {
 				var danmuarr = JSON.parse(a);
 			} catch(e) {
-				//newstat("弹幕错误");
-				danmucount = 0;
-				//player.danmucount.innerHTML = "弹幕错误";
+				player.info.dc = 0;
 			};
 			if (typeof danmuarr == 'object') {
 				for (var i = 0; i < danmuarr.length; i++) {
 					try {
-						//danmuarr[i] = eval('(' + danmuarr[i] + ')');
-						//danmuarr[i].c=danmuarr[i].c.replace(/\n/m,"\n");
 						danmuarr[i] = JSON.parse(danmuarr[i]);
 					} catch(e) {
-						newstat('弹幕错误');
-						//console.log(e)
+						Derror('弹幕错误');
 					}
 				}
 				danmulist = danmuarr;
-				danmucount = danmuarr.length;
-				//listdanmu();
+				player.info.dc = danmuarr.length;
 				Message("CTRL", {
 					name: "danmuarray",
 					array: danmuarr
 				});
-				//danmuarray=danmuarr;
 				danmufuns.refreshnumber();
 			}
 		});
@@ -586,7 +564,7 @@ function initPlayer(_in_videoid) {
 		controlfuns.refreshprogresscanvas();
 		controlfuns.refreshDanmuMark();
 	}
-	function initSwitch() {
+	/*function initSwitch() {
 		var switchs = $$(player.optionpannel, 'div[switch]');
 		for (var i = 0; i < switchs.length; i++) {
 			var sw = switchs[i];
@@ -636,7 +614,7 @@ function initPlayer(_in_videoid) {
 		for (var rg in player.ranges) {
 			rangeCenter[rg](player.ranges[rg].value);
 		}
-	}
+	}*/
 	function initInput() {
 		var inputs = $$(player.mainbody, 'input[name]');
 		player.inputs = {};
@@ -656,11 +634,6 @@ function initPlayer(_in_videoid) {
 		}
 	}
 
-	function newstat(stat) {
-		if (typeof stat == 'string') {
-			//player.statboard.innerHTML = '&nbsp;' + stat + '<br>' + player.statboard.innerHTML;
-		}
-	}
 	player.danmufuns=danmufuns = {
 		initContextMenu: function() {
 			/*弹幕右键菜单*/
@@ -773,7 +746,7 @@ function initPlayer(_in_videoid) {
 							var err = response.match(/^Error:(.+)$/)[1];
 							tip(err);
 						} catch(e) {
-							console.log(response);
+							console.error(response);
 						}
 						if (!content) player.sendcover.style.display = 'none';
 					}
@@ -796,16 +769,12 @@ function initPlayer(_in_videoid) {
 
 		pause: function() {
 			//clearInterval(interval.calibrationTime.i);
-			//TODO:暂停所有弹幕
 		},
 		refreshnumber: function() {
 			if (danmulist.length >= 0) {
-				danmucount=danmulist.length;
-				//player.danmucount.innerHTML = '弹幕数:' + danmucount;
-			} else {
-				//player.danmucount.innerHTML = '弹幕错误';
+				player.info.dc=danmulist.length;
+				player.EC.fireEvent("DanmakuCount",player.info.dc);
 			}
-			/*player.assvar.danmumark.drawpic(player.loadinfo.width, 25, player.assvar.danmumark.drawfunction);*/
 			controlfuns.refreshDanmuMark();
 		}
 	}
@@ -824,8 +793,6 @@ function initPlayer(_in_videoid) {
 		addEleClass(player.sendbox, 'sendbox_fullscreen');
 		addEleClass(player.videoframe, 'videoframe_fullscreen');
 		addEleClass(player.controler, 'controler_fullscreen');
-		//addEleClass(player.sidebar, "sidebar_fullscreen");
-		//controlfuns.sidebar_hide();
 		player.displaystat = 'fullscreen';
 		resetprocess();
 	}
@@ -834,8 +801,6 @@ function initPlayer(_in_videoid) {
 		removeEleClass(player.sendbox, 'sendbox_fullscreen');
 		removeEleClass(player.videoframe, 'videoframe_fullscreen');
 		removeEleClass(player.controler, 'controler_fullscreen');
-		//removeEleClass(player.sidebar, "sidebar_fullscreen");
-		//controlfuns.sidebar_show();
 		resetprocess();
 	}
 	controlfuns.fullscreenchange = function() {
@@ -1483,8 +1448,8 @@ function initPlayer(_in_videoid) {
 			videoevents();
 			loadvideo();
 			loaddanmu();
-			initSwitch();
-			initRange();
+			//initSwitch();
+			//initRange();
 		});
 	}
 	player.EC.fireEvent("beforeinit");

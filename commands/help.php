@@ -34,7 +34,7 @@ needLogin();
 	findvideo			【控制台】查找视频
 	finddanmu			【控制台】使用正则查找弹幕（谨慎使用
 	getDanmu			【播放器】获取json格式弹幕表
-	getVideoAddress			【播放器】获取视频地址和播放数
+	getVideo			【播放器】获取视频地址和播放数
 	help 				【控制台】查看帮助
 	initdb				【控制台】初始化数据库(表) 
 	listdanmu			【控制台】列出指定视频的所有弹幕       
