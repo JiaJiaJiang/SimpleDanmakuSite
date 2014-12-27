@@ -277,7 +277,7 @@ function initPlayer(_in_videoid) {
 	}
 	function loadvideo() {
 		newstat('获取视频地址');
-		cmd('getVideoAddress ' + videoid, false,
+		cmd('getVideo ' + videoid, false,
 		function(a) {
 			if (a == 'Error') {
 				newstat('地址获取错误');

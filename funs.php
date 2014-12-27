@@ -221,7 +221,7 @@ function cutdownjs($content){
     }
     $content = preg_replace("/^[\t\s]+/m",'', $content); /*去除每行前的tab和空格*/
     $content = preg_replace("/^[\r\n]+/m",'', $content); /*去除空白行*/
-    $specahrs='\:\{\=\+\-\*\/\,\.\;\|\?\\\\\[\]\>\<\&\)';
+    $specahrs='\:\{\=\+\-\*\/\,\.\;\|\?\\\\\[\]\>\<\&';
     $content = preg_replace("/[\t\s]*([$specahrs])[\t\s]*/",'$1', $content);
     $content = preg_replace("/[\r\n]*([$specahrs])[\r\n]*/",'$1', $content);
     /*最后把字符串全替换回去*/
@@ -258,14 +258,14 @@ function getpluginsjs($dir="player/plugins"){
 	var plugs=\''.$jsonplugin.'\';
 	plugs=JSON.parse(plugs);
 	for(var plugname in plugs){
-		try{
+		//try{
 			Dinfo("%c加载:"+plugname,"background-color: #001F35;color:#fff");
 			eval(base64.decode(plugs[plugname]));
-		}catch(e){
-			Derror("%c"+plugname+"加载失败","background-color: #001F35;color:#fff");
-			Derror(e);
-			Dlog(base64.decode(plugs[plugname]));
-		}
+		//}catch(e){
+		//	Derror("%c"+plugname+"加载失败","background-color: #001F35;color:#fff");
+		//	Derror(e);
+		//	Dlog(base64.decode(plugs[plugname]));
+		//}
 	}
 ';
 			$content.="};window.console_output=false;(function(){for(var i in console){eval('window.D'+i+' = function() {if (console_output === true) console.'+i+'.apply(console, arguments)}')}}());";

@@ -102,11 +102,9 @@ function newCOL() {
 	}
 	COL.imageSmoothing = {
 		on: function() {
-			if (COL.buffercontext) COL.buffercontext.imageSmoothingEnabled = true;
 			COL.context.imageSmoothingEnabled = true;
 		},
 		off: function() {
-			if (COL.buffercontext) COL.buffercontext.imageSmoothingEnabled = false;
 			COL.context.imageSmoothingEnabled = false;
 		}
 	};
@@ -358,7 +356,6 @@ function newCOL() {
 		COL.cct = COL.currentcontext;
 		COL.document = COL.Graph.New();
 		COL.Graph.Eventable(COL.document);
-		//COL.document.overflow="hidden";
 		COL.document.drawtype = "image";
 		COL.document.name = "document";
 		COL.document.width = canvas_dom.width;
@@ -379,13 +376,6 @@ function newCOL() {
 			COL.transform = COL.optionalFun.transformLinear;
 		}
 	}
-
-	/*COL.setBuffCanvas = function(buf) {
-		COL.buffercanvas = buf;
-		COL.buffercontext = COL.buffercanvas.getContext("2d");
-		COL.currentcontext = COL.buffercontext || COL.context;
-	};*/
-
 	COL.Graph = {
 		New: function(opjson) {
 			var cF = COL.Graph.commonFunction;

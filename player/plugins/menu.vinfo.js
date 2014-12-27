@@ -8,8 +8,8 @@
 	dc=c_ele("div");
 	infobox.style.backgroundColor="rgba(54,174,184,0.41)";
 	infobox.style.wordBreak="break-all";
-	title.innerText="...";
-	$Attr(title.style,{fontSize:"30px",padding:"3px",position:"relative"});
+	title.innerHTML="...";
+	$Attr(title.style,{fontSize:"22px",padding:"3px",position:"relative"});
 	$Attr(des.style,{paddingLeft:"3px",color:"#F5EEEE",fontSize:"15px"});
 	$Attr(pc.style,{display:"inline-block",width:"50%"});
 	$Attr(dc.style,{display:"inline-block",width:"50%"});
@@ -22,13 +22,14 @@
 function pct(c){
 	var q="...";
 	if(c){q=c;}
-	pc.innerText='PC:'+q;
+	pc.innerHTML='PC:'+q;
 }
 function dct(c){
 	var q="...";
 	if(c){q=c;}
-	dc.innerText='DC:'+q;
+	dc.innerHTML='DC:'+q;
 }
+pct();dct();
 EC.addEvent("menuready",function(m){
 	m.addTab("home","〓");
 	var d=m.tags["home"].addBlock("videoinfo");
@@ -38,11 +39,10 @@ EC.addEvent("menuready",function(m){
 EC.addEvent("VideoInfoGet",function(p){
 	var i=p.info;
 	pct(i.count);
-	title.innerText=i.title;
-	des.innerText=i.des;
+	title.innerHTML=i.title;
+	des.innerHTML=i.des;
 });
 EC.addEvent("DanmakuCount",function(c){
 	dct(c);
 });
 })();
-

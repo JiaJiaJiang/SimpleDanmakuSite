@@ -720,6 +720,7 @@ function initPlayer(_in_videoid) {
 				danmuobj.s = danmuStyle.fontsize;
 				danmuobj.ty = type;
 				danmuobj.sended = true;
+				player.EC.fireEvent("newOLdanmaku",Object.create(danmuobj));
 				var date = new Date();
 				date.day = (date.getDate() < 10) ? '0' + date.getDate() : date.getDate();
 				date.month = date.getMonth() + 1;
