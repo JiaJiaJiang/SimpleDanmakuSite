@@ -402,8 +402,12 @@ function DanmuCore() {
 				for (var i = 0; i < danmuarray[t].length; i++) {
 					var tmpd = danmuarray[t][i];
 					if (danmucontainer.display&&tmpd.ty <= 3 && tmpd.ty >= 0) {
-						if(!tmpd.sended)
+						if(tmpd.sended===undefined||tmpd.sended===true){
 							danmufuns.createCommonDanmu(tmpd);
+							if(tmpd.sended)tmpd.sended=2;
+						}else{
+							if(tmpd.sended===2)delete tmpd.sended;
+						}
 					} else if (tmpd.ty == 4) {} else if (tmpd.ty == 5) {
 						tmpd.fun();
 					}
