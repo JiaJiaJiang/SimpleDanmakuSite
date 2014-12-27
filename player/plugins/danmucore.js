@@ -22,12 +22,15 @@ function DanmuCore() {
 	tunnelheight = 0,
 	timeline = [],
 	timepoint = 0,
-	danmucontainer,
-	divdanmucontainer = [];
-	var danmufirer, superdanmu;
-	var zimulist = [],
-	zimucontainer;
-	player.assvar = {};
+	danmucontainer;
+	//divdanmucontainer = [];
+	var danmufirer;
+	/*var zimulist = [],
+	zimucontainer;*/
+	player.assvar = {
+		aniswitch:true,
+		ended:false
+	};
 	var drawlist;
 	var videoinfo = {
 		width: null,
@@ -108,8 +111,8 @@ function DanmuCore() {
 			clearInterval(intervals.timer);
 			intervals.timer = 0;
 		}
-		if (t >= timepoint) {
-			for (; timepoint <= t; timepoint += 10) {
+		if (t > timepoint) {
+			for (; timepoint <t; timepoint += 10) {
 				if (timeline[timepoint]) setTimeout(danmufuns.fire,0,timepoint); 
 			}
 		} else {
@@ -196,9 +199,14 @@ function DanmuCore() {
 
 		danmurefreshAnimationfun: function() {
 		"use strict";
+			if(player.assvar.aniswitch){
+				danmufuns.movedanmuAnimation();
+			}else{
+				danmufuns.movedanmuAnimation();
+				COL.draw();
+			}
+			player.assvar.aniswitch=!player.assvar.aniswitch;
 			danmulayerAnimationFrame = requestAnimationFrame(danmufuns.danmurefreshAnimationfun);
-			danmufuns.movedanmuAnimation();
-			COL.draw();
 		},
 		danmulayerAnimation: {
 			start: function() {
@@ -316,21 +324,15 @@ function DanmuCore() {
 			if (player.assvar.isPlaying) {
 				var nowtime = (player.video.currentTime * 1000 + 0.5) | 0;
 				if (COL.lastmovedtime == nowtime) return;
-				var node;
-				var movefun=danmufuns.movefun;
+				var node,movefun=danmufuns.movefun;
 				COL.lastmovedtime = nowtime;
 				moveTime=getOption("DanmuSpeed","number")*1000;
-				//var temp;
 				for (var i = 0; i < danmucontainer.drawlist.length; i++) {
 					node = danmucontainer.drawlist[i];
 					if (! (node && node.imageobj && node.tunnelobj)) continue;
-					if(nowtime<node.time){
-						node.time=-(node.time+moveTime-node.lasttime);
-					}
-					setTimeout(movefun,0,node,nowtime);
+					movefun(node,nowtime);
 				}
 			}
-
 		},
 		movefun:function(node,nowtime){
 			switch (node.type) {
@@ -340,14 +342,14 @@ function DanmuCore() {
 							if (node.tunnelobj[1] != null && node.x < width - node.width - 150) {
 								delete danmutunnel.right[node.tunnelobj[1]][node.tunnelobj[2]];
 								node.tunnelobj[1] = null;
-							} else if (node.x < -node.width) {
+							} else if (node.x < -node.width-20) {
 								node.parentNode.removeChild(node);
 								delete node.tunnelobj;
 								return;
 							}
 							node.lasttime=nowtime;
 							node.setMatrix();
-							break;
+							return;
 						}
 					case 1:
 						{
@@ -355,14 +357,14 @@ function DanmuCore() {
 							if (node.tunnelobj[1] != null && node.x > 150) {
 								delete danmutunnel.left[node.tunnelobj[1]][node.tunnelobj[2]];
 								node.tunnelobj[1] = null;
-							} else if (node.x > width) {
+							} else if (node.x > width+20) {
 								node.parentNode.removeChild(node);
 								delete node.tunnelobj;
 								return;
 							}
 							node.lasttime=nowtime;
 							node.setMatrix();
-							break;
+							return;
 						}
 					case 2:
 						{
@@ -370,11 +372,10 @@ function DanmuCore() {
 								node.parentNode.removeChild(node);
 								delete danmutunnel.bottom[node.tunnelobj[1]][node.tunnelobj[2]];
 								delete node.tunnelobj;
-								COL.cct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
 								return;
 							}
 							node.lasttime=nowtime;
-							break;
+							return;
 						}
 					case 3:
 						{
@@ -382,11 +383,10 @@ function DanmuCore() {
 								node.parentNode.removeChild(node);
 								delete danmutunnel.top[node.tunnelobj[1]][node.tunnelobj[2]];
 								delete node.tunnelobj;
-								COL.cct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
 								return;
 							}
 							node.lasttime=nowtime;
-							break;
+							return;
 						}
 			}
 		},
@@ -402,6 +402,7 @@ function DanmuCore() {
 				for (var i = 0; i < danmuarray[t].length; i++) {
 					var tmpd = danmuarray[t][i];
 					if (danmucontainer.display&&tmpd.ty <= 3 && tmpd.ty >= 0) {
+						if(!tmpd.sended)
 							danmufuns.createCommonDanmu(tmpd);
 					} else if (tmpd.ty == 4) {} else if (tmpd.ty == 5) {
 						tmpd.fun();
@@ -524,7 +525,7 @@ function DanmuCore() {
 		aEL(video, 'ended',
 		function() {
 			/*EVENT("ended");*/
-			/*console.log('事件:播放结束');*/
+			Dinfo('事件:播放结束');
 			controlfuns.ended();
 		});
 		aEL(video, 'loadedmetadata',

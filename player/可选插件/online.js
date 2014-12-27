@@ -49,12 +49,13 @@ function clone(obj){
 						var d=msg.data;
 						if(d.c&&d.t&&d.d){
 							Dinfo("%c新弹幕:" + d.c, olcolecolor);
+							EC.fireEvent("newOLdanmaku",Object.create(d));
 							p.core.danmufuns.initnewDanmuObj(d);
 							p.danmulist.push(d);
 							p.danmufuns.refreshnumber();
 							var div=document.createElement("div");
 							div.className="dmmarknewflash";
-							div.style.left=(d.t/p.core.p.video.duration/1000*100)+"%";
+							div.style.left=(d.t/p.core.player.video.duration/1000*100)+"%";
 							p.progresscover.appendChild(div);
 							setTimeout(function(){
 								div.style.opacity=0;
@@ -110,10 +111,22 @@ EC.addEvent("menuready",
 function(m) {
 	m.addTab("home","〓");
 	setTimeout(function(){
-		var d=m.tags["home"].addBlock("onlinenumber");
+		var d=m.tags["home"].addBlock("onlinenumber"),
+		oldm=m.tags["home"].addBlock("onlinedm");
+		$Attr(oldm.style,{padding:"0px 3px",width:"auto",backgroundColor:"rgb(120,129,132)"});
 		menudiv=d;
-		$Attr(d.style,{fontSize:"30px",paddingLeft:"7px",backgroundColor:"rgba(48, 44, 44, 0.33)"});
+		$Attr(d.style,{fontSize:"30px",paddingLeft:"7px",backgroundColor:"rgba(48,44,44,0.33)"});
 		d.innerHTML="连接中...";
+		EC.addEvent("newOLdanmaku",function(d){
+			if(oldm.childNodes.length>=10){
+				oldm.removeChild(oldm.childNodes[0]);
+			}
+			var n=c_ele("div");
+			var t=getMin_Sec_By_Million(d.t);
+			n.innerHTML=(t.min<10?"0"+t.min:t.min)+":"+(t.sec<10?"0"+t.sec:t.sec)+" "+d.c;
+			$Attr(n.style,{color:(d.co?"#"+d.co:false)||"#fff"});
+			oldm.appendChild(n);
+		});
 		setInterval(function(){
 			if(plugin_online_onlinecount>0){
 				menudiv.innerHTML="观众:"+plugin_online_onlinecount;
