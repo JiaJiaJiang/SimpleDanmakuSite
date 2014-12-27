@@ -2,10 +2,11 @@
 发送弹幕成功后把弹幕推送给其它客户端
 在线人数功能
 */
+(function(){
 var menudiv;
 var plugin_online_onlinecount=0;
 EC.addEvent("CoreReady",
-function(player) {
+function(p) {
 function clone(obj){
   if(typeof(obj) != 'object') return obj;
   if(obj == null) return obj;
@@ -29,7 +30,7 @@ function clone(obj){
 			Dlog("%c开始连接在线弹幕服务器",olcolecolor);
 			socket.onopen = function(data) {
 				Dinfo("%c已连接弹幕服务器", olcolecolor);
-				socket.send(_("vid", player.videoid));
+				socket.send(_("vid", p.videoid));
 			};
 			socket.onmessage = function(data) {
 				var msg = JSON.parse(data.data);
@@ -48,17 +49,17 @@ function clone(obj){
 						var d=msg.data;
 						if(d.c&&d.t&&d.d){
 							Dinfo("%c新弹幕:" + d.c, olcolecolor);
-							player.core.danmufuns.initnewDanmuObj(d);
-							player.danmulist.push(d);
-							player.danmufuns.refreshnumber();
+							p.core.danmufuns.initnewDanmuObj(d);
+							p.danmulist.push(d);
+							p.danmufuns.refreshnumber();
 							var div=document.createElement("div");
 							div.className="dmmarknewflash";
-							div.style.left=(d.t/player.core.player.video.duration/1000*100)+"%";
-							player.progresscover.appendChild(div);
+							div.style.left=(d.t/p.core.p.video.duration/1000*100)+"%";
+							p.progresscover.appendChild(div);
 							setTimeout(function(){
 								div.style.opacity=0;
 								setTimeout(function(){
-									player.progresscover.removeChild(div);
+									p.progresscover.removeChild(div);
 								},5000);
 							},100);
 						}
@@ -120,3 +121,4 @@ function(m) {
 		},1000);
 	},500);
 });
+})();
