@@ -22,11 +22,9 @@ if (isID($option[0])) {
             }else{
                 out('成功');
             }
-        }
-        out("开始清空视频".$option[0])."的弹幕");
+        out("开始清空视频".$option[0]."的弹幕");
             $stmt = mysqli_stmt_init($SQL);
-            mysqli_stmt_prepare($stmt, "DELETE FROM `danmu`
-WHERE `videoid` =?");
+            mysqli_stmt_prepare($stmt, "DELETE FROM `danmu` WHERE `videoid` =?");
             mysqli_stmt_bind_param($stmt,"i",$option[0]);
             mysqli_stmt_execute($stmt);
             echo "已清空ID".$option[0]."的弹幕，共".mysqli_affected_rows($SQL)."条";
