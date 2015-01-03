@@ -100,6 +100,7 @@ EC.addEvent("CoreReady",function(p){
 				$Attr(but,{className:"menu_button",innerHTML:"&nbsp;"+text,onclick:fun});
 				butco.className="menu_buttoncover";
 				but.appendChild(butco);
+				addEleClass(but,"cantselect");
 				return but;
 			},
 			switchbutton:function(text,fun){//参数函数接受0和1两个参数
@@ -110,6 +111,12 @@ EC.addEvent("CoreReady",function(p){
 				return swi;
 			},
 			range:function(min,max,fun){//参数函数接受滑动时所有的数值
+				var rgd=c_ele("div"),far=c_ele("div"),te=c_ele("div"),pre=c_ele("div");
+				far.appendChild(rgd);
+				far.appendChild(te);
+
+
+				addEleClass(far,"cantselect");
 
 			},
 			funs:{
@@ -130,6 +137,7 @@ EC.addEvent("CoreReady",function(p){
 		(m.tagbar=c_ele("div")).id="menu_tagbar";
 		(m.contentbar=c_ele("div")).id="menu_contentbar";
 		(m.tagcontainer=c_ele("div")).id="menu_tagcontainer";
+		addEleClass(m.tagbar,"cantselect");
 		m.tagbar.appendChild(m.tagcontainer);
 		p.videoframe.appendChild(m.tagbar);
 		p.videoframe.appendChild(m.contentbar);

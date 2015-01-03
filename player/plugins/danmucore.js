@@ -199,13 +199,13 @@ function DanmuCore() {
 
 		danmurefreshAnimationfun: function() {
 		"use strict";
-			if(player.assvar.aniswitch){
-				danmufuns.movedanmuAnimation();
-			}else{
+			// if(player.assvar.aniswitch){
+			// 	danmufuns.movedanmuAnimation();
+			// }else{
 				danmufuns.movedanmuAnimation();
 				COL.draw();
-			}
-			player.assvar.aniswitch=!player.assvar.aniswitch;
+			// }
+			// player.assvar.aniswitch=!player.assvar.aniswitch;
 			danmulayerAnimationFrame = requestAnimationFrame(danmufuns.danmurefreshAnimationfun);
 		},
 		danmulayerAnimation: {

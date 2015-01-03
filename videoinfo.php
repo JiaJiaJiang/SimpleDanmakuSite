@@ -166,7 +166,6 @@ font-family: "微软雅黑","黑体";
 				}
 				div.style.backgroundImage="url('"+cvadd+"')";
 			}
-			div.style.backgroundImage="url('"+cvadd+"')";
 			bgimg.src=cvadd;
 			window.onmouseover=function(){
 				on=true;

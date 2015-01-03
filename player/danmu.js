@@ -61,6 +61,11 @@ function c_ele(tag) {
 function addStyle(cssstr){
 	document.styleSheets[document.styleSheets.length-1].insertRule(cssstr,0);
 }
+/*if(setImmediate){
+	window.Immediate=setImmediate;
+}else{
+	window.Immediate=setTimeout;
+}*/
 var _string_ = {
 	removesidespace: function(string) {
 		if (typeof string == 'string') {
@@ -500,7 +505,7 @@ function initPlayer(_in_videoid) {
 				player.EC.fireEvent("VideoAddressParseError");
 				return;
 			}
-			player.info.title=json.t;
+			document.title=player.info.title=json.t;
 			player.info.count=json.count;
 			player.info.des=json.des;
 			player.info.cv=json.cv;
@@ -695,7 +700,8 @@ function initPlayer(_in_videoid) {
 						player.assvar.danmusendTimeout = 0;
 					}
 					player.sendcover.style.display = 'block';
-					player.danmuinput.blur();
+					//player.danmuinput.blur();
+					player.danmuinput.disabled="disabled";
 				}
 				var time = getVideoMillionSec();
 				var type;
@@ -741,6 +747,8 @@ function initPlayer(_in_videoid) {
 							player.EC.fireEvent("danmusended",danmuobj);
 							player.danmuinput.value = '';
 							player.sendcover.style.display = 'none';
+							player.danmuinput.disabled=false;
+							player.danmuinput.focus();
 						}
 					} else {
 						try {
@@ -749,13 +757,17 @@ function initPlayer(_in_videoid) {
 						} catch(e) {
 							console.error(response);
 						}
-						if (!content) player.sendcover.style.display = 'none';
+						if (!content){
+							player.danmuinput.disabled=false;
+							player.sendcover.style.display = 'none';
+						} 
 					}
 				});
 				if (!content) {
 					player.assvar.danmusendTimeout = setTimeout(function() {
 						if (player.sendcover.style.display != 'none') {
 							player.sendcover.style.display = 'none';
+							player.danmuinput.disabled=false;
 						}
 					},
 					10000);
@@ -817,6 +829,21 @@ function initPlayer(_in_videoid) {
 		addEleClass(player.sendbox, 'fullpage_sendbox');
 		addEleClass(player.videoframe, 'fullpage_videoframe');
 		player.displaystat = 'fullpage';
+		if(parentframehost){
+			try{
+				console.log("send msg");
+				var m={
+					type:"dmplayermsg",
+					msg:"fullpage",
+					id:player.videoid
+				};
+				window.parent.postMessage(m,parentframehost);
+			}catch(e){
+				console.log("err");
+			}
+		}else{
+			Dinfo("无父窗口");
+		}
 		resetprocess();
 	}
 	controlfuns.exitfullpage = function() {
@@ -824,6 +851,17 @@ function initPlayer(_in_videoid) {
 		removeEleClass(player.sendbox, 'fullpage_sendbox');
 		removeEleClass(player.videoframe, 'fullpage_videoframe');
 		player.displaystat = 'normal';
+		if(window.parentframehost){
+			try{
+				var m={
+					type:"dmplayermsg",
+					msg:"cancelfullpage"
+				};
+				window.parent.postMessage(m,parentframehost);
+			}catch(e){}
+		}else{
+			Dinfo("无父窗口");
+		}
 		resetprocess();
 	}
 	controlfuns.gototime = function() {}
