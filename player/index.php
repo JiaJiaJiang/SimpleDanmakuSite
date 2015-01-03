@@ -6,6 +6,7 @@ $pluginreq='';
 if(file_exists("plugins.cache.js")){
 	$pluginreq="?".@filemtime('plugins.cache.js');
 }
+$purl=parse_url($_SERVER['HTTP_REFERER']);
 ?>
 <!DOCTYPE html>
 <html>

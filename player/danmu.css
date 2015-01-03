@@ -6,6 +6,13 @@ html {
  filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
 	-webkit-filter: grayscale(100%);
 }
+.cantselect{
+	-webkit-user-select: none;
+	-moz-user-select: none; 
+	-ms-user-select: none; 
+	-o-user-select: none;
+	user-select: none; 
+}
 .danmuContextMenu {
 	background-color: rgba(255,255,255,0.8);
 	border: 0.2px solid rgba(211, 188, 188, 0.91);
