@@ -1,7 +1,11 @@
 <?php
 needLogin();
 if(hasFlag("help")){
-    echo "initdb用于初始化数据库\n    <b>initdb</b>\n使用前请在config.php中配置好有关数据库的参数\n首次出现失败请尝试再次执行此命令\n数据库和数据表已存在时不会覆盖数据";
+  _toLine('initdb用于初始化数据库',
+              '    <b>initdb</b>',
+              '使用前请在config.php中配置好有关数据库的参数',
+              '首次出现失败请尝试再次执行此命令',
+              '数据库和数据表已存在时不会覆盖数据');
     exit;
 }
 Global $SQL;
@@ -38,6 +42,7 @@ if($SQL->query("CREATE TABLE IF NOT EXISTS `".dbname."`.`video` (
   `count` int(10) unsigned NOT NULL DEFAULT '0',
   `coveraddress` mediumtext DEFAULT NULL,
   `description` mediumtext DEFAULT NULL,
+  `options` mediumtext DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ")===true){

@@ -98,6 +98,22 @@ function needLogin(){
 		exit;
 	}
 }
+function toLine(){
+	$s='';
+	$strs=func_get_args();
+	if(is_array($strs)){
+		$strs=$strs[0];
+	}
+	$c=count($strs);
+	for($i=0;$i<$c;$i++){
+		$s.=$strs[$i];
+		if($i<$c-1)$s.="\n";
+	}
+	return $s;
+}
+function _toLine(){
+	 echo toLine(func_get_args());
+}
 function removeSideSpe($str){
 	return preg_replace("/^\s+|\s+$/","",$str);;
 }

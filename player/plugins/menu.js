@@ -17,7 +17,16 @@ EC.addEvent("CoreReady",function(p){
 	//按钮cover样式
 	addStyle(".menu_buttoncover{width:100%;height:100%;position:absolute;transition:opacity 0.3s;opacity:0.4;background-color:#fff;top:0px;left:0px;}");
 	addStyle(".menu_buttoncover:hover{opacity:0.1;}");
-
+	//进度条样式
+	addStyle(".menu_progerss{width:100%;height:100%;transition:width 0.3s;position:absolute;background-color:rgb(41,210,126);top:0px;left:0px;}");
+	//范围条样式
+	addStyle(".menu_range{width:100%;position:relative;}");
+	//范围条覆盖层样式
+	addStyle(".menu_range_cover{width:100%;height:100%;position:absolute;top:0px;left:0px;}");
+	//范围条百分比样式
+	addStyle("menu_range_precentage{height:100%;position:absolute;top:0px;right:0px;}");
+	//范围条文字样式
+	addStyle("menu_range_zi{width:100%;height:100%;}");
 	//菜单对象
 	function menuobj(){
 		var m=this;
@@ -103,30 +112,62 @@ EC.addEvent("CoreReady",function(p){
 				addEleClass(but,"cantselect");
 				return but;
 			},
-			switchbutton:function(text,fun){//参数函数接受0和1两个参数
+			switchbutton:function(text,fun,name,defaultvalue,donotsave){//参数函数接受0和1两个参数
 				var swi=m.widget.button(text,m.widget.funs.switchbutton);
 				swi.s=0;
 				swi.fun=fun;
+				if(name)swi.name=name;
+				swi.save=(typeof donotsave=="boolean")?donotsave:true;
 				swi.style.backgroundColor="#ccc";
+				if(swi.save&&name){
+					swi.s=getOption(name,"number");
+					if(swi.onclick){
+						swi.s=1^swi.s;
+						swi.onclick();
+					}
+				}
 				return swi;
 			},
-			range:function(min,max,fun){//参数函数接受滑动时所有的数值
-				var rgd=c_ele("div"),far=c_ele("div"),te=c_ele("div"),pre=c_ele("div");
-				far.appendChild(rgd);
-				far.appendChild(te);
+			progerss:function(style){
+				var pro=c_ele("div");
+				pro.className="menu_progerss";
+				if(typeof style=="object")$Attr(pro.style,style);
+				return pro;
+			},
+			range:function(text,min,max,step,fun,name,defaultvalue,donotsave){//参数函数接受滑动时所有的数值
+				var far=c_ele("div");//范围条框架
+				far.zi=c_ele("div");//说明文字
+				far.co=c_ele("div");//cover
+				far.pre=c_ele("div");//百分比
+				far.progerss=m.widget.progerss();
+				far.className="menu_range";
+				far.co.className="menu_range_cover";
+				far.pre.className="menu_range_precentage";
+				far.zi.innerHTML=text;
+				far.zi.className="menu_range_zi";
+				far.appendChild(far.progerss);
+				far.appendChild(far.pre);
+				far.appendChild(far.zi);
+				far.appendChild(far.co);
 
 
 				addEleClass(far,"cantselect");
-
+				return far;
 			},
 			funs:{
 				switchbutton:function(){
 					if(this.s===0){
 						this.s=1;
+						if(this.save&&this.name){
+							setOption(this.name,1);
+						}
 						this.fun(1);
 						this.style.backgroundColor="rgba(52, 164, 52, 0.55)";
 					}else{
 						this.s=0;
+						if(this.save&&this.name){
+							setOption(this.name,0);
+						}
 						this.fun(0);
 						this.style.backgroundColor="rgba(173, 180, 176, 0.69)";
 					}

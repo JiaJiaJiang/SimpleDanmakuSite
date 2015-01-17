@@ -1,7 +1,9 @@
 <?php
 needLogin();
 if(hasFlag("help")){
-    echo "findvideo用于通过标题查找视频\n     <b>findvideo 标题</b>\n此命令使用正则匹配查找，你可以直接输入标题或者一部分，或者使用正则表达式";
+    _toLine('findvideo用于通过标题查找视频',
+                '     <b>findvideo 标题</b>',
+                '此命令使用正则匹配查找，你可以直接输入标题或者一部分，或者使用正则表达式');
     exit;
 }
 $option = $options;

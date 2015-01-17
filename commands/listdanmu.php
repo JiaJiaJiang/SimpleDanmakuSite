@@ -1,7 +1,10 @@
 <?php
 needLogin();
 if(hasFlag("help")){
-    echo "listdanmu用于列出指定视频的所有弹幕\n        <b>adddanmu 视频id 弹幕类型 内容 所在时间 颜色 大小</b>";
+  _toLine('listdanmu用于列出指定视频的所有弹幕',
+              '   <b>listdanmu 视频id [其他选项]</b>',
+              '   --d 倒序显示',
+              '     -l 显示的弹幕数量');
     exit;
 }
 $option=$options;
@@ -9,8 +12,18 @@ header("Content-Type:text/json",true);
 if(isID($option[0])){
 	connectSQL();
 	Global $SQL;
+          Global $args;
+          global $flags;
+          if(array_key_exists("l",$args)){
+            if(!isID($args["l"])){
+                out("l参数值有误");
+                exit;
+            }
+          }
+        $SS="SELECT id,videoid,type,content,time,color,size,date FROM danmu WHERE videoid=?";
+       $SS.=(in_array("d",$flags)?" order by id DESC":"").(array_key_exists("l",$args)?" limit 0,".$args["l"]:"");
 	$stmt = mysqli_stmt_init($SQL);
-	mysqli_stmt_prepare($stmt, "SELECT id,videoid,type,content,time,color,size,date FROM danmu WHERE videoid=?");
+	mysqli_stmt_prepare($stmt,$SS);
 	mysqli_stmt_bind_param($stmt, "i", $option[0]);
 	 mysqli_stmt_execute($stmt);
         mysqli_stmt_bind_result($stmt, $id,$videoid,$type,$c,$time,$color,$size,$date);

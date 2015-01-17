@@ -1,7 +1,12 @@
 <?php
 needLogin();
 if(hasFlag("help")){
-    echo "addvideo用于添加视频\n  <b>addvideo 参数</b>\n    -t 视频标题\n    -url 视频地址\n    -cv 封面地址\n    -des 视频描述";
+    _toLine('addvideo用于添加视频',
+                '  <b>addvideo 参数</b>',
+                '    -t 视频标题',
+                '    -url 视频地址',
+                '    -cv 封面地址',
+                '    -des 视频描述');
     exit;
 }
 global $args;

@@ -6,10 +6,10 @@ if (isID($option[0])) {
         Global $SQL;
         Global $flags;
         $stmt = mysqli_stmt_init($SQL);
-        mysqli_stmt_prepare($stmt, "SELECT title,address,count,coveraddress,description FROM video WHERE id=?");
+        mysqli_stmt_prepare($stmt, "SELECT title,address,count,coveraddress,description,options FROM video WHERE id=?");
         mysqli_stmt_bind_param($stmt, "i", $option[0]);
         mysqli_stmt_execute($stmt);
-        mysqli_stmt_bind_result($stmt, $title,$address,$count,$coveraddress,$description);
+        mysqli_stmt_bind_result($stmt, $title,$address,$count,$coveraddress,$description,$options);
         mysqli_stmt_fetch($stmt);
             if (! $address) {
                 echo "Error";
@@ -29,6 +29,9 @@ if (isID($option[0])) {
             }
             if(in_array("cv",$flags)){
                 $json["cv"]=$coveraddress;
+            }
+            if(in_array("opt",$flags)){
+                $json["opt"]=json_decode($options);
             }
             echo json_encode($json);
             $newc=abs($count)+1;

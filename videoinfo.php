@@ -1,5 +1,4 @@
 <?php
-//error_reporting(1);
 include("funs.php");
 $vid=@$_GET['id'];
 if(!isID($vid))exit;

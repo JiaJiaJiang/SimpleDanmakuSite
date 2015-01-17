@@ -75,8 +75,8 @@ function DanmuCore() {
 	function fitdanmulayer() {
 		"use strict";
 		COL.adjustcanvas();
-		width = player.danmulayer.width = video.offsetWidth;
-		tunnelheight = player.danmulayer.height =video.offsetHeight;
+		width = player.danmulayer.width =  player.danmulayer.offsetWidth;
+		tunnelheight = player.danmulayer.height = player.danmulayer.offsetHeight;
 		for (var i in danmucontainer.childNode) {
 			if (danmucontainer.childNode[i].type == 2) {
 				danmucontainer.childNode[i].set({
@@ -93,11 +93,12 @@ function DanmuCore() {
 		}
 		COL.draw();
 	}
-
+	this.fitdanmulayer=fitdanmulayer;
 	function fireinterval() {
 		"use strict";
 		if (timeline[timepoint]) {
-			setTimeout(danmufuns.fire,0,timepoint); 
+			//setTimeout(danmufuns.fire,0,timepoint); 
+			danmufuns.fire(timepoint);
 		}
 		timepoint += 10;
 		if (!player.assvar.isPlaying) {
@@ -113,7 +114,8 @@ function DanmuCore() {
 		}
 		if (t > timepoint) {
 			for (; timepoint <t; timepoint += 10) {
-				if (timeline[timepoint]) setTimeout(danmufuns.fire,0,timepoint); 
+				//if (timeline[timepoint]) setTimeout(danmufuns.fire,0,timepoint); 
+				danmufuns.fire(timepoint);
 			}
 		} else {
 			return;
@@ -211,7 +213,7 @@ function DanmuCore() {
 		danmulayerAnimation: {
 			start: function() {
 				if (!danmulayerAnimationFrame) {
-					danmulayerAnimationFrame = requestAnimationFrame(danmufuns.danmurefreshAnimationfun);
+					setTimeout(function(){danmulayerAnimationFrame = requestAnimationFrame(danmufuns.danmurefreshAnimationfun);},0);
 				}
 			},
 			stop: function() {
