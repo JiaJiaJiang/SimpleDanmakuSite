@@ -1,7 +1,10 @@
 <?php
 needLogin();
 if(hasFlag("help")){
-    echo "updateDB用于进行后续更新对数据库的修改\n    <b>updateDB</b>\n使用前请确定数据库已存在\n本来已有数据不会被改动";
+  _toLine('updateDB用于进行后续更新对数据库的修改',
+              '    <b>updateDB</b>',
+              '使用前请确定数据库已存在',
+              '本来已有数据不会被改动');
     exit;
 }
 Global $struct; 
@@ -11,14 +14,15 @@ $struct=array(
     ),
   "video"=>array(
       "coveraddress"=>'mediumtext DEFAULT NULL',
-      "description"=>'mediumtext DEFAULT NULL'
+      "description"=>'mediumtext DEFAULT NULL',
+      "options"=>'mediumtext DEFAULT NULL',
     )
 );
 function addcolumn($table,$column){
   Global $SQL;
   Global $struct; 
   $SQL->query("alter table $table add $column ".$struct[$table][$column]);
-    out(mysqli_affected_rows($SQL));
+    //out(mysqli_affected_rows($SQL));
 }
 Global $SQL;
 connectSQL();

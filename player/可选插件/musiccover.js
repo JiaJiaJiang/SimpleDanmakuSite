@@ -1,0 +1,11 @@
+EC.addEvent("VideoInfoGet",function(p){
+	console.log(p.info.options);
+	if(p.info.options.showcover===true||p.info.options.showcover==="true"){
+		p.core.video.style.display="none";
+		$Attr(p.videoframe.style,{
+			backgroundImage:"url("+p.info.cv+")",
+			backgroundPosition:"center",
+			backgroundSize:"cover"
+		});
+	}
+});

@@ -61,11 +61,7 @@ function c_ele(tag) {
 function addStyle(cssstr){
 	document.styleSheets[document.styleSheets.length-1].insertRule(cssstr,0);
 }
-/*if(setImmediate){
-	window.Immediate=setImmediate;
-}else{
-	window.Immediate=setTimeout;
-}*/
+
 var _string_ = {
 	removesidespace: function(string) {
 		if (typeof string == 'string') {
@@ -111,29 +107,9 @@ function getMin_Sec_By_Million(time) {
 	time /= 1000;
 	return getMin_Sec(time);
 }
-/*function changeTabTo(){
 
-}*/
-
-/*function makeTabGroup(obj) {
-	//[[tab1,block1],[tab2,block2]]
-	if (!window.TabGroups) window.TabGroups = [];
-	if (obj) {
-		for (var i = 0; i < obj.length; i++) {
-			obj[i][0].pointTo = obj[i][1];
-			obj[i][0].TabGroup = obj;
-			obj[i][0].onmousedown = function(e) {
-				if (e.button != 0) return;
-				for (var inn = 0; inn < this.TabGroup.length; inn++) {
-					this.TabGroup[inn][1].style.display = 'none';
-				}
-				this.pointTo.style.display = 'block';
-			}
-		}
-	}
-}*/
 var optioncache={};
-function setOption(name, value) {
+function setOption(name, value,type) {
 	if ((typeof name != 'string')) {
 		Derror('错误的设置参数');
 		return false;
@@ -143,7 +119,21 @@ function setOption(name, value) {
 	} else {
 		setCookie('playeroption:' + name, value);
 	}
-	optioncache[name]=value;
+	if(!type)type=typeof value;
+	if(type){
+		switch(type){
+			case "number":{
+				optioncache[name]=Number(value);
+				break;
+			}
+			case "boolean":{
+				optioncache[name]=value?true:false;
+				break;
+			}
+		}
+	}else{
+		optioncache[name]=value;
+	}
 }
 function getOption(name,type) {
 	if(optioncache[name]!=undefined)return optioncache[name];
@@ -172,7 +162,7 @@ function getOption(name,type) {
 				return optioncache[name]=Number(value);
 				break;
 			}
-			case "bool":{
+			case "boolean":{
 				return optioncache[name]=value?true:false;
 				break;
 			}
@@ -338,14 +328,6 @@ default = (e.defaultvalue || e.defaultvalue === 0) ? e.defaultvalue: e.value;
 	e.onmouseup = function() {
 		this.ranging = false;
 	}
-	/*e.ondrag=function(e){
-		e.preventDefault();
-		var x=e.layerX||e.x||offsetX;
-			this.point.style.left=x+"px";
-			var va=this.min+(x/this.offsetWidth)*(this.max-this.min);
-			this.title=Math.round((this.value=va)*100)/100;
-			this.sendValue(this.name,va);
-	}*/
 
 	e.sendValue = function() {};
 	if (!e.style.position) e.style.position = 'relative';
@@ -463,6 +445,9 @@ function initPlayer(_in_videoid) {
 		player.EC.fireEvent("CoreReady",player);
 	}
 	function tip(str) {
+		for(var i=0;i<player.tipbox.childNodes.length;i++){
+			if(player.tipbox.childNodes[i].innerHTML==str)return;
+		}
 		var td = c_ele("div");
 		td.className = "tip";
 		td.innerHTML = str;
@@ -490,7 +475,7 @@ function initPlayer(_in_videoid) {
 	function loadvideo() {
 		//console.log("加载视频");
 		Dinfo('获取视频地址');
-		cmd('getVideo ' + videoid+' --t --des --cv', false,
+		cmd('getVideo ' + videoid+' --t --des --cv --opt', false,
 		function(a) {
 			if (a == 'Error') {
 				Derror('地址获取错误');
@@ -509,6 +494,7 @@ function initPlayer(_in_videoid) {
 			player.info.count=json.count;
 			player.info.des=json.des;
 			player.info.cv=json.cv;
+			player.info.options=json.opt;
 			player.EC.fireEvent("VideoInfoGet",player);
 
 			player.videoaddress = [];
@@ -547,13 +533,6 @@ function initPlayer(_in_videoid) {
 				player.info.dc = 0;
 			};
 			if (typeof danmuarr == 'object') {
-				for (var i = 0; i < danmuarr.length; i++) {
-					try {
-						danmuarr[i] = JSON.parse(danmuarr[i]);
-					} catch(e) {
-						Derror('弹幕错误');
-					}
-				}
 				danmulist = danmuarr;
 				player.info.dc = danmuarr.length;
 				Message("CTRL", {
@@ -741,16 +720,19 @@ function initPlayer(_in_videoid) {
 				danmufuns.refreshnumber();
 				autocmd('adddanmu', (videoid), danmuobj.ty, danmuobj.c, danmuobj.t, danmuobj.co || 'NULL', danmuStyle.fontsize, playersse,
 				function(response) {
-					danmuobj.id= Number(response);
-					if (typeof danmuobj.id=="number") {
+					if(response.match(/^\d+$/)){
+						danmuobj.id= Number(response);
+						if (typeof danmuobj.id=="number") {
 						if (!content) {
 							player.EC.fireEvent("danmusended",danmuobj);
 							player.danmuinput.value = '';
 							player.sendcover.style.display = 'none';
 							player.danmuinput.disabled=false;
+							removeEleClass(player.sendbox, "forceopacity");
 							player.danmuinput.focus();
 						}
-					} else {
+					} 
+					}else{
 						try {
 							var err = response.match(/^Error:(.+)$/)[1];
 							tip(err);
@@ -822,6 +804,7 @@ function initPlayer(_in_videoid) {
 		} else {
 			controlfuns.exitfullscreen();
 		}
+		core.fitdanmulayer();
 	}
 	controlfuns.fullpage = function() {
 		exitFullscreen();
@@ -845,6 +828,7 @@ function initPlayer(_in_videoid) {
 			Dinfo("无父窗口");
 		}
 		resetprocess();
+		core.fitdanmulayer();
 	}
 	controlfuns.exitfullpage = function() {
 		removeEleClass(player.mainbody, 'fullpage');
@@ -863,6 +847,7 @@ function initPlayer(_in_videoid) {
 			Dinfo("无父窗口");
 		}
 		resetprocess();
+		core.fitdanmulayer();
 	}
 	controlfuns.gototime = function() {}
 	controlfuns.loading = function() {}

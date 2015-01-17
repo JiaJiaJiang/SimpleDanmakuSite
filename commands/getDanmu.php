@@ -1,7 +1,8 @@
 <?php
 $option=$options;
 if(hasFlag("help")){
-    echo "getDanmu用于获取弹幕\n         <b>getDanmu 视频id";
+	 _toLine('getDanmu用于获取弹幕',
+	 		'         <b>getDanmu 视频id');
     exit;
 }
 header("Content-Type:text/json",true);
@@ -24,16 +25,15 @@ if(isID($option[0])){
 			errorlog("getDanmu","Get a error danmaku id:".$id);
 			return;
 		}
-		$arr[$i]='{"id":'.$id.
-			',"ty":'.$type.
-			',"c":"'.str_replace("\n","\\n",addslashes($content)).'"';
-		if($time>=0)$arr[$i]=$arr[$i].',"t":'.($time?$time:0);
-		if($color)$arr[$i]=$arr[$i].',"co":"'.$color.'"';
-		if($size)$arr[$i]=$arr[$i].',"s":'.$size;
-		if($odate){
-			$arr[$i]=$arr[$i].',"d":"'.($date?$date:"0000-00-00").'"';
-		}
-		$arr[$i]=$arr[$i].'}';
+		$dmobj=array();
+		$dmobj["id"]=$id;
+		$dmobj["ty"]=$type;
+		$dmobj["c"]=$content;
+		if($time>=0)$dmobj["t"]=($time?$time:0);
+		if($color)$dmobj["co"]=$color;
+		if($size)$dmobj["s"]=$size;
+		if($odate)$dmobj["d"]=($date?$date:"0000-00-00");
+		array_push($arr,$dmobj);
 	}
 	if(count($arr)>=0){
 		echo json_encode($arr);
