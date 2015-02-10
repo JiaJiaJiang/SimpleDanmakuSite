@@ -75,8 +75,8 @@ function DanmuCore() {
 	function fitdanmulayer() {
 		"use strict";
 		COL.adjustcanvas();
-		width = player.danmulayer.width =  player.danmulayer.offsetWidth;
-		tunnelheight = player.danmulayer.height = player.danmulayer.offsetHeight;
+		width = /*player.danmulayer.width =*/  player.danmulayer.offsetWidth;
+		tunnelheight = /*player.danmulayer.height =*/ player.danmulayer.offsetHeight;
 		for (var i in danmucontainer.childNode) {
 			if (danmucontainer.childNode[i].type == 2) {
 				danmucontainer.childNode[i].set({

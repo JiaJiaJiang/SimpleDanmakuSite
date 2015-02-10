@@ -62,7 +62,7 @@ function newCOL() {
 				COL.mouseX = null;
 				COL.mouseY = null;
 				if (COL.onoverElement) {
-					var eve = COL.event();
+					var eve =new COL.event();
 					COL.onoverElement.fireEvent("mouseout", eve);
 				}
 				COL.onoverElement = null;
@@ -76,12 +76,10 @@ function newCOL() {
 			draging: false
 		},
 		event: function() {
-			return {
-				stopPropagation: function() {
-					this.Propagation = false;
-				},
-				Propagation: true
+			this.stopPropagation=function() {
+				this.Propagation = false;
 			}
+			this.Propagation=true;
 		},
 
 		/*在当前基础上新建一个对象*/
@@ -96,9 +94,9 @@ function newCOL() {
 	COL.initeventobjcanvas = function() {
 		COL.eocct = (COL.eventobjcanvas = document.createElement("canvas")).getContext("2d");
 	};
-	COL.adjustcanvas = function() {
-		COL.eventobjcanvas.width = COL.document.width = COL.width = COL.canvas.offsetWidth;
-		COL.eventobjcanvas.height = COL.document.height = COL.height = COL.canvas.offsetHeight;
+	COL.adjustcanvas = function(width,height) {
+		COL.eventobjcanvas.width = COL.document.width =COL.canvas.width= COL.width = width||COL.canvas.offsetWidth;
+		COL.eventobjcanvas.height = COL.document.height =COL.canvas.height= COL.height = height||COL.canvas.offsetHeight;
 	}
 	COL.imageSmoothing = {
 		on: function() {
@@ -108,28 +106,6 @@ function newCOL() {
 			COL.context.imageSmoothingEnabled = false;
 		}
 	};
-	/*COL.setrelPosition = function() {
-		switch (COL.tools.getBrowser()) {
-		case "msie":
-		case "trident":
-		case "opera":
-			{
-				COL.mousePosition.fun = COL.mousePosition.ie;
-				break;
-			}
-		case "firefox":
-			{
-				COL.mousePosition.fun = COL.mousePosition.firefox;
-				break;
-			}
-		default:
-			{
-				COL.mousePosition.fun = COL.mousePosition.chrome;
-				break;
-			}
-		}
-
-	};*/
 
 	/*创建图形用的画布*/
 	/*A canvas to create picture*/
@@ -181,20 +157,20 @@ function newCOL() {
 			COL.newonoverElement = COL.colorarray[color];
 			if (COL.onoverElement != COL.newonoverElement) {
 				if (COL.onoverElement) {
-					var eve = COL.event();
+					var eve = new COL.event();
 					eve.target = COL.onoverElement;
 					COL.onoverElement.fireEvent("mouseout", eve);
 					COL.tosign.click = COL.tosign.centerclick = COL.tosign.rightcilck = false;
 				}
 				COL.onoverElement = COL.newonoverElement;
 				if (COL.onoverElement) {
-					var eve = COL.event();
+					var eve =new COL.event();
 					eve.target = COL.onoverElement;
 					COL.onoverElement.fireEvent("mouseover", eve);
 				}
 
 			}
-			var eve = COL.event();
+			var eve =new COL.event();
 			eve.target = COL.onoverElement;
 			//COL.mousestatuechanged = true;
 			if (COL.onoverElement) {
@@ -208,7 +184,7 @@ function newCOL() {
 			//e.preventDefault();
 			COL.mouseX = e.layerX;
 			COL.mouseY = e.layerY;
-			var eve = COL.event();
+			var eve =new COL.event();
 			eve.target = COL.onoverElement;
 			eve.button = e.button;
 			COL.tosign.click = true;
@@ -234,7 +210,7 @@ function newCOL() {
 		aEL(canvas_dom, "mouseup",
 		function(e) {
 			//COL.mousestatuechanged = true;
-			var eve = COL.event();
+			var eve = new COL.event();
 			eve.target = COL.onoverElement;
 			eve.button = e.button;
 			switch (eve.button) {
@@ -286,18 +262,11 @@ function newCOL() {
 			COL.e.mouseoutcanvas();
 		});
 
-		/*aEL(canvas_dom, "resize",
-		function() {
-			console.log(123)
-			COL.adjustcanvas();
-			COL.draw();
-		});*/
-
 		var _mousewheele = (COL.tools.getBrowser() == "firefox") ? "DOMMouseScroll": "mousewheel";
 		aEL(canvas_dom, _mousewheele,
 		function(e) {
 			e = e || window.event;
-			var eve = COL.event();
+			var eve = new COL.event();
 			eve.target = COL.onoverElement;
 			var data = e.wheelDelta ? e.wheelDelta: e.detail;
 			if (data == -3 || data == 120) {
@@ -316,7 +285,7 @@ function newCOL() {
 
 				if (!COL.keys[e.keyCode]) {
 					//e.preventDefault();
-					var eve = COL.event();
+					var eve =new COL.event();
 					eve.keyCode = e.keyCode;
 					COL.keys[e.keyCode] = true;
 					if (COL.focus) {
@@ -329,7 +298,7 @@ function newCOL() {
 		function(e) {
 			if (COL.canvasonfocus) {
 				if (COL.keys[e.keyCode]) {
-					var eve = COL.event();
+					var eve =new COL.event();
 					eve.keyCode = e.keyCode;
 					COL.keys[e.keyCode] = false;
 					if (COL.focus) {
@@ -342,7 +311,7 @@ function newCOL() {
 		aEL(window, "keypress",
 		function(e) {
 			if (COL.canvasonfocus) {
-				var eve = COL.event();
+				var eve =new COL.event();
 				eve.keyCode = e.keyCode;
 				COL.keys[e.keyCode] = false;
 				if (COL.focus) {
@@ -402,6 +371,22 @@ function newCOL() {
 				display: true,
 				opacity: null,
 				beforedrawfun: null,
+				relativeposition:{
+					x:0,
+					y:0
+				},
+				relativesize:{
+					width:-1,
+					height:-1
+				},
+				relativepositionpoint:{
+					x:0,
+					y:0
+				},
+				relativerotatecenter:{
+					x:0,
+					y:0
+				},
 				afterdrawfun: null,
 				overflow: null,
 				drawtype: "function",
@@ -410,7 +395,7 @@ function newCOL() {
 				backgroundColor: null,
 				eventable: false,
 				imageobj: null,
-				needsort: true,
+				needsort: false,
 				matrix: COL.MatrixTransformMode ? new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]) : null,
 				z_index: null,
 				clipBy: "border",
@@ -462,7 +447,6 @@ function newCOL() {
 			t.fontVariant = null;
 			t.lineHeight = t.fontSize = fontsize || 15;
 			t.fontFamily = null;
-			//t.overflow="hidden";
 			t.innerX = 0;
 			t.innerY = 0;
 			t.color = "#000";
@@ -590,7 +574,7 @@ function newCOL() {
 				newobj.childNode = [];
 				newobj.drawlist = [];
 				newobj.GraphID = COL.generateGraphID();
-				return newobj;
+				return COL.tools.clone(newobj);
 			},
 			clone: function() {
 				var newobj = Object.create(this);
@@ -603,7 +587,7 @@ function newCOL() {
 					if (this.needsort) {
 						COL.tools.arraybyZ_index(this);
 					} else {
-						this.drawlist.unshift(graph);
+						this.drawlist.push(graph);
 					}
 					this.setMatrix();
 					graph.setMatrix();
@@ -623,17 +607,26 @@ function newCOL() {
 			},
 			setMatrix: function(floatarrayMatrix) {
 				COL.matrixchanged = true;
+				if(this.relativesize.width>=0)this.width=this.relativesize.width*this.parentNode.width;
+				if(this.relativesize.height>=0)this.height=this.relativesize.height*this.parentNode.height;
 				if (!floatarrayMatrix) {
 					var rotate = this.rotate * 0.0174532925,
 					cos = Math.cos(rotate),
-					sin = Math.sin(rotate);
+					sin = Math.sin(rotate),
+					pn=!!this.parentNode;
 					if (!this.matrix) this.matrix = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
-					this.matrix.set(COL.tools.multiplyMatrix([1, 0, -this.rotatecenter.x, 0, 1, -this.rotatecenter.y, 0, 0, 0], [this.zoom.x, 0, 0, 0, this.zoom.y, 0, 0, 0, 0], [cos, -sin, 0, sin, cos, 0, 0, 0, 0], [1, 0, this.x + this.rotatecenter.x - this.positionpoint.x, 0, 1, this.y + this.rotatecenter.y - this.positionpoint.y, 0, 0, 0]));
+					var rotatex=this.relativerotatecenter.x?this.relativerotatecenter.x*this.width:this.rotatecenter.x,
+					rotatey=this.relativerotatecenter.y?this.relativerotatecenter.y*this.height:this.rotatecenter.y;
+					this.matrix=(COL.tools.multiplyMatrix(
+						[1, 0, -rotatex, 0, 1, -rotatey, 0, 0, 0],
+						[this.zoom.x, 0, 0, 0, this.zoom.y, 0, 0, 0, 0], 
+						[cos, -sin, 0, sin, cos, 0, 0, 0, 0], 
+						[1, 0, (this.relativeposition.x&&pn?this.relativeposition.x*this.parentNode.width:this.x)  + rotatex - (this.relativepositionpoint.x?this.relativepositionpoint.x*this.width:this.positionpoint.x), 0, 1, (this.relativeposition.y&&pn?this.relativeposition.y*this.parentNode.height:this.y) + rotatey - (this.relativepositionpoint.y?this.relativepositionpoint.y*this.height:this.positionpoint.y), 0, 0, 0]));
 				} else {
 					this.matrix = floatarrayMatrix;
 				}
 			},
-			isPointInPath: function(ct, cObj) {
+			/*isPointInPath: function(ct, cObj) {
 				if (cObj.overPath) {
 					cObj.overPath(ct);
 				} else if (cObj.drawfunction) {
@@ -644,7 +637,7 @@ function newCOL() {
 				if (ct.isPointInPath(COL.mouseX, COL.mouseY)) {
 					COL.newonoverElement = cObj;
 				}
-			},
+			},*/
 			drawDebugstat: function(cct) {
 				cct.save();
 				cct.setTransform(1, 0, 0, 1, 0, 0);
@@ -891,15 +884,18 @@ function newCOL() {
 				ct.save();
 				COL.transform(ct, cObj);
 				if (COL.Debug.stat) {
-					ct.moveTo(0, 3);
-					ct.lineTo(0, -3);
-					ct.moveTo(3, 0);
-					ct.lineTo( - 3, 0);
+					var rotatex=cObj.relativerotatecenter.x?cObj.relativerotatecenter.x*cObj.width:cObj.rotatecenter.x,
+					rotatey=cObj.relativerotatecenter.y?cObj.relativerotatecenter.y*cObj.height:cObj.rotatecenter.y;
+					ct.beginPath();
+					ct.moveTo(rotatex, rotatey+3);
+					ct.lineTo(rotatex, rotatey-3);
+					ct.moveTo(rotatex+3, rotatey);
+					ct.lineTo( rotatex- 3, rotatey);
 					ct.stroke();
 				}
 				if (cObj.opacity !== null) ct.globalAlpha = cObj.opacity;
 				if (cObj.overflow == "hidden") {
-					ct.beginPath();
+					//ct.beginPath();
 					switch (cObj.clipBy) {
 					case "border":
 						{
@@ -908,7 +904,9 @@ function newCOL() {
 						}
 					case "drawfunction":
 						{
+							ct.save();
 							cObj.drawfunction ? cObj.drawfunction(ct) : COL.tools.defaultPathFun(ct, cObj);
+
 							break;
 						}
 					default:
@@ -928,7 +926,11 @@ function newCOL() {
 				switch (cObj.drawtype) {
 				case "function":
 					{
-						if (cObj.drawfunction) cObj.drawfunction(ct);
+						if (cObj.drawfunction) {
+							ct.save()
+							cObj.drawfunction(ct);
+							ct.restore();
+						}	
 						break;
 					}
 				case "image":
@@ -1069,15 +1071,15 @@ function newCOL() {
 	/*draw all graphs whose [display=true]*/
 	// var cct;
 	COL.draw = function() {
-		COL.newonoverElement = null;
+		//COL.newonoverElement = null;
 		var cct = COL.cct;
 		COL.Debug.itemcount = 0;
 		if (COL.autoClear) {
-			cct.clearRect(0, 0, COL.canvas.width, COL.canvas.height);
+			cct.clearRect(0, 0, COL.width, COL.height);
 		}
 		COL.drawElement(COL.drawlist, COL.currentcontext);
 		if (COL.matrixchanged === true || COL.MatrixTransformMode === false) {
-			setTimeout(COL.F_drawEventobj, 0);
+			COL.F_drawEventobj();
 			COL.matrixchanged = false;
 		}
 		if (COL.Debug.stat) {
@@ -1095,9 +1097,17 @@ function newCOL() {
 			}
 		},
 		transformLinear: function(ct, obj) {
-			ct.transform(1, 0, 0, 1, obj.x + obj.rotatecenter.x - obj.positionpoint.x, obj.y + obj.rotatecenter.y - obj.positionpoint.y);
+			var pn=!!obj.parentNode;
+			if(obj.relativesize.width>=0&&pn)obj.width=obj.relativesize.width*obj.parentNode.width;
+			if(obj.relativesize.height>=0&&pn)obj.height=obj.relativesize.height*obj.parentNode.height;
+			var rotatex=obj.relativerotatecenter.x?obj.relativerotatecenter.x*obj.width:obj.rotatecenter.x,
+			rotatey=obj.relativerotatecenter.y?obj.relativerotatecenter.y*obj.height:obj.rotatecenter.y;
+			ct.translate(
+				((obj.relativeposition.x&&pn)?obj.relativeposition.x*obj.parentNode.width:obj.x) + rotatex - (obj.relativepositionpoint.x?obj.relativepositionpoint.x*obj.width:obj.positionpoint.x),
+				((obj.relativeposition.y&&pn)?obj.relativeposition.y*obj.parentNode.height:obj.y)+rotatey- (obj.relativepositionpoint.y?obj.relativepositionpoint.y*obj.height:obj.positionpoint.y));
 			ct.rotate(obj.rotate * 0.017453);
 			ct.scale(obj.zoom.x, obj.zoom.y);
+			ct.translate(-rotatex,-rotatey);
 		}
 	};
 
@@ -1263,6 +1273,14 @@ function newCOL() {
 		fpscounter: function() {
 			COL.fps.v = COL.fps.c;
 			COL.fps.c = 0;
+		},
+		clone:function(o){
+			if(typeof(o) != 'object') return o;
+			if(o == null) return o;
+			var nob ={};
+			for(var i in o)
+				nob[i] = COL.tools.clone(o[i]);
+			return nob;
 		}
 		/*,
 		dichotomySearch:function(array,fun){

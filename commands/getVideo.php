@@ -33,7 +33,7 @@ if (isID($option[0])) {
             if(in_array("opt",$flags)){
                 $json["opt"]=json_decode($options);
             }
-            echo json_encode($json);
+            echo json_encode($json,JSON_UNESCAPED_UNICODE);
             $newc=abs($count)+1;
             mysqli_stmt_prepare($stmt, 'UPDATE  `video` SET  `count` =? WHERE  `id` =?');
             mysqli_stmt_bind_param($stmt, "ii",$newc, $option[0]);

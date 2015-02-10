@@ -7,14 +7,6 @@ var menudiv;
 var plugin_online_onlinecount=0;
 EC.addEvent("CoreReady",
 function(p) {
-function clone(obj){
-  if(typeof(obj) != 'object') return obj;
-  if(obj == null) return obj;
-  var myNewObj ={};
-  for(var i in obj)
-    myNewObj[i] = clone(obj[i]);
-  return myNewObj;
-}
 	if (danmakuliveserver) {
 		var breakcount=0;
 		document.styleSheets[document.styleSheets.length-1].insertRule(".dmmarknewflash{height:100%;width:1px;background-color: #66ccff;opcacity:1;position:absolute;top:0px;transition: opacity 5s;}",0);

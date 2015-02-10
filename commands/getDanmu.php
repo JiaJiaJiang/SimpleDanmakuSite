@@ -36,7 +36,7 @@ if(isID($option[0])){
 		array_push($arr,$dmobj);
 	}
 	if(count($arr)>=0){
-		echo json_encode($arr);
+		echo json_encode($arr,JSON_UNESCAPED_UNICODE);
 	}else{
 		echo "Error";
 		errorlog("getDanmu","Unknow error because of:".$arr);
