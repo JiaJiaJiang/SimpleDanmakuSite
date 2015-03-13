@@ -70,13 +70,14 @@ function DanmuCore() {
 		zimucontainer = COL.Graph.New();
 		zimucontainer.name = 'zimucontainer';
 		COL.document.addChild(zimucontainer);
-		zimucontainer.zindex(2);	}
+		zimucontainer.zindex(2);
+		}
 
 	function fitdanmulayer() {
 		"use strict";
 		COL.adjustcanvas();
-		width = /*player.danmulayer.width =*/  player.danmulayer.offsetWidth;
-		tunnelheight = /*player.danmulayer.height =*/ player.danmulayer.offsetHeight;
+		width =player.danmulayer.offsetWidth;
+		tunnelheight =player.danmulayer.offsetHeight;
 		for (var i in danmucontainer.childNode) {
 			if (danmucontainer.childNode[i].type == 2) {
 				danmucontainer.childNode[i].set({
@@ -200,20 +201,16 @@ function DanmuCore() {
 		},
 
 		danmurefreshAnimationfun: function() {
-		"use strict";
-			// if(player.assvar.aniswitch){
-			// 	danmufuns.movedanmuAnimation();
-			// }else{
-				danmufuns.movedanmuAnimation();
-				COL.draw();
-			// }
-			// player.assvar.aniswitch=!player.assvar.aniswitch;
+			"use strict";
 			danmulayerAnimationFrame = requestAnimationFrame(danmufuns.danmurefreshAnimationfun);
+			danmufuns.movedanmuAnimation();
+			COL.draw();
+			player.assvar.aniswitch=!player.assvar.aniswitch;
 		},
 		danmulayerAnimation: {
 			start: function() {
 				if (!danmulayerAnimationFrame) {
-					setTimeout(function(){danmulayerAnimationFrame = requestAnimationFrame(danmufuns.danmurefreshAnimationfun);},0);
+					danmulayerAnimationFrame = requestAnimationFrame(danmufuns.danmurefreshAnimationfun);
 				}
 			},
 			stop: function() {
