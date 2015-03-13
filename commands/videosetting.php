@@ -37,7 +37,7 @@ if (isID(@$option[0])) {
             }
         }
         out("写入数据库");
-        $videosetting=json_encode($videosetting,,JSON_UNESCAPED_UNICODE);
+        $videosetting=json_encode($videosetting,JSON_UNESCAPED_UNICODE);
         mysqli_stmt_prepare($stmt, "UPDATE  `video` SET  `options` = ? WHERE  `video`.`id` =".$option[0]);
         mysqli_stmt_bind_param($stmt,"s",$videosetting);
         mysqli_stmt_execute($stmt);
