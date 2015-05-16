@@ -153,6 +153,8 @@ function DanmuCore() {
 							width,
 							y: TextDanmu.tunnelobj[2]
 						});
+						TextDanmu.matrix=null;
+						TextDanmu.usematrix=false;
 						break;
 					}
 				case 1:
@@ -162,6 +164,8 @@ function DanmuCore() {
 							-TextDanmu.width,
 							y: TextDanmu.tunnelobj[2]
 						});
+						TextDanmu.matrix=null;
+						TextDanmu.usematrix=false;
 						break;
 					}
 				case 2:
@@ -347,7 +351,6 @@ function DanmuCore() {
 								return;
 							}
 							node.lasttime=nowtime;
-							node.setMatrix();
 							return;
 						}
 					case 1:
@@ -362,7 +365,6 @@ function DanmuCore() {
 								return;
 							}
 							node.lasttime=nowtime;
-							node.setMatrix();
 							return;
 						}
 					case 2:
