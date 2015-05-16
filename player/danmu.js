@@ -73,6 +73,14 @@ var _string_ = {
 		}
 	}
 };
+function clone(obj){
+  if(typeof(obj) != 'object') return obj;
+  if(obj == null) return obj;
+  var myNewObj ={};
+  for(var i in obj)
+    myNewObj[i] = clone(obj[i]);
+  return myNewObj;
+}
 function rand(min, max) {
 	return (min + Math.random() * (max - min)+0.5)|0;
 }
@@ -494,7 +502,7 @@ function initPlayer(_in_videoid) {
 			player.info.count=json.count;
 			player.info.des=json.des;
 			player.info.cv=json.cv;
-			player.info.options=json.opt;
+			player.info.options=json.opt||{};
 			player.EC.fireEvent("VideoInfoGet",player);
 
 			player.videoaddress = [];
@@ -1490,12 +1498,12 @@ function initPlayer(_in_videoid) {
                                                 ##             ##
              #########                                                                   #######
              ##          ##          #################                 #####         ###                  #####
-             ##          ##          ##           ##           ##           #####                  ###        ##		##
-             #########          ##           ##           ##                                            ######
-                                         #################
-                                         ##           ##           ##
-                                         ##           ##           ##
-                                         #################
+             ##          ##          ##           ##         ##           #####                  ###        ##		##
+             #########           ##           ##         ##                                            ######
+                                        #################
+                                        ##           ##         ##
+                                        ##           ##         ##
+                                        #################
 */
 
 var i喵i = '不要卖萌눈_눈';
