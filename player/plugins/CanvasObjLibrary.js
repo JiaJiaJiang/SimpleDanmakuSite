@@ -514,7 +514,7 @@ function newCOL() {
 				this.width = w;
 				this.height = h;
 			},
-			New: function(inherit,newPositionObj) {//获得一个可选继承和使用新位置对象的元素
+			New: function(inherit,newPositionObj,newZoom) {//获得一个可选继承和使用新位置对象的元素
 				var newobj = this.clone();
 				newobj.parentNode = null;
 				newobj.childNode = [];
@@ -524,12 +524,12 @@ function newCOL() {
 				if(newPositionObj){
 					newobj.positionpoint={x: 0,y: 0};
 					newobj.rotatecenter={x: 0,y: 0};
-					newobj.zoom={x: 1,y: 1};
 					newobj.relativeposition={x: 0,y: 0};
 					newobj.relativesize={width: -1,height: -1};
 					newobj.relativepositionpoint= {x: 0,y: 0};
 					newobj.relativerotatecenter={x: 0,y: 0};
 				}
+				(newZoom!==false)&&(newobj.zoom={x: 1,y: 1});
 				if(inherit===true){
 					return newobj;
 				}
