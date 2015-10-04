@@ -27,7 +27,7 @@ needLogin();
 	cacheplugins			【控制台】合并(更新)插件到缓存文件
 	clearplaycount			【控制台】清除指定id视频的播放数
 	cleardanmu			【控制台】清除某个视频的所有弹幕
-	commanddir			【控制台】查看commands文件夹下的命令
+	commands			【控制台】显示所有命令
 	deldanmu			【控制台】使用id删除弹幕
 	delvideo			【控制台】删除视频
 	editvideo			【控制台】修改视频信息
@@ -52,4 +52,4 @@ needLogin();
 
 <span class="red">所有命令均无再次确认过程和撤销技能，所以请不要手滑</span>
 
-如果使用过程中出现什么问题(除了不会用命令)，可以发送问题(越详细越好，标题包含“弹幕播放器”)到<a href="mailto:luojia@luojia.me">luojia@luojia.me</a>,或者在<a target="_blank" href="http://blog.luojia.me">我的博客</a>的相关地方留言
+如果使用过程中出现什么问题(除了不会用命令)，可以发送问题(越详细越好，标题包含“弹幕播放器”)到<a href="mailto:luojia@luojia.me">luojia@luojia.me</a>,或者在<a target="_blank" href="http://luojia.me">我的博客</a>的相关地方留言

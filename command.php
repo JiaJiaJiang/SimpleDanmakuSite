@@ -8,7 +8,7 @@ if(@$_POST['cmd']){
 }
 if ($command) {
     //设置允许使用命令的域
-    $allow=domainname?domainname:"*";
+    $allow=@domainname?@domainname:"*";
     if(@$_SERVER['SERVER_NAME']){
         $allow=$_SERVER['SERVER_NAME'];
     }
@@ -91,7 +91,7 @@ if ($command) {
                         //如果下一个不是参数名或标记就当作参数值
                         if(array_key_exists($argname,$args)){
                             trigger_error("参数名重复：$argname",E_USER_ERROR);
-                            exit;
+                            exit();
                         }
                         if($ind==$count-1){
                             $args[$argname]="";
