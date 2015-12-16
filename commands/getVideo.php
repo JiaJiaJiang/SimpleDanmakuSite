@@ -33,8 +33,8 @@ if (isID($option[0])) {
 		$json['opt']=json_decode($options);
 	}
 	echo json_encode($json,JSON_UNESCAPED_UNICODE);
-	$SQL->query('UPDATE  `video` SET  `count` = `count` + 1 WHERE  `id` ='.$option[0]);
 	$stmt->close();
+	$SQL->query('UPDATE video SET count=count+1 WHERE id='.$option[0]);
 	$SQL->close();
 } else {
 	echo 'Error';
