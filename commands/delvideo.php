@@ -28,7 +28,7 @@ if (isID($option[0])) {
 	$stmt->execute();
 	echo '已清空ID'.$option[0].'的弹幕，共'.$stmt->affected_rows.'条';
 	$stmt->close();
-	$SQL->close();
+	//$SQL->close();
 } else {
    echo '参数错误，输入【delvedio --help】查看用法';
    errorlog('delvideo','Error args');

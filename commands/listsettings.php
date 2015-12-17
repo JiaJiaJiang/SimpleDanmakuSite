@@ -29,7 +29,7 @@ if (isID(@$option[0])) {
 		out("$name:$value");
 	}
 	$stmt->close();
-	$SQL->close();
+	//$SQL->close();
 } else {
    echo '参数错误，输入【listsettings --help】查看用法';
    errorlog('listsettings','Error args');

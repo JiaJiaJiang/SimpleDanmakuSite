@@ -17,6 +17,10 @@ if ($command) {
     if(array_key_exists("fromconsole",$_GET)||array_key_exists("fromconsole",$_POST)){
         global $fromconsole;
         $fromconsole=true;
+        if (isLogged()&&@ErrorLog) {
+            ini_set("display_errors", "On");
+            error_reporting(E_ALL | E_STRICT);
+        }
     }
     if (true) { //查找指令前判断是否要执行
         function decodeChar($val){

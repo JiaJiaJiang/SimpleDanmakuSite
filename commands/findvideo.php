@@ -23,7 +23,7 @@ if (@$option[0]) {
 	echo '</table>';
 	out('查找完毕,共'.$stmt->num_rows.'条');
 	$stmt->close();
-	$SQL->close();
+	//$SQL->close();
 } else {
 	echo '参数错误，输入【findvideo --help】查看用法';
 	errorlog('finddanmu','Error args');

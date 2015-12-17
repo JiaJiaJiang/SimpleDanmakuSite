@@ -41,7 +41,7 @@ if(isID($option[0])){
 		errorlog('getDanmu','Unknow error because of:'.$arr);
 	}
 	$stmt->close();
-	$SQL->close();
+	//$SQL->close();
 }else{
 	echo '参数错误，输入【getDanmu --help】查看用法';
 	errorlog('getDanmu','Error args');

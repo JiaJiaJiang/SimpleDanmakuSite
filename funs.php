@@ -10,13 +10,18 @@ function connectSQL() {
 	if(!dbname){
 		out('未找到配置文件中的dbname项');
 	}
-	$SQL = @new mysqli(sqlAddress, sqlUser, sqlPass, dbname);
+	if(preg_match('/^p\:/',sqlAddress)){
+		$address=sqlAddress;
+	}else{
+		$address='p:'.sqlAddress;//强制长连接
+	}
+	$SQL = @new mysqli($address, sqlUser, sqlPass, dbname);
 	if (mysqli_connect_error()) {
 		out('无法连接数据库: ' . mysqli_connect_error());
 		errorlog("DB", "Cannot connect to DB:" . mysqli_connect_error());
 		if(preg_match("/Unknown\ database/", mysqli_connect_error())){
 			out('正在无数据库选择模式，请运行initdb命令创建数据库。');
-			$SQL = @new mysqli(sqlAddress, sqlUser, sqlPass);
+			$SQL = @new mysqli($address, sqlUser, sqlPass);
 		}else{
 			exit();
 			return false;
@@ -86,10 +91,6 @@ function isID($id) {
 }
 function isLogged() {
 	if ($_SESSION['logged'] === true) {
-		if (@ErrorLog) {
-			ini_set("display_errors", "On");
-			error_reporting(E_ALL | E_STRICT);
-		}
 		return true;
 	} else {
 		return false;
@@ -195,7 +196,7 @@ function translateAddress($address) {
 	note:[p1],//有标注单段
 	[p1]//无标注单段
 	]*/
-	return json_encode($resultArray);
+	return json_encode($resultArray,JSON_UNESCAPED_UNICODE);
 }
 function out($str) {
 	echo $str . PHP_EOL;
@@ -285,4 +286,9 @@ function cutdownjs($content) {
 		$content.= '};window.console_output=false;(function(){for(var i in console){eval("window.D"+i+" = function() {if (console_output === true) console."+i+".apply(console, arguments)}")}}());';
 		return $content;
 	}
+
+function echoMem($switch=false){
+	if($switch)
+	echo 'Mem usage:'.(memory_get_usage()/1024/1024).'M'.PHP_EOL;
+}
 ?>

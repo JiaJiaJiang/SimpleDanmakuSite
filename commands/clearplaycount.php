@@ -21,7 +21,7 @@ if (isID($option[0])) {
 		errorlog('clearplaycount','Error to clear danmakus whose videoid='.$option[0]);
 	}
 	$stmt->close();
-	$SQL->close();
+	//$SQL->close();
 } else {
 	echo '参数错误，输入【editvideo --help】查看用法';
 	errorlog('clearplaycount','Err args');

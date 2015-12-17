@@ -74,7 +74,7 @@ if (count($option) == 7) {
 			echo $SQL->insert_id;
 	}
 	$stmt->close();
-	$SQL->close();
+	//$SQL->close();
 	exit();
 } else {
 		echo 'Error:参数数量错误:';

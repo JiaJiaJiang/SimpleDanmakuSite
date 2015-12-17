@@ -28,7 +28,7 @@ if (@$args['t']&&@$args['url']) {
 	out('封面地址:'.($cv?$cv:'无'));
 	out('描述:'.($des?$des:'无'));
 	$stmt->close();
-	$SQL->close();
+	//$SQL->close();
 } else {
    echo '参数错误，输入【addvideo --help】查看用法';
    errorlog('addvideo','Error args');

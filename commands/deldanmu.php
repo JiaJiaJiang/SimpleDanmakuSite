@@ -41,7 +41,7 @@ if(@$option[0]){
 	$SQL->query('DELETE FROM `danmu` WHERE `id` in ('.$idstr.')');
 	out('完成');
 	out('删除了'.$SQL->affected_rows.'行');
-	$SQL->close();
+	//$SQL->close();
 }else{
 	echo '参数错误，输入【deldanmu --help】查看用法';
 	errorlog('deldanmu','Error args');

@@ -46,7 +46,7 @@ if (isID(@$args['id'])) {
 		out('描述更新结束:'.($stmt->affected_rows>=1?'成功:'.$args['des']:'失败'));
 	}
 	$stmt->close();
-	$SQL->close();
+	//$SQL->close();
 } else {
 	echo '参数错误，输入【editvideo --help】查看用法';
 	errorlog('editvideo','Error args');

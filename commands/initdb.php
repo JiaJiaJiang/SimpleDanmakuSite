@@ -38,17 +38,17 @@ out('开始创建视频数据表');
 if($SQL->query("CREATE TABLE IF NOT EXISTS `".dbname."`.`video` (
 	`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 	`title` text NOT NULL,
-	`address` mediumtext NOT NULL,
+	`address` varchar(500) NOT NULL,
 	`count` bigint(10) unsigned NOT NULL DEFAULT '0',
-	`coveraddress` mediumtext DEFAULT NULL,
-	`description` mediumtext DEFAULT NULL,
-	`options` mediumtext DEFAULT NULL,
+	`coveraddress` varchar(500) DEFAULT NULL,
+	`description` varchar(600) DEFAULT NULL,
+	`options` varchar(1000) DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ")===true){
 	out('<b class="green">成功</b>');
 }else{out('<b class="red">失败</b>');};
 out('初始化结束');
-$SQL->close();
+//$SQL->close();
 exit();
 ?>
