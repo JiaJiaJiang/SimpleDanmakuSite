@@ -4,7 +4,7 @@
 	zi=c_ele("div");
 	EC.addEvent("PlayerReady",function(p){
 		addStyle("#videopreload{position:absolute;width:100%;height:100%;cursor:dafault;background-color:#fff;}");
-		addStyle("#videopreload_animation{font-size:80px;height:114px;left:calc(50% - 172px);position:absolute;top:calc(50% - 57px);transition:transform 0.08s linear;width: 344px;}");
+		addStyle("#videopreload_animation{font-size:80px;height:114px;left:calc(50% - 172px);position:absolute;top:calc(50% - 57px);transition:transform 0.08s linear;width: 360px;}");
 		lof.id="videopreload";
 		zi.id="videopreload_animation";
 		zi.innerHTML="(๑•́ ω •̀๑)";

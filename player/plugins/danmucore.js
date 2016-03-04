@@ -22,7 +22,8 @@ function DanmuCore() {
 	tunnelheight = 0,
 	timeline = [],
 	timepoint = 0,
-	danmucontainer;
+	danmucontainer,
+	lastfiretime=0;
 	//divdanmucontainer = [];
 	var danmufirer;
 	/*var zimulist = [],
@@ -54,9 +55,10 @@ function DanmuCore() {
 		COL.font.fontFamily = "黑体";
 		COL.setCanvas(player.danmulayer);
 		COL.autoClear = true;
+		//COL.Debug.on()
 		Glib = getGraphlib(COL);
 		initTextDanmuContainer();
-		COL.MatrixTransform.on();
+		//COL.MatrixTransform.on();
 	}
 	function initTextDanmuContainer() {
 		/*普通弹幕层*/
@@ -78,7 +80,8 @@ function DanmuCore() {
 		COL.adjustcanvas();
 		width =player.danmulayer.offsetWidth;
 		tunnelheight =player.danmulayer.offsetHeight;
-		for (var i in danmucontainer.childNode) {
+		for (var i in danmucontainer.childNode) 
+		{
 			if (danmucontainer.childNode[i].type == 2) {
 				danmucontainer.childNode[i].set({
 					x: width / 2,
@@ -90,12 +93,12 @@ function DanmuCore() {
 					y: danmucontainer.childNode[i].tunnelobj[2]
 				});
 			}
-			danmucontainer.childNode[i].setMatrix();
+			//danmucontainer.childNode[i].setMatrix();
 		}
 		COL.draw();
 	}
 	this.fitdanmulayer=fitdanmulayer;
-	function fireinterval() {
+	/*function fireinterval() {
 		"use strict";
 		if (timeline[timepoint]) {
 			//setTimeout(danmufuns.fire,0,timepoint); 
@@ -105,9 +108,9 @@ function DanmuCore() {
 		if (!player.assvar.isPlaying) {
 			clearInterval(intervals.timer);
 		}
-	}
+	}*/
 
-	function newTimePiece(t, interval) {
+	/*function newTimePiece(t, interval) {
 		"use strict";
 		if (intervals.timer) {
 			clearInterval(intervals.timer);
@@ -122,7 +125,7 @@ function DanmuCore() {
 			return;
 		}
 		intervals.timer = setInterval(fireinterval, 10 / player.video.playbackRate);
-	}
+	}*/
 
 	var getVideoMillionSec=this.getVideoMillionSec=function(){
 		return ((player.video.currentTime * 100 + 0.5) | 0) * 10;
@@ -196,7 +199,7 @@ function DanmuCore() {
 				}
 				TextDanmu.danmuobj = danmuobj;
 				COL.Graph.Eventable(TextDanmu);
-				TextDanmu.setMatrix();
+				//TextDanmu.setMatrix();
 				danmucontainer.addChild(TextDanmu);
 				parentPlayer.EC.fireEvent("danmucreated",TextDanmu);
 			},
@@ -207,6 +210,16 @@ function DanmuCore() {
 		danmurefreshAnimationfun: function() {
 			"use strict";
 			danmulayerAnimationFrame = requestAnimationFrame(danmufuns.danmurefreshAnimationfun);
+			var current=getVideoMillionSec();
+			if(player.assvar.isPlaying){
+				if((lastfiretime<current-1200)||(lastfiretime>current+30)){
+					lastfiretime=current;
+				}else{
+					for(;lastfiretime<=current;lastfiretime+=10){
+						timeline[lastfiretime]&&danmufuns.fire(lastfiretime);
+					}
+				}
+			}
 			danmufuns.movedanmuAnimation();
 			COL.draw();
 			player.assvar.aniswitch=!player.assvar.aniswitch;
@@ -314,7 +327,7 @@ function DanmuCore() {
 		},
 		start: function() {
 			danmufuns.danmulayerAnimation.start();
-			newTimePiece(getVideoMillionSec());
+			//newTimePiece(getVideoMillionSec());
 		},
 		pause: function() {
 
@@ -334,61 +347,64 @@ function DanmuCore() {
 					node = danmucontainer.drawlist[i];
 					if (! (node && node.imageobj && node.tunnelobj)) continue;
 					movefun(node,nowtime);
+					//node.lasttime=nowtime;
 				}
 			}
 		},
 		movefun:function(node,nowtime){
 			switch (node.type) {
-					case 0:
-						{
-							node.x = (width + node.width) * (1 - (nowtime - node.time) / moveTime / width * 520) - node.width;
-							if (node.tunnelobj[1] != null && node.x < width - node.width - 150) {
-								delete danmutunnel.right[node.tunnelobj[1]][node.tunnelobj[2]];
-								node.tunnelobj[1] = null;
-							} else if (node.x < -node.width-20) {
-								node.parentNode.removeChild(node);
-								delete node.tunnelobj;
-								return;
-							}
-							node.lasttime=nowtime;
+				case 0:
+					{
+						node.x = (width + node.width) * (1 - (nowtime - node.time) / moveTime / width * 520) - node.width;
+						if (node.tunnelobj[1] != null && node.x < width - node.width - 150) {
+							delete danmutunnel.right[node.tunnelobj[1]][node.tunnelobj[2]];
+							node.tunnelobj[1] = null;
+						} else if (node.x < -node.width-20) {
+							node.parentNode.removeChild(node);
+							delete node.tunnelobj;
 							return;
 						}
-					case 1:
-						{
-							node.x = (width + node.width) * (nowtime - node.time) / moveTime / width * 520 - node.width;
-							if (node.tunnelobj[1] != null && node.x > 150) {
-								delete danmutunnel.left[node.tunnelobj[1]][node.tunnelobj[2]];
-								node.tunnelobj[1] = null;
-							} else if (node.x > width+20) {
-								node.parentNode.removeChild(node);
-								delete node.tunnelobj;
-								return;
-							}
-							node.lasttime=nowtime;
+						//node.lasttime=nowtime;
+						//node.setMatrix();
+						return;
+					}
+				case 1:
+					{
+						node.x = (width + node.width) * (nowtime - node.time) / moveTime / width * 520 - node.width;
+						if (node.tunnelobj[1] != null && node.x > 150) {
+							delete danmutunnel.left[node.tunnelobj[1]][node.tunnelobj[2]];
+							node.tunnelobj[1] = null;
+						} else if (node.x > width+20) {
+							node.parentNode.removeChild(node);
+							delete node.tunnelobj;
 							return;
 						}
-					case 2:
-						{
-							if (nowtime - node.time > moveTime) {
-								node.parentNode.removeChild(node);
-								delete danmutunnel.bottom[node.tunnelobj[1]][node.tunnelobj[2]];
-								delete node.tunnelobj;
-								return;
-							}
-							node.lasttime=nowtime;
+						//node.lasttime=nowtime;
+						//node.setMatrix();
+						return;
+					}
+				case 2:
+					{
+						if (nowtime - node.time > moveTime) {
+							node.parentNode.removeChild(node);
+							delete danmutunnel.bottom[node.tunnelobj[1]][node.tunnelobj[2]];
+							delete node.tunnelobj;
 							return;
 						}
-					case 3:
-						{
-							if (nowtime - node.time > moveTime) {
-								node.parentNode.removeChild(node);
-								delete danmutunnel.top[node.tunnelobj[1]][node.tunnelobj[2]];
-								delete node.tunnelobj;
-								return;
-							}
-							node.lasttime=nowtime;
+						//node.lasttime=nowtime;
+						return;
+					}
+				case 3:
+					{
+						if (nowtime - node.time > moveTime) {
+							node.parentNode.removeChild(node);
+							delete danmutunnel.top[node.tunnelobj[1]][node.tunnelobj[2]];
+							delete node.tunnelobj;
 							return;
 						}
+						//node.lasttime=nowtime;
+						return;
+					}
 			}
 		},
 		initnewDanmuObj: function(danmuobj) {
@@ -455,14 +471,14 @@ function DanmuCore() {
 		/*danmufuns.clear();*/
 	}
 
-	controlfuns.zimueditMode = {
+	/*controlfuns.zimueditMode = {
 		on: function() {},
 		off: function() {}
 	}
 	controlfuns.codeDanmueditMode = {
 		on: function() {},
 		off: function() {}
-	}
+	}*/
 
 	function initevents() {
 		var video = player.video;
@@ -512,13 +528,13 @@ function DanmuCore() {
 			}
 		});
 
-		aEL(video, 'play',
-		function() {
-			/*EVENT("play");*/
-			/*console.log("事件:播放");*/
-			/*controlfuns.refreshprogresscanvas();*/
-			/*controlfuns.play();*/
-		});
+		// aEL(video, 'play',
+		// function() {
+		// 	/*EVENT("play");*/
+		// 	console.log("事件:播放");
+		// 	/*controlfuns.refreshprogresscanvas();*/
+		// 	/*controlfuns.play();*/
+		// });
 		aEL(video, 'pause',
 		function() {
 			/*console.log("事件:暂停");*/
@@ -529,10 +545,11 @@ function DanmuCore() {
 		});
 		aEL(video, 'ended',
 		function() {
-			/*EVENT("ended");*/
 			Dinfo('事件:播放结束');
-			controlfuns.ended();
+			//controlfuns.ended();
+			lastfiretime=timepoint = getVideoMillionSec();
 		});
+
 		aEL(video, 'loadedmetadata',
 		function() {
 			/*console.log('事件:加载视频元信息');*/
@@ -585,17 +602,17 @@ function DanmuCore() {
 		aEL(video, 'seeked',
 		function() {
 			//console.log("事件:已跳到新位置");
-			timepoint = getVideoMillionSec();
+			//lastfiretime=timepoint = getVideoMillionSec();
 			/*EVENT("seeked");*/
 			/*controlfuns.refreshprogresscanvas();*/
-			if(timepoint!=0){
-				danmufuns.clear();
-			}
+			//if(timepoint!=0){
+			danmufuns.clear();
+			//}
 		});
 		aEL(video, 'seeking',
 		function() {
 			/*console.log("事件:正在跳到新位置");*/
-			timepoint = getVideoMillionSec();
+			//lastfiretime=timepoint = getVideoMillionSec();
 		});
 		/*aEL(video, "stalled",
 		function() {
@@ -611,10 +628,24 @@ function DanmuCore() {
 			if (!player.video.paused) {
 				player.assvar.isPlaying = true;
 			}
+			//let current=(player.video.currentTime * 1000 + 0.5) | 0;
+			//console.log(danmucontainer.drawlist)
+			/*for(var i=danmucontainer.drawlist.length;i--;){
+				var node=danmucontainer.drawlist[i];
+				if(node.type>=2){
+
+				}
+				if(current-node.time<moveTime)break;
+				node.parentNode.removeChild(node);
+				if(node.type===2)delete danmutunnel.bottom[node.tunnelobj[1]][node.tunnelobj[2]];
+				if(node.type===3)delete danmutunnel.top[node.tunnelobj[1]][node.tunnelobj[2]];
+				delete node.tunnelobj;
+			}
+			*/
 			/*EVENT("timeupdate");*/
 			/*controlfuns.refreshprogresscanvas();*/
 			/*controlfuns.refreshtime();*/
-			newTimePiece(getVideoMillionSec());
+			//newTimePiece(getVideoMillionSec());
 		});
 		aEL(video, 'waiting',
 		function() {

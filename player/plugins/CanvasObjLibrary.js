@@ -99,8 +99,8 @@ function newCOL() {
 		COL.eocct = (COL.eventobjcanvas = document.createElement("canvas")).getContext("2d");
 	};
 	COL.adjustcanvas = function(width,height) {
-		COL.eventobjcanvas.width = COL.document.width =COL.canvas.width= COL.width = width||COL.canvas.offsetWidth;
-		COL.eventobjcanvas.height = COL.document.height =COL.canvas.height= COL.height = height||COL.canvas.offsetHeight;
+		COL.eventobjcanvas.width = COL.document.width =COL.canvas.width= (COL.width = width||COL.canvas.offsetWidth);
+		COL.eventobjcanvas.height = COL.document.height =COL.canvas.height= (COL.height = height||COL.canvas.offsetHeight);
 	}
 	COL.imageSmoothing = {
 		on: function() {

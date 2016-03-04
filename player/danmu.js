@@ -2,7 +2,7 @@
 Belong to iTisso
 Coder:LuoJia
  */
-var DanmuPlayerVersion = "0.3.5";
+var DanmuPlayerVersion = "0.3.6";
 var SiteDomain = "*";
 var defaultOption = {
 	TwoDCodeDanmu: true,
