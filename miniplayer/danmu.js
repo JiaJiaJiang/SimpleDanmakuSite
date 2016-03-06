@@ -329,14 +329,6 @@ function initPlayer(_in_videoid) {
 				newstat("弹幕错误");
 			};
 			if (typeof danmuarr == 'object') {
-				for (var i = danmuarr.length; i --; ) {
-					try {
-						//danmuarr[i] = eval('(' + danmuarr[i] + ')');
-						danmuarr[i] = JSON.parse(danmuarr[i]);
-					} catch(e) {
-						console.log("一个错误弹幕无法解析:",danmuarr[i]);
-					}
-				}
 				Message("CTRL", {
 					name: "danmuarray",
 					array: danmuarr

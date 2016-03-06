@@ -101,7 +101,7 @@ if (isID($vid))
             </div>
         </div>
         <script>
-        console.log("视频id:"+<?php echo $vid;?>);
+        console.log("视频id:<?php echo $vid;?>");
         cmd_url="../command.php"; 
         </script>
 

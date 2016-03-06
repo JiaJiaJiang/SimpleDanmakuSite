@@ -556,57 +556,7 @@ function initPlayer(_in_videoid) {
 		controlfuns.refreshprogresscanvas();
 		controlfuns.refreshDanmuMark();
 	}
-	/*function initSwitch() {
-		var switchs = $$(player.optionpannel, 'div[switch]');
-		for (var i = 0; i < switchs.length; i++) {
-			var sw = switchs[i];
-			var name = sw.getAttribute('name');
-			var bool = (getOption(name) == 'true') ? true: false;
-			createswitch(name, bool, null, null, sw);
-			sw.disable = function() {
-				this.event.disabled = true;
-				addEleClass(this, 'gray');
-			}
-			sw.enable = function() {
-				this.event.disabled = false;
-				removeEleClass(this, 'gray');
-			}
-			//sw.disable();
-			player.switchs[name] = sw;
-		}
-		for (var sn in player.switchs) {
-			if (switchCenter[sn]) {
-				if (player.switchs[sn].event.bool) {
-					switchCenter[sn].on();
-				} else {
-					switchCenter[sn].off();
-				}
-			}
-		}
-	}
-	function initRange() {
-		var ranges = $$(player.optionpannel, 'div[range]');
-		player.ranges = {};
-		for (var i = 0; i < ranges.length; i++) {
-			var rg = ranges[i];
-			var name = rg.getAttribute('name');
-			var min = Number(rg.getAttribute('min'));
-			var max = Number(rg.getAttribute('max'));
-			var defaultvalue = Number(rg.getAttribute('default'));
-			rg.defaultvalue = defaultvalue;
-			var value = getOption(name) ? Number(getOption(name)) : defaultvalue;
-			createRange(name, min, max, value, rg);
-			rg.sendValue = function(name, value) {
-				if (rangeCenter[name]) {
-					rangeCenter[name](value);
-				}
-			}
-			player.ranges[name] = rg;
-		}
-		for (var rg in player.ranges) {
-			rangeCenter[rg](player.ranges[rg].value);
-		}
-	}*/
+	
 	function initInput() {
 		var inputs = $$(player.mainbody, 'input[name]');
 		player.inputs = {};
