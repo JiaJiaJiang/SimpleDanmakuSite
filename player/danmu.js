@@ -1386,6 +1386,10 @@ function initPlayer(_in_videoid) {
 		function(e) {
 			controlfuns.refreshprogresscanvas();
 		});
+		aEL(video, 'progress',
+		function(e) {
+			controlfuns.refreshprogresscanvas();
+		});
 		aEL(video, 'timeupdate',
 		function(e) {
 			controlfuns.refreshprogresscanvas();
