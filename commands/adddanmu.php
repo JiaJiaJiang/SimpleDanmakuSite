@@ -1,6 +1,6 @@
 <?php
 if (hasFlag('help')) {
-		_toLine("adddanmu用于添加一条弹幕，此命令通常由播放器调用', '        <b>adddanmu 视频id 弹幕类型 内容 所在时间 颜色 大小 存在服务器对应视频id的session</b>', '想手动调用此命令需要先打开对应视频页面获取playersse");
+		_toLine('adddanmu用于添加一条弹幕，此命令通常由播放器调用', '        <b>adddanmu 视频id 弹幕类型 内容 所在时间 颜色 大小 存在服务器对应视频id的session</b>', '想手动调用此命令需要先打开对应视频页面获取playersse');
 		exit();
 }
 $option = $options;
