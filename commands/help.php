@@ -19,6 +19,7 @@ needLogin();
 控制台内置命令：
 	clear				清空
 	echo				输出字符串
+	vinfoframe			获取某id视频的视频信息页面iframe代码
 
 默认服务器命令：(【】中的内容代表适合用在何处)
 	adddanmu			【播放器】添加一条弹幕(不建议在控制台使用)
@@ -41,7 +42,6 @@ needLogin();
 	login 				【控制台】登录(无help)
 	teststr				【控制台】测试命令到服务器后是什么样子(无help)
 	updateDB			【控制台】升级数据库
-	vinfoframe			【控制台】获取某id视频的视频信息页面iframe代码
 
 `号的使用:
 `号在这里用来区分包含空格的参数和转换内部字符到服务器可以识别的状态
