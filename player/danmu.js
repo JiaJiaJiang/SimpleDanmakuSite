@@ -1053,64 +1053,11 @@ function initPlayer(_in_videoid) {
 				core.video.pause();
 			}
 		});
-		/*aEL(player.mainbody, 'resize',
-		function() {
-			resetprocess();
-		});*/
 
 		aEL(player.progress, 'contextmenu',
 		function(e) {
 			e.preventDefault();
 		});
-		/*aEL(player.sidebar, "mousedown",
-		function(e) {
-			switch (e.target.id) {
-			case "danmulistbutton":
-			case "superdanmubutton":
-			case "optionbutton":
-				{
-					changetab(e.target.id);
-					break;
-				}
-			}
-		});*/
-		/*aEL(player.optionpannel, 'click',
-		function(e) {
-			var ele = e.target.parentNode;
-			var name;
-			if (ele.parentNode.getAttribute('type') == 'switch') {
-				name = ele.parentNode.getAttribute('name');
-				ele = ele.parentNode;
-			} else if (ele.getAttribute('type') == 'switch') {
-				name = ele.getAttribute('name');
-			}
-			if (name && switchCenter[name]) {
-				if (ele.event.bool) {
-					if (switchCenter[name].on) switchCenter[name].on();
-				} else {
-					if (switchCenter[name].off) switchCenter[name].off();
-				}
-			}
-		});*/
-		/*aEL(player.danmucontantor, 'dblclick',
-		function(e) {
-			e.preventDefault();
-			switch (e.target.className) {
-			case 'danmutime':
-			case 'danmucontent':
-			case 'danmudate':
-				{
-					var time = e.target.parentNode.time;
-					if (time <= 200) {
-						core.player.video.currentTime = time / 1000;
-					} else {
-						core.player.video.currentTime = time / 1000 - 0.2;
-					}
-					break;
-				}
-			}
-		});*/
-
 		aEL(player.mainbody, 'keydown',
 		function(e) {
 			switch (e.keyCode) {

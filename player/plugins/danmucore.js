@@ -10,7 +10,7 @@ function DanmuCore() {
 	var moveTime= 5000;
 	var intervals = {};
 	var danmulist = [],
-	danmuobjlist = [],
+	//danmuobjlist = [],
 	danmuarray = [],
 	danmutunnel = {
 		right: [],
@@ -20,7 +20,7 @@ function DanmuCore() {
 	},
 	moverInterval = 1000 / 60,
 	tunnelheight = 0,
-	timeline = [],
+	//timeline = [],
 	timepoint = 0,
 	danmucontainer,
 	lastfiretime=0;
@@ -93,39 +93,10 @@ function DanmuCore() {
 					y: danmucontainer.childNode[i].tunnelobj[2]
 				});
 			}
-			//danmucontainer.childNode[i].setMatrix();
 		}
 		COL.draw();
 	}
 	this.fitdanmulayer=fitdanmulayer;
-	/*function fireinterval() {
-		"use strict";
-		if (timeline[timepoint]) {
-			//setTimeout(danmufuns.fire,0,timepoint); 
-			danmufuns.fire(timepoint);
-		}
-		timepoint += 10;
-		if (!player.assvar.isPlaying) {
-			clearInterval(intervals.timer);
-		}
-	}*/
-
-	/*function newTimePiece(t, interval) {
-		"use strict";
-		if (intervals.timer) {
-			clearInterval(intervals.timer);
-			intervals.timer = 0;
-		}
-		if (t > timepoint) {
-			for (; timepoint <t; timepoint += 10) {
-				//if (timeline[timepoint]) setTimeout(danmufuns.fire,0,timepoint); 
-				danmufuns.fire(timepoint);
-			}
-		} else {
-			return;
-		}
-		intervals.timer = setInterval(fireinterval, 10 / player.video.playbackRate);
-	}*/
 
 	var getVideoMillionSec=this.getVideoMillionSec=function(){
 		return ((player.video.currentTime * 100 + 0.5) | 0) * 10;
@@ -216,7 +187,7 @@ function DanmuCore() {
 					lastfiretime=current;
 				}else{
 					for(;lastfiretime<=current;lastfiretime+=10){
-						timeline[lastfiretime]&&danmufuns.fire(lastfiretime);
+						danmuarray[lastfiretime]&&danmufuns.fire(lastfiretime);
 					}
 				}
 			}
@@ -225,7 +196,7 @@ function DanmuCore() {
 			player.assvar.aniswitch=!player.assvar.aniswitch;
 		},
 		danmulayerAnimation: {
-			start: function() {
+			start:function() {
 				if (!danmulayerAnimationFrame) {
 					danmulayerAnimationFrame = requestAnimationFrame(danmufuns.danmurefreshAnimationfun);
 				}
@@ -364,8 +335,6 @@ function DanmuCore() {
 							delete node.tunnelobj;
 							return;
 						}
-						//node.lasttime=nowtime;
-						//node.setMatrix();
 						return;
 					}
 				case 1:
@@ -379,8 +348,6 @@ function DanmuCore() {
 							delete node.tunnelobj;
 							return;
 						}
-						//node.lasttime=nowtime;
-						//node.setMatrix();
 						return;
 					}
 				case 2:
@@ -391,7 +358,6 @@ function DanmuCore() {
 							delete node.tunnelobj;
 							return;
 						}
-						//node.lasttime=nowtime;
 						return;
 					}
 				case 3:
@@ -402,7 +368,6 @@ function DanmuCore() {
 							delete node.tunnelobj;
 							return;
 						}
-						//node.lasttime=nowtime;
 						return;
 					}
 			}
@@ -410,7 +375,6 @@ function DanmuCore() {
 		initnewDanmuObj: function(danmuobj) {
 			if (typeof danmuobj == 'object') {
 				parentPlayer.EC.fireEvent("newDanmakuInited",danmuobj);
-				timeline[danmuobj.t] = true;
 				danmufuns.addToDanmuArray(danmuobj);
 			}
 		},
@@ -430,20 +394,7 @@ function DanmuCore() {
 					}
 				}
 			}
-		},
-		addTimepoint: function(t) {
-			timeline[t] = true;
-		},
-		setTimeline: function() {
-			var tarr = [];
-			for (var i = 0; i < danmulist.length; i++) {
-				if (danmulist[i].t >= 0) {
-					tarr[danmulist[i].t] = true;
-				}
-			}
-			timeline = tarr;
-		},
-		zimurevoluter: function(zinuobj) {}
+		}
 	}
 
 	controlfuns.play = function() {
@@ -471,14 +422,6 @@ function DanmuCore() {
 		/*danmufuns.clear();*/
 	}
 
-	/*controlfuns.zimueditMode = {
-		on: function() {},
-		off: function() {}
-	}
-	controlfuns.codeDanmueditMode = {
-		on: function() {},
-		off: function() {}
-	}*/
 
 	function initevents() {
 		var video = player.video;
@@ -689,11 +632,10 @@ function DanmuCore() {
 					case "danmuarray":
 						{
 							danmulist = e.msg.array;
-							danmufuns.setTimeline();
+							//danmufuns.setTimeline();
 							danmufuns.initFirer();
 							break;
 						}
-						break;
 					}
 					break;
 				}

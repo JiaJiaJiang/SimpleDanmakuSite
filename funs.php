@@ -10,12 +10,13 @@ function connectSQL() {
 	if(!dbname){
 		out('未找到配置文件中的dbname项');
 	}
-	if(preg_match('/^p\:/',sqlAddress)){
-		$address=sqlAddress;
+	$address=sqlAddress;
+	if(defined('dbPort')){
+		$port=dbPort;
 	}else{
-		$address='p:'.sqlAddress;//强制长连接
+		$port=3306;
 	}
-	$SQL = @new mysqli($address, sqlUser, sqlPass, dbname);
+	$SQL = @new mysqli($address, sqlUser, sqlPass, dbname ,$port);
 	if (mysqli_connect_error()) {
 		out('无法连接数据库: ' . mysqli_connect_error());
 		errorlog("DB", "Cannot connect to DB:" . mysqli_connect_error());
