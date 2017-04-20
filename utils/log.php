@@ -2,7 +2,7 @@
 require_once("../config.php");
 
 function logfile($filename, $log) {
-	$path=constant('logPath')?logPath:sys_temp_dir();
+	$path=constant('logPath')?@logPath:sys_temp_dir();
 	file_put_contents($path.$filename,$log.PHP_EOL,FILE_APPEND);
 }
 function errorlog($type, $err) {

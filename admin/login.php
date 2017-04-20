@@ -1,38 +1,83 @@
 <?php
-$rt=hasFlag('return');
-if(@$_SESSION['logged']===true){
-	out('已经登录');
-	exit();
+require_once('../utils/access.php');
+
+if(@$_GET['exit']==1){//登出
+	Access::logout();
+	http_response_code(302);
+	header('Location:index.php');
+	exit;
 }
-global $args;
-function logsignin($s){
-	logfile('login.log',gmdate(DATE_RFC822).' ip:'.ip().' '.$s);
-}
-global $fromconsole;
-if(@$args['u']&&@$args['p']){
-	if(user===$args['u']&&pass===$args['p']){
-		$_SESSION['logged']=true;
-		if($rt){
-			echo 'true';
-		}
-		if($fromconsole){
-			out('登录成功');
-			out('服务器时间:'.gmdate(DATE_RFC822));
-		}
-		logsignin('success');
-	}else{
-		if($rt){
-		echo 'false';
-	}
-	logsignin('fail');
-	exit();
-	}
-}else{
-	if($rt){
-		echo 'false';
-	}
-	logsignin('fail');
-	exit();
+
+if(Access::hasLoggedIn()){//已经登录了就跳转到index
+	http_response_code(302);
+	header('Location:index.php');
+	exit;
 }
 
 ?>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>登录</title>
+	<script src="../static/api.js"></script>
+	<style>
+		html,body{height: 100%;}
+		input{
+		    margin: 0.7em;
+		    display: block;
+		    font-size: 26px;
+		    padding: 0.3em 0.7em;
+		}
+		button{
+	        margin: 1em;
+		    display: block;
+	        cursor: pointer;
+		    font-size: 20px;
+		    border-radius: 6px;
+		    background-color: #fff;
+		    border: 1.2px solid #636363;
+		}
+		center{
+			top: 24%;
+		    position: relative;
+		}
+	</style>
+</head>
+<body>
+<center>
+	<form onsubmit="return false;">
+		<h1>登录</h1>
+		<input type="text" name="user" placeholder="用户名">
+		<input type="password" name="pass" placeholder="密码">
+		<input type="text" name="code" placeholder="动态密码(未设置留空)" maxlength="6">
+		<button name="submit">登录</button>
+		<span></span>
+	</form>
+</center>
+<script>
+var $=document.querySelector.bind(document),eles=$('form').elements,
+	info=$('span');
+eles.submit.onclick=function(){
+	var json=base64.encode(JSON.stringify({user:eles.user.value,pass:eles.pass.value,code:eles.code.value}));
+	info.innerHTML='登录中';
+	SAPI.get('login',{cred:json},function(xhr){
+		if(r instanceof Error){
+			info.innerHTML=r.message;
+			return;
+		}
+		try{
+			var r=JSON.parse(xhr.responseText);
+		}catch(e){
+			info.innerHTML=e.message;
+			return;
+		}
+		if(r.code===0 && r.result==='true'){
+			location.reload();
+			return;
+		}
+		info.innerHTML='失败';
+	});
+}
+</script>
+</body>
+</html>

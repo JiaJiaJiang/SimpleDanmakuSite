@@ -1,5 +1,8 @@
 <?php
 require_once("../utils/common.php");
+require_once("../utils/access.php");
+
+
 if(!allowedRequest()){
     http_response_code(403);
     exit;
@@ -9,7 +12,7 @@ $api=@$_GET['api'];//获取api
 if(!$api || $api=='index'){
     http_response_code(400);
     exit;
-}elseif(!preg_match('/^[\d\w]+$/',$api) || is_file($api.'.php')) {
+}elseif(!preg_match('/^[\d\w]+$/',$api) || !is_file('./'.$api.'.php')) {
     http_response_code(404);
     exit;
 }
@@ -21,6 +24,6 @@ function apiResult($code,$content,$exit=false){
 	if($exit===true)exit;
 }
 
-require_once($api.'.php');
+require_once('./'.$api.'.php');
 
 ?>

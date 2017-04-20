@@ -7,7 +7,8 @@ class Video{
 	}
 	static $PDO=null;
 
-	function add($title,$address,$cover,$description,$options){
+	function add($info){
+		if(is_array($info))$info=(object)$info;
 		requireLogin();
 		$pre = Video::$PDO->prepare('INSERT into `video` (`title`, `address`, `cover`, `description`, `options`) VALUES (?, ?, ?, ?, ?)');
 		$pre->execute(array($title,$address,$cover,$description,$options));
@@ -35,7 +36,7 @@ class Video{
 	function videoInfo($vid,$select){
 		if(!isInt($vid))return false;
 		$getOpt=array(
-			'condition'=>array('vid=?'),
+			'condition'=>array('vid=?','hidden=0'),
 			'args'=>array($vid)
 		);
 		if(is_string($select)){

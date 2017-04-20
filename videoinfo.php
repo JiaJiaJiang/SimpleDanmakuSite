@@ -1,7 +1,8 @@
 <?php
+$vid=@$_GET['id'];
+
 require_once('./utils/video.php');
 require_once('./utils/common.php');
-$vid=@$_GET['id'];
 if(!isIntStr($vid)){
 	http_response_code(404);
 	exit;
@@ -21,9 +22,8 @@ try{
 }
 
 
-
 $title=htmlentities($videoInfo->title,ENT_QUOTES,"UTF-8");
-$cove$descriptionr=htmlentities($videoInfo->cover,ENT_QUOTES,"UTF-8");
+$cover=htmlentities($videoInfo->cover,ENT_QUOTES,"UTF-8");
 $description=htmlentities($videoInfo->description,ENT_QUOTES,"UTF-8");
 ?>
 <html>
@@ -33,13 +33,17 @@ $description=htmlentities($videoInfo->description,ENT_QUOTES,"UTF-8");
 		<link rel="stylesheet" type="text/css" href="static/videoInfo.css">
 	</head>
 	<body>
-		<div id="videostat">
-			<h1 id="title"><?php echo $title;?></h1>
-			<div id="count"><span>播放数:<?php echo $videoInfo->playCount;?></span>   <span>弹幕数:<?php echo $videoInfo->danmakuCount;?></span>
-				<span id="des"><?php echo $description;?></span>
+		<h1 id="title"><?php echo $title;?></h1>
+		<div id="info">
+			<div id="count">
+				<span>播放数:<?php echo $videoInfo->playCount;?></span>   <span>弹幕数:<?php echo $videoInfo->danmakuCount;?></span>
 			</div>
+			<span id="desc"><?php echo $description;?></span>
 		</div>
-		<a id="play" target="_self" href="<?php echo 'player/?id='.$vid;?>">播放</a>
+		<div>
+			<a id="play" target="_self" href="<?php echo 'player/?id='.$vid;?>">播放</a>
+		</div>
+		
 	</body>
 	<?php if(@$cover){?>
 	<script>
