@@ -18,6 +18,7 @@ if(Access::hasLoggedIn()){//已经登录了就跳转到index
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8">
 	<title>登录</title>
 	<script src="../static/api.js"></script>
 	<style>
@@ -60,9 +61,9 @@ var $=document.querySelector.bind(document),eles=$('form').elements,
 eles.submit.onclick=function(){
 	var json=base64.encode(JSON.stringify({user:eles.user.value,pass:eles.pass.value,code:eles.code.value}));
 	info.innerHTML='登录中';
-	SAPI.get('login',{cred:json},function(xhr){
-		if(r instanceof Error){
-			info.innerHTML=r.message;
+	SAPI.get('login',{cred:json},function(err,xhr){
+		if(err){
+			info.innerHTML=err.message;
 			return;
 		}
 		try{

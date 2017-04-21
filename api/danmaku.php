@@ -14,7 +14,7 @@ switch(@$_GET['opt']) {
 		if(!is_object($dmInfo))
 			apiResult(-1,'value is not a valid json',true);
 		if(Access::checkAccess())
-			apiResult(-1,'access required',true);
+			apiResult(-4,'access required',true);
 		$thit=@gettimeofday()['sec'];
 		if(!Access::hasLoggedIn()&&array_key_exists('lastDanmakuTime',$_SESSION)){//检查发送时间间隔
 			$lst = intval($_SESSION['lastDanmakuTime']);
@@ -48,7 +48,7 @@ switch(@$_GET['opt']) {
 		if(!is_numeric($vid)||!isIntStr($vid))
 			apiResult(-1,'vid error',true);
 		if(!Access::hasLoggedIn()&&Access::checkAccess())
-			apiResult(-1,'not allowed',true);
+			apiResult(-4,'access required',true);
 		$cond=array('vid=?');
 		$args=array($vid);
 		try{

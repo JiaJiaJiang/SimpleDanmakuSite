@@ -8,5 +8,14 @@ if(!Access::hasLoggedIn()){//没有登录跳转到登录
 
 
 ?>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>管理</title>
+	<script src="../static/api.js"></script>
+</head>
+<body>
 
-logined
+</body>
+</html>

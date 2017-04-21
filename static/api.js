@@ -10,10 +10,11 @@ window.SXHR = {
 	},
 	request:function(method,url,data,callback){
 		var xhr = new XMLHttpRequest(); 
+		xhr.withCredentials=true;
 		if (callback instanceof Function) 
 			xhr.onreadystatechange = function () {
 				if (xhr.readyState === 4) {
-					callback(xhr); 
+					callback(null,xhr); 
 				}
 			};
 			xhr.addEventListener('error',callback);
@@ -22,15 +23,15 @@ window.SXHR = {
 		(method!=='POST')?xhr.send():xhr.send(data);
 		return xhr;
 	},
-	formQuery:function formQuery(data){//把对象格式化为query字符串
+	formQuery:function formQuery(data){
 		var tdata='';
-		if (data&&(typeof data ==='object')) {//如果参数是个对象，把它转成url query字符串
-			var query = []; //准备放各个参数
-			for (var i in data) {//遍历对象
-				if (data[i]&&(typeof data[i]=== 'object')) data[i] = JSON.stringify(data[i]); //如果对象的某一个属性还是对象，把它json化(到后台就需要解析json)
-				query.push((data[i]!==undefined)?(encodeURIComponent(i) + '=' + encodeURIComponent(data[i])):i); //一组组参数URI编码后放进参数数组
+		if (data&&(typeof data ==='object')) {
+			var query = []; 
+			for (var i in data) {
+				if (data[i]&&(typeof data[i]=== 'object')) data[i] = JSON.stringify(data[i]); 
+				query.push((data[i]!==undefined)?(encodeURIComponent(i) + '=' + encodeURIComponent(data[i])):i); 
 			}
-			tdata += query.join('&'); //把参数数组的每一项用&连起来，并加在url后面
+			tdata += query.join('&'); 
 		}
 		return tdata;
 	}
@@ -42,6 +43,35 @@ window.SAPI={
 	},
 	post:function(api, data, callback){
 		SXHR.post(SAPI.siteRoot+'api/?api='+api,data,callback);
+	},
+	getAccess:function(){
+		return localStorage.access;
+	},
+	refreshAccess:function(callback){
+		SAPI.get('video',{opt:'access'},function(err,xhr){
+			if(err){
+				console.error(err);
+				return;
+			}
+			try{
+				var r=JSON.parse(xhr.responseText);
+			}catch(e){
+				console.error(e);
+				return;
+			}
+			if(r.code===0){
+				var accessText=r.result.accessText.match(/(\w{13})(\w{13})(\w{13})(\w{13})/),
+					accessCode=r.result.accessCode;
+				accessText.shift();
+				var access='';
+				for(let i=0;i<accessCode.length;i++)
+					access+=accessText[1*accessCode[i]];
+				localStorage.access=access;
+				callback(access);
+				return;
+			}
+			callback(false);
+		});
 	}
 };
 

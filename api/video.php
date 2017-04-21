@@ -62,7 +62,7 @@ switch(@$_GET['opt']) {
 	}
 	case 'video':{//获取播放器用的视频信息
 		if(Access::checkAccess())
-			apiResult(-1,'access required',true);
+			apiResult(-4,'access required',true);
 		$videoOpt=new Video();
 		$vid=@$_GET['vid'];
 		$select=(@$_GET['addressOnly']==='1')?'address':'*';
@@ -83,17 +83,8 @@ switch(@$_GET['opt']) {
 	case 'access':{
 		$access=Access::generate();
 		$_SESSION['access']=$access->accessSession;
-		setcookie('accessText',$access->accessText);
-		setcookie('accessCode',$access->accessCode);
-		apiResult(0,$result,true);
-/*
-js解码
-var accStr=document.cookie.match(/access=(\w{13})(\w{13})(\w{13})(\w{13})/);
-accStr.shift();
-var access='';
-for(let i=0;i<accCode.length;i++)
-	access+=accStr[1*accCode[i]];
-*/
+		unset($access->accessSession);
+		apiResult(0,$access,true);
 	}
 	default:{
 		http_response_code(404);

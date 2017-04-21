@@ -3,7 +3,7 @@ class Video{
 	function __construct(){
 		require_once('db.php');
 		require_once('common.php');
-		Video::$PDO=(new dbOpt())::$PDO;
+		Video::$PDO=dbOpt::$PDO;
 	}
 	static $PDO=null;
 

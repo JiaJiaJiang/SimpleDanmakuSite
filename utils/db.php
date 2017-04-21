@@ -22,6 +22,8 @@ class dbOpt{
 	}
     static $PDO=null;
 }
+
+new dbOpt();
 /*
 function ColumnExists($table, $key) {
 	Global $SQL;

@@ -4,7 +4,7 @@ class Danmaku{
 	function __construct(){
 		require_once('db.php');
 		require_once('common.php');
-		Danmaku::$PDO=(new dbOpt())::$PDO;
+		Danmaku::$PDO=dbOpt::$PDO;
 		$this->$writableColumn=array('vid','content','type','time','color','size');
 	}
 	static $PDO=null;
