@@ -23,7 +23,16 @@ function apiResult($code,$content,$exit=false){
 	flush();
 	if($exit===true)exit;
 }
+function errApiResuult($e,$exit=true){
+    apiResult($e->getCode()===0?-1:$e->getCode(),$e->getMessage(),$exit);
+}
 
-require_once('./'.$api.'.php');
+
+try{
+    require_once('./'.$api.'.php');
+}catch(Exception $e){
+    errApiResuult($e);
+}
+
 
 ?>

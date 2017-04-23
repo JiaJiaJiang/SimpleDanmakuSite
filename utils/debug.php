@@ -1,9 +1,10 @@
 <?php
-/*
-function echoMem($switch=false){
-	if($switch)
-	echo 'Mem usage:'.(memory_get_usage()/1024/1024).'M'.PHP_EOL;
-}
-*/
+define('STDOUT',fopen('php://stdout', 'w'));
 
+function stdout($c){
+	fwrite(STDOUT, $c);  
+}
+function stdoutl($c){
+	stdout($c.PHP_EOL);  
+}
 ?>

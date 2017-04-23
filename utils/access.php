@@ -31,14 +31,18 @@ class Access{
 		return (@$_SESSION['logged'] === '1');
 	}
 	static function requireLogin(){
-		if (hasLoggedIn())return;
+		if (Access::hasLoggedIn())return;
 		http_response_code(403);
 		echo "login required";
 		exit;
 	}
 	static function checkAccess(){
 		$accessCode=@$_GET['access'].directIP();
-		return ($accessCode===$_SESSION['access']);
+		return ($accessCode===@$_SESSION['access']);
+	}
+	static function requireAccess(){
+		if(!Access::checkAccess())
+			throw new Exception('access required', -4);
 	}
 	static function generate(){
 		$uid=array(uniqid(),uniqid(),uniqid(),uniqid());

@@ -1,4 +1,5 @@
 <?php
+if(!function_exists('apiResult'))exit;
 require_once('../utils/common.php');
 
 if(@$_GET['cred']){//验证请求
@@ -8,6 +9,7 @@ if(@$_GET['cred']){//验证请求
 		exit;
 	}
 	if(Access::login($cred->user,$cred->pass,$cred->code)){
+		sleep(rand(0,3));
 		apiResult(0,'true',true);
 	}
 	sleep(rand(0,9));

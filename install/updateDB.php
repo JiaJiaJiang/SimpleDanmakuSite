@@ -1,5 +1,21 @@
 <?php
-needLogin();
+require_once('../utils/access.php');
+Access::requireLogin();
+
+
+function ColumnExists($table, $key) {
+	Global $SQL;
+	if (!$SQL) {
+		connectSQL();
+	}
+	$result = $SQL->query("describe $table $key");
+	$result = $result->fetch_array();
+	if ($result === NULL) {
+		return false;
+	}
+	return true;
+}
+
 if(hasFlag('help')){
 	_toLine('updateDB用于进行后续更新对数据库的修改',
 			'    <b>updateDB</b>',

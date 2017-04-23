@@ -67,7 +67,7 @@ window.SAPI={
 				for(let i=0;i<accessCode.length;i++)
 					access+=accessText[1*accessCode[i]];
 				localStorage.access=access;
-				callback(access);
+				callback&&callback(access);
 				return;
 			}
 			callback(false);

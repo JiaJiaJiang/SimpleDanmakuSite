@@ -1,0 +1,116 @@
+#frame{
+	margin: 0 auto;
+	width: 90%;
+}
+.setting_block{
+	padding: 1em 1.2em;
+	position: relative;
+}
+button{cursor: pointer;}
+hr{
+	border: none;
+	height: 1px;
+	background: #ccc;
+	background: linear-gradient(to right, #ccc 0%,rgba(0,0,0,0.5) 16%, rgba(0,0,0,0));
+}
+button.main{
+	font-size: 1em;
+	padding: 0.4em 1em;
+	border: 1px solid #000;
+	margin: 0.3em 0.2em;
+	background: #f1f1f1;
+	border-radius: 0.2em;
+}
+button.small{
+	font-size: 0.8em;
+	background: #fbfbfb;
+}
+form{
+	border: 1px solid rgba(204, 204, 204, 0.51);
+	padding: 0.8em;
+	margin: 0.5em 0;
+	display: flex;
+	max-width: 100%;
+	flex-wrap: wrap;
+}
+form input{
+	min-width: 20em;
+	border: 1px solid #ccc;
+	padding: 0.6em;
+	box-sizing: border-box;
+	font-size: 14px;
+}
+form textarea{
+	min-width: 100%;
+	padding: 0.6em;
+	border: 1px solid #ccc;
+	border-top: none;
+	box-sizing: border-box;
+}
+form button{
+
+}
+span.strech_for_fill{
+	flex-grow: 1;
+}
+
+span.check_span{
+	background: #a5a4a4;
+	border-radius: 3.1px;
+	padding: 0.1em 0.4em;
+	margin: 0.2em 0;
+	color: #fff;
+	cursor: pointer;
+	display: inline-block;
+}
+span.check_span *{
+	cursor: pointer;
+}
+span.check_span input[type=checkbox]{
+	height: 1em;
+	flex-grow: 0;
+	margin-right: 0.6em;
+}
+
+input.search{
+	width: 100%;
+	padding: 0.5em .5em;
+	box-sizing: border-box;
+	font-size: 1em;
+}
+.List table{
+	box-sizing: border-box;
+	width: 100%;
+	border: 1px solid #b1b1b1;
+	border-collapse: collapse;
+	margin: 1em 0;
+}
+.List .tableHead{
+    background: #dcdcdc;
+}
+.List table button{
+	background: transparent;
+	border: 0;
+    width: 100%;
+}
+.List #controls{
+	font-size: 1em;
+}
+.List #controls *{
+	font-size: inherit;
+}
+.List #controls button{
+	background: #fff;
+	border: 1px solid #000;
+}
+.List .page{
+	float: right;
+}
+.List .page input{
+	width: 2.1em;
+	text-align: center;
+}
+.List .page input#total_page{
+	border: 0;
+	pointer-events: none;
+}

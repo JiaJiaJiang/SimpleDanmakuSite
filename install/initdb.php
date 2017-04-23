@@ -1,5 +1,8 @@
 <?php
-needLogin();
+require_once('../utils/access.php');
+Access::requireLogin();
+
+
 if(hasFlag('help')){
 	_toLine('initdb用于初始化数据库',
 			'    <b>initdb</b>',

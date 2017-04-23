@@ -1,6 +1,9 @@
 <?php
 require_once("../config.php");
 
+global $devMode;
+$devMode=(@constant('dev')===true);
+if($devMode)require_once('debug.php');
 
 function isIntStr($num) {
 	return @preg_match('/^\d+$/',$num);

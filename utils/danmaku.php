@@ -9,7 +9,16 @@ class Danmaku{
 	}
 	static $PDO=null;
 	
-	function add($vid,$content,$type,$time,$color,$size){//添加弹幕，返回id
+	function add($it){//添加弹幕，返回id
+		if(is_array($it))$it=(object)$it;
+		if(!is_object($it))
+			throw new Exception('Items is not a object',-1);
+		$vid=$it->vid;
+		$content=$it->content;
+		$type=$it->type;
+		$time=$it->time;
+		$color=$it->color;
+		$size=$it->size;
 		if(!is_int($vid)&&!isIntStr($vid))
 			throw new Exception('Invalid video id');
 		if((!is_int($time)&&!isIntStr($time))||$time<0)
@@ -22,7 +31,7 @@ class Danmaku{
 		$type=intval($type);
 		$time=intval($time);
 		$size=intval($size);
-		$date=@date_timestamp_get(date_create());
+		$date=time();
 		if($type<0||$type>3)$type=0;
 
 		$pre = Danmaku::$PDO->prepare('INSERT into `danmaku` (`vid`, `mode`, `content`, `time`, `color`, `size`,`date`) VALUES (?, ?, ?, ?, ?, ?,?)');

@@ -26,18 +26,18 @@ function convertLink($address) {
 		}
 		//提取地址
 		preg_match("/^((\".*\")\:)?(.+)$/", $resource[$i], $result);
-		for($i=0,$l=count($result);$i<$l;$i++){
-			if($result[2] && is_file('../convertScript/'.$result[2].'.php')){//有前缀，有对应的转换脚本
-				//转换
-				require_once('../convertScript/'.$result[2].'.php');
-				if(function_exists("convertScript")){
-					$resultArray[$result[2]]=convertScript($result);
-					continue;
-				}
+		if($result[2] && is_file('../convertScript/'.$result[2].'.php')){//有前缀，有对应的转换脚本
+			//转换
+			require_once('../convertScript/'.$result[2].'.php');
+			if(function_exists("convertScript")){
+				$resultArray[$result[2]]=convertScript($result[3]);
+				continue;
 			}
+		}else{
 			//直接加进结果数组
-			$resultArray[]=$resource[$i];
+			$resultArray[]=$resource[$i];	
 		}
 		return $resultArray;
+	}
 }
 ?>
