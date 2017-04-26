@@ -1,5 +1,5 @@
 <?php
-require_once('../utils/GoogleAuthenticator.php');
+require_once(dirname(__FILE__).'/../utils/GoogleAuthenticator.php');
 $auth=new GoogleAuthenticator;
 $secret=$auth->createSecret();
 ?>

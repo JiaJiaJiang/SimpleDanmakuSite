@@ -1,8 +1,8 @@
 <?php
 class Video{
 	function __construct(){
-		require_once('./db.php');
-		require_once('./common.php');
+		require_once('db.php');
+		require_once('common.php');
 		Video::$PDO=dbOpt::$PDO;
 	}
 	static $PDO=null;
@@ -64,6 +64,7 @@ class Video{
 		if(!isInt($vid))
 			throw new Exception('Invalid vid',-1);
 		if(is_array($select)){
+			dbOpt::checkSelectorArray($select);
 			$getOpt['select']=implode(',',$select);
 		}
 		$sql='SELECT '.$select.' FROM `video` AS V

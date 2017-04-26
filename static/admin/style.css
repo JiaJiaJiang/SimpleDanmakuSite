@@ -92,6 +92,7 @@ input.search{
     white-space: pre-wrap;
 	word-break: break-all;
     text-align: left;
+    width: auto;
 }
 .List table td[itemname='date']{
     text-align: left;
@@ -102,6 +103,7 @@ input.search{
     white-space: nowrap;
     overflow: hidden;
     padding: 0 0.3em;
+    width: 1em;
 }
 .List .tableHead{
     background: rgba(239, 239, 239, 0.47);

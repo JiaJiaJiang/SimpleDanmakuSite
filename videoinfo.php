@@ -1,8 +1,9 @@
 <?php
 $vid=@$_GET['id'];
 
-require_once('./utils/video.php');
-require_once('./utils/common.php');
+require_once(dirname(__FILE__).'/utils/video.php');
+require_once(dirname(__FILE__).'/utils/common.php');
+require_once(dirname(__FILE__).'/utils/access.php');
 if(!isIntStr($vid)){
 	http_response_code(404);
 	exit;
@@ -10,14 +11,20 @@ if(!isIntStr($vid)){
 $videoOpt=new Video();
 
 try{
-	$videoInfo=$videoOpt->videoInfo($vid,'title,playCount,cover,description,danmakuCount');
+	$videoInfo=$videoOpt->videoInfo($vid,'title,playCount,cover,V.description AS description,danmakuCount',Access::hasLoggedIn());
 	if(!$videoInfo){
 		http_response_code(404);
 		exit;
 	}
 }catch(Exception $e){
 	http_response_code(500);
-	echo 'Error';
+	echo 'Error<BR>';
+	require_once(dirname(__FILE__).'/utils/access.php');
+	if(Access::hasLoggedIn()){
+		echo '<div style="white-space:pre;">';
+		var_dump($e);
+		echo '</div>';
+	}
 	exit;
 }
 

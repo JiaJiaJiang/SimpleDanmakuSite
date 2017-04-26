@@ -5,8 +5,8 @@ GET[opt] //要进行的操作
 */
 if(!function_exists('apiResult'))exit;
 
-require_once('../utils/video.php');
-require_once('../utils/access.php');
+require_once(dirname(__FILE__).'/../utils/video.php');
+require_once(dirname(__FILE__).'/../utils/access.php');
 
 switch(@$_GET['opt']) {
 	case 'add':{//添加视频
@@ -51,7 +51,7 @@ switch(@$_GET['opt']) {
 
 		$result=$videoOpt->videoInfo($vid,$select,Access::hasLoggedIn());
 		//解析地址
-		require_once('../utils/convertLink.php');
+		require_once(dirname(__FILE__).'/../utils/convertLink.php');
 		$result->address=convertLink($result->address);
 		apiResult(0,$result,true);
 

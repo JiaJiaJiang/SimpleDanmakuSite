@@ -1,5 +1,5 @@
 <?php
-require_once("../config.php");
+require_once(dirname(__FILE__)."/../config.php");
 
 function logfile($filename, $log) {
 	$path=constant('logPath')?@logPath:sys_temp_dir();

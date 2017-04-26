@@ -1,5 +1,5 @@
 <?php
-require_once('../utils/access.php');
+require_once(dirname(__FILE__).'/../utils/access.php');
 Access::requireLogin();
 
 

@@ -1,6 +1,6 @@
 <?php
-require_once("../utils/common.php");
-require_once("../utils/access.php");
+require_once(dirname(__FILE__)."/../utils/common.php");
+require_once(dirname(__FILE__)."/../utils/access.php");
 
 
 if(!allowedRequest()){
@@ -29,7 +29,7 @@ function errApiResuult($e,$exit=true){
 
 
 try{
-    require_once('./'.$api.'.php');
+    require_once(dirname(__FILE__).'/'.$api.'.php');
 }catch(Exception $e){
     errApiResuult($e);
 }

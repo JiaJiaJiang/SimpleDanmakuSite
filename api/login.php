@@ -1,6 +1,6 @@
 <?php
 if(!function_exists('apiResult'))exit;
-require_once('../utils/common.php');
+require_once(dirname(__FILE__).'/../utils/common.php');
 
 if(@$_GET['cred']){//验证请求
 	$cred=json_decode(base64_decode($_GET['cred']));

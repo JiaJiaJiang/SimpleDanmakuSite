@@ -5,8 +5,8 @@ GET[opt] //要进行的操作
 */
 if(!function_exists('apiResult'))exit;
 
-require_once('../utils/danmaku.php');
-require_once('../utils/access.php');
+require_once(dirname(__FILE__).'/../utils/danmaku.php');
+require_once(dirname(__FILE__).'/../utils/access.php');
 
 switch(@$_GET['opt']) {
 	case 'add':{//添加弹幕
