@@ -79,14 +79,32 @@ input.search{
 	font-size: 1em;
 }
 .List table{
-	box-sizing: border-box;
 	width: 100%;
+	margin: 1em 0;
+    text-align: center;
+	box-sizing: border-box;
+    font-family: monospace;
 	border: 1px solid #b1b1b1;
 	border-collapse: collapse;
-	margin: 1em 0;
+}
+.List table td[itemname='description']{
+    text-overflow: ellipsis;
+    white-space: pre-wrap;
+	word-break: break-all;
+    text-align: left;
+}
+.List table td[itemname='date']{
+    text-align: left;
+}
+.List table td{
+	word-break: keep-all;
+    vertical-align: top;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 0 0.3em;
 }
 .List .tableHead{
-    background: #dcdcdc;
+    background: rgba(239, 239, 239, 0.47);
 }
 .List table button{
 	background: transparent;

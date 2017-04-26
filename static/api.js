@@ -39,10 +39,28 @@ window.SXHR = {
 
 window.SAPI={
 	get:function(api, data, callback){
-		SXHR.get(SAPI.siteRoot+'api/',Object.assign({api:api},data),callback);
+		SXHR.get(SAPI.siteRoot+'api/',Object.assign({api:api},data),function(err,xhr){
+			SAPI.parseResult(err,xhr,callback);
+		});
 	},
 	post:function(api, data, callback){
-		SXHR.post(SAPI.siteRoot+'api/?api='+api,data,callback);
+		SXHR.post(SAPI.siteRoot+'api/?api='+api,data,function(err,xhr){
+			SAPI.parseResult(err,xhr,callback);
+		});
+	},
+	parseResult:function(err,xhr,callback){//callback(err,result,code,xhr)
+		var code=null;
+		try{
+			if(err)throw(err);
+			var re=JSON.parse(xhr.responseText);
+			if((code=re.code)!=0){
+				throw(new Error(re.result));
+			}
+			callback(null,re.result,re.code,xhr);
+		}catch(e){
+			console.error(e);
+			callback(e,null,code,xhr);
+		}
 	},
 	getAccess:function(){
 		return localStorage.access;

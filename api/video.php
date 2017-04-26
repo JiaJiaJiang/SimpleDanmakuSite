@@ -47,9 +47,9 @@ switch(@$_GET['opt']) {
 		Access::requireAccess();
 		$videoOpt=new Video();
 		$vid=@$_GET['vid'];
-		$select=(@$_GET['addressOnly']==='1')?'address':'*';
+		$select=(@$_GET['addressOnly']==='1')?'address':'V.*';
 
-		$result=$videoOpt->videoInfo($vid,$select);
+		$result=$videoOpt->videoInfo($vid,$select,Access::hasLoggedIn());
 		//解析地址
 		require_once('../utils/convertLink.php');
 		$result->address=convertLink($result->address);

@@ -1,8 +1,8 @@
 <?php
 class Video{
 	function __construct(){
-		require_once('db.php');
-		require_once('common.php');
+		require_once('./db.php');
+		require_once('./common.php');
 		Video::$PDO=dbOpt::$PDO;
 	}
 	static $PDO=null;
@@ -34,9 +34,7 @@ class Video{
 		$values[]=$vid;
 		$itemStr=implode(',', $items);
 		$sql='UPDATE `video` SET '.$itemStr.' WHERE vid=?';
-		stdoutl("value count:".count($values));
-		stdoutl("SQL:".$sql);
-		stdoutl("values:".implode(' ', $values));
+		
 		$pre = Video::$PDO->prepare($sql);
 		$pre->execute($values);
 		return $pre->rowCount();
@@ -54,47 +52,68 @@ class Video{
 		$count=count($vid);
 		if($count==0)return 0;
 		foreach ($vid as $value) {
-			if(is_int($value))
-				throw new Exception('Invalid video id',-1);
+			if(!is_int($value))
+				throw new Exception('Invalid video id:'.$value,-1);
 		}
 		$qustr=implode(',',array_fill(0,$count,'?'));//组成问号组
 		$pre = Video::$PDO->prepare('DELETE FROM `video` WHERE vid IN('.$qustr.')');
 		$pre->execute($vid);
 		return $pre->rowCount();
 	}
-	function videoInfo($vid,$select){
+	function videoInfo($vid,$select='*',$showHidden=false){
 		if(!isInt($vid))
 			throw new Exception('Invalid vid',-1);
-		$getOpt=array(
-			'condition'=>array('vid=?','hidden=0'),
-			'args'=>array($vid),
-			'limit'=>1
-		);
-		if(is_string($select)){
-			$getOpt['select']=$select;
-		}elseif(is_array($select)){
+		if(is_array($select)){
 			$getOpt['select']=implode(',',$select);
 		}
-		return (object)($this->get($getOpt)[0]);
+		$sql='SELECT '.$select.' FROM `video` AS V
+LEFT JOIN `collection` AS C
+ON V.cid=C.cid
+WHERE V.vid=?'.($showHidden?'':' && V.hidden=0 && (ISNULL(C.hidden)||C.hidden=0)');
+		$pre = Video::$PDO->prepare($sql);
+		$pre->execute(array($vid));
+		return $pre->fetch();
 	}
 	function get($option){
+		Access::requireLogin();
 		if(is_array($option))$option=(object)$option;
+		if(!is_object($option))
+			throw new Exception('Option is not a object',-1);
+		$countMode=@$option->countMode==true;
 		$condition=@$option->condition;
-		$args=@$option->args;
+		$arg=@$option->arg?$option->arg:array();
 		$limit=@$option->limit;
-		$select=is_array(@$option->item)?implode(',',$option->item):'*';
+		$select=is_array(@$option->item)?implode(',',dbOpt::checkSelectorArray($option->item)):'*';//item参数需要为数组，否则会变成*
 		$order=@$option->order?$option->order:'DESC';
 
-		/*if(!is_array($condition))
-			throw new Exception("condition required",-1);*/
-		$sql='SELECT '.$select.' FROM `video` '.(is_array($condition)?('WHERE '.implode(' && ',$condition)):'').' ORDER BY `vid` '.$order;
-
-		if(is_array($limit)){
-			$sql.=(' LIMIT '.implode(',',array_fill(0,count($limit),'?')));
-			$args=array_merge($args,$limit);
+		if($select!='*' && @$option->limit){
+			foreach ($option->limit as $key => $value) {
+				if(!preg_match('/^[\d\w]+$/', $key))
+					throw new Exception('Invalid item name',-1);
+			}
 		}
+		if($countMode)$select='count(*) AS resultCount';
+		$sql='SELECT '.$select.' FROM `video` '.(is_array($condition)?('WHERE '.implode(' && ',$condition)):'');
+		if(!$countMode){
+			$sql.=' ORDER BY `vid` '.$order;
+			if(is_array($limit)){
+				foreach ($limit as $key => $value) {
+					$limit[$key]=intval($value);
+				}
+				$sql.=(' LIMIT '.implode(',',array_fill(0,count($limit),'?')));
+				$arg=array_merge($arg,$limit);
+			}
+		}
+//stdoutl("value count:".count($values));
+//stdoutl("values:".implode(' ', $values));
+
+		
+stdoutl("SQL:".$sql);
+stdoutl("values:".implode(' ', $arg));
+
+
 		$pre = Video::$PDO->prepare($sql);
-		$pre->execute($args);
+		$pre->execute($arg);
 		return $pre->fetchAll();
 	}
 }

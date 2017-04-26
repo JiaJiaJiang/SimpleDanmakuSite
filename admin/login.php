@@ -61,18 +61,12 @@ var $=document.querySelector.bind(document),eles=$('form').elements,
 eles.submit.onclick=function(){
 	var json=base64.encode(JSON.stringify({user:eles.user.value,pass:eles.pass.value,code:eles.code.value}));
 	info.innerHTML='登录中';
-	SAPI.get('login',{cred:json},function(err,xhr){
+	SAPI.get('login',{cred:json},function(err,r){
 		if(err){
 			info.innerHTML=err.message;
 			return;
 		}
-		try{
-			var r=JSON.parse(xhr.responseText);
-		}catch(e){
-			info.innerHTML=e.message;
-			return;
-		}
-		if(r.code===0 && r.result==='true'){
+		if(r==='true'){
 			location.reload();
 			return;
 		}
