@@ -380,10 +380,10 @@ collectionList.edit=function(i){
 }
 collectionList.deleteSelected=function(list){
 	var l=[];
-	list.forEach(function(d){l.push(d.vid)});
+	list.forEach(function(d){l.push(d.cid)});
 	var req={
 		opt:'delete',
-		vid:l.join(','),
+		cid:l.join(','),
 	};
 	SAPI.get('collection',req,function(err,affected){//请求列表
 		if(err){

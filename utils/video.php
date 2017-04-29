@@ -4,16 +4,13 @@ class Video extends commonDBOpt{
 	function __construct(){
 		parent::__construct('video','vid',array('title','address','cover','description','hidden','date','option','cid'));
 	}
+	static $errorInfo=array(
+		1062=>'标题重复',
+		1452=>'无对应合集',
+	);
 	function add($info){
 		Access::requireLogin();
-		try{
-			return parent::add($info);
-		}catch(Exception $e){
-			if(preg_match('/1062/', $e->getMessage())){
-				throw new Exception("标题重复", -2);
-			}
-			throw $e;
-		}
+		return parent::add($info);
 	}
 	function update($vid,$info){
 		Access::requireLogin();
@@ -48,6 +45,16 @@ WHERE V.vid=?'.($showHidden?'':' && V.hidden=0 && (ISNULL(C.hidden)||C.hidden=0)
 	function get($option){
 		Access::requireLogin();
 		return parent::get($option);
+	}
+	function execute($pdostat,$arg){
+		try{
+			return $pdostat->execute($arg);
+		}catch(Exception $e){
+			$vioCode=dbOpt::getViolationCode($e);
+			$msg=@Video::$errorInfo[$vioCode];
+			if($msg)throw new Exception($msg,$vioCode);
+			throw $e;
+		}
 	}
 }
 ?>

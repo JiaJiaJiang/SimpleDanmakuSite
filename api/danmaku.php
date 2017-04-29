@@ -17,7 +17,7 @@ switch(@$_GET['opt']) {
 		if(!Access::hasLoggedIn()&&array_key_exists('lastDanmakuTime',$_SESSION)){//检查发送时间间隔
 			$lst = intval($_SESSION['lastDanmakuTime']);
 			if (($thit - $lst) < 5)
-				throw new Exception('发送间隔太小', -1);
+				throw new Exception('发送速度过快', -1);
 		}
 		$_SESSION['lastDanmakuTime']=$thit;
 		$dmID=$dnmakuOpt->add($dmInfo);

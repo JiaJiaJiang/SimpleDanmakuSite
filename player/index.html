@@ -12,15 +12,14 @@
 <link rel="stylesheet" type="text/css" href="../static/NyaP/NyaP.min.css">
 <script>
 var touchMode=false;//(window.navigator.userAgent.match(/mobile/)?true:false);
-var scriptVer;
+var scriptVer='es2016';
 try{
 	'use strict';
 	class a{}
-	scriptVer='es2016';
 }catch(e){
 	scriptVer='es2015';
 }
-document.write('<script src="../static/NyaP/NyaP'+(touchMode?'Touch':'')+'.'+scriptVer+'.min.js">< /script>');
+document.write("<script src='../static/NyaP/NyaP"+(touchMode?"Touch":"")+"."+scriptVer+".min.js'><\/script>");
 </script>
 <script src='../static/api.js'></script>
 <script src='../static/playPage.js'></script>
