@@ -2,7 +2,7 @@
 require_once(dirname(__FILE__).'/db.php');
 class Video extends commonDBOpt{
 	function __construct(){
-		parent::__construct('video','vid',array('title','address','cover','description','hidden','date','option'));
+		parent::__construct('video','vid',array('title','address','cover','description','hidden','date','option','cid'));
 	}
 	function add($info){
 		Access::requireLogin();
@@ -30,18 +30,18 @@ class Video extends commonDBOpt{
 		$dnmakuOpt->deleteByVid($vid);
 		return $rowCount;
 	}
-	function videoInfo($vid,$select='*',$showHidden=false){
+	function videoInfo($vid,$select='V.*',$showHidden=false){//此函数不会检查select的内容，调用前需注意
 		if(!isInt($vid))
 			throw new Exception('vid错误'.$vid,-1);
-		if(is_array($select)){
-			dbOpt::checkSelectorArray($select);
-			$getOpt['select']=implode(',',$select);
-		}
+		if(!is_array($select))$select=array($select);
+		if(count($select)==0)$select='V.*';
+		dbOpt::checkSelectorArray($select);
+		$select=implode(',',$select);
 		$sql='SELECT '.$select.' FROM `video` AS V
 LEFT JOIN `collection` AS C
 ON V.cid=C.cid
 WHERE V.vid=?'.($showHidden?'':' && V.hidden=0 && (ISNULL(C.hidden)||C.hidden=0)');
-		$pre = Video::$PDO->prepare($sql);
+		$pre = dbOpt::$PDO->prepare($sql);
 		$pre->execute(array($vid));
 		return $pre->fetch();
 	}

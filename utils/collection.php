@@ -19,7 +19,7 @@ class Collection extends commonDBOpt{
 	}
 	function update($cid,$info){
 		Access::requireLogin();
-		return parent::update($vid,$info);
+		return parent::update($cid,$info);
 	}
 	function delete($cid){
 		Access::requireLogin();

@@ -45,12 +45,15 @@ switch(@$_GET['opt']) {
 		$select=(@$_GET['addressOnly']==='1')?'address':'V.*';
 
 		$result=$videoOpt->videoInfo($vid,$select,Access::hasLoggedIn());
+		if(!$result){//无结果
+			apiResult(0,$result);
+		}
 		//解析地址
 		require_once(dirname(__FILE__).'/../utils/convertLink.php');
 		$result->address=convertLink($result->address);
 		apiResult(0,$result,false);
 		//播放数+1
-		$pre = Video::$PDO->prepare('UPDATE `video` SET playCount=playCount+1 WHERE vid=?');
+		$pre = dbOpt::$PDO->prepare('UPDATE `video` SET playCount=playCount+1 WHERE vid=?');
 		$pre->execute(array($vid));
 		exit;
 	}

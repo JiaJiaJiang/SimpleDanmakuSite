@@ -24,6 +24,13 @@ switch(@$_GET['opt']) {
 		$affected=$collectionOpt->delete($ids);
 		apiResult(0,$affected);
 	}
+	case 'update':{
+		Access::requireLogin();
+		$colOpt=new Collection();
+		$colInfo=json_decode(@$_GET['value']);
+		$affected=$colOpt->update($_GET['cid'],$colInfo);
+		apiResult(0,$affected);
+	}
 	case 'get':{
 		apiResult(0,
 			(new Collection())->get(json_decode(@$_GET['arg']))

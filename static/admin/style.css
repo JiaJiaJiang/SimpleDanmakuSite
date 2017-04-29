@@ -93,7 +93,8 @@ input.search{
 .List table a{
     text-decoration: none;
 }
-.List table td[itemname='description']{
+.List table td[itemname='description'],
+.List table td[itemname='content']{
     text-overflow: ellipsis;
     white-space: pre-wrap;
 	word-break: break-all;

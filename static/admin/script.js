@@ -374,7 +374,7 @@ collectionList.edit=function(i){
 			_.edit_collection_form.elements[n].value=r[n];
 		}
 		_.edit_collection_form.elements.hidden.checked=(r.hidden=='1');
-		Editor.$('collection').setID(i.vid).display(true);
+		Editor.$('collection').setID(i.cid).display(true);
 		_.edit_collection_form.scrollIntoView(false);
 	});
 }
@@ -459,7 +459,7 @@ var events=[
 		}
 		console.log(info)
 		var mode=(typeof editing.collection ==='number')?'update':'add';
-		SAPI.get('collection',{opt:mode,value:JSON.stringify(info),vid:editing.collection},function(err,r){
+		SAPI.get('collection',{opt:mode,value:JSON.stringify(info),cid:editing.collection},function(err,r){
 			try{
 				if(err)throw(err);
 				if(mode=='update'&&r==0)throw new Error('未改动');
@@ -476,6 +476,10 @@ var events=[
 	}
 }
 ],
+
+[_.hide_collection_editor,{
+	click:function(){Editor.$('collection').display(false)}
+}],
 
 ];
 
