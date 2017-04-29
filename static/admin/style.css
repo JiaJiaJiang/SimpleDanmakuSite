@@ -78,6 +78,9 @@ input.search{
 	box-sizing: border-box;
 	font-size: 1em;
 }
+.List{
+    margin-bottom: 1em;
+}
 .List table{
 	width: 100%;
 	margin: 1em 0;
@@ -86,6 +89,9 @@ input.search{
     font-family: monospace;
 	border: 1px solid #b1b1b1;
 	border-collapse: collapse;
+}
+.List table a{
+    text-decoration: none;
 }
 .List table td[itemname='description']{
     text-overflow: ellipsis;
@@ -96,6 +102,9 @@ input.search{
 }
 .List table td[itemname='date']{
     text-align: left;
+}
+.List table td[itemname='danmakuCount']{
+    cursor: pointer;
 }
 .List table td{
 	word-break: keep-all;

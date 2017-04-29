@@ -12,12 +12,12 @@ $api=@$_GET['api'];//获取api
 if(!$api || $api=='index'){
     http_response_code(400);
     exit;
-}elseif(!preg_match('/^[\d\w]+$/',$api) || !is_file('./'.$api.'.php')) {
+}elseif(!preg_match('/^\w+$/',$api) || !is_file('./'.$api.'.php')) {
     http_response_code(404);
     exit;
 }
 
-function apiResult($code,$content,$exit=false){
+function apiResult($code,$content,$exit=true){
 	header('Content-Type:text/json',true);
 	echo json_encode(array('code'=>$code,'result'=>$content),JSON_UNESCAPED_UNICODE);
 	flush();

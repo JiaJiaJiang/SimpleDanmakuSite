@@ -1,109 +1,48 @@
 <?php
+require_once(dirname(__FILE__).'/db.php');
 
-class Danmaku{
+class Danmaku extends commonDBOpt{
 	function __construct(){
-		require_once('db.php');
-		require_once('common.php');
-		Danmaku::$PDO=dbOpt::$PDO;
-		$this->$writableColumn=array('vid','content','type','time','color','size');
+		parent::__construct('danmaku','did',array('vid','content','type','time','color','size'));
 	}
-	static $PDO=null;
-	
+
 	function add($it){//添加弹幕，返回id
 		if(is_array($it))$it=(object)$it;
 		if(!is_object($it))
 			throw new Exception('Items is not a object',-1);
-		$vid=$it->vid;
-		$content=$it->content;
-		$type=$it->type;
-		$time=$it->time;
-		$color=$it->color;
-		$size=$it->size;
-		if(!is_int($vid)&&!isIntStr($vid))
+		if(!isInt(@$it->vid))
 			throw new Exception('Invalid video id');
-		if((!is_int($time)&&!isIntStr($time))||$time<0)
+		if(!isInt(@$it->$time)|| $it->$time<0)
 			throw new Exception('Invalid danmaku time');
-		if(trim($content)=='')
+		if(trim(@$it->$content)=='')
 			throw new Exception('Invalid danmaku content');
-		if(($color=trim($color))&&!($color=isValidColor($color)))
+		if((@$it->$color=trim(@$it->$color))&&!(@$it->$color=isValidColor(@$it->$color)))
 			throw new Exception('Invalid danmaku color');
 
-		$type=intval($type);
-		$time=intval($time);
-		$size=intval($size);
-		$date=time();
-		if($type<0||$type>3)$type=0;
+		$it->$type=intval(@$it->$type);
+		$it->$time=intval(@$it->$time);
+		$it->$size=intval(@$it->$size);
+		if($it->$type<0||$it->$type>3)$it->$type=0;
 
-		$pre = Danmaku::$PDO->prepare('INSERT into `danmaku` (`vid`, `mode`, `content`, `time`, `color`, `size`,`date`) VALUES (?, ?, ?, ?, ?, ?,?)');
-		$pre->execute(array($vid,$type,$content,$time,$color,$size,$date));
-		return Danmaku::$PDO->lastInsertId();
-	}
-	function has($id){//返回是否有对应id的弹幕
-		$this->checkID($id);
-		$pre = Danmaku::$PDO->prepare('SELECT COUNT(*) AS danmakuCount FROM `danmaku` WHERE did=?');
-		$pre->execute(array($id));
-		return ($pre->fetch(PDO::FETCH_OBJ)->danmakuCount)==1;
+		return parent::add(@$it);
 	}
 	function delete($id){//删除一条或多条弹幕，返回影响的行数
-		requireLogin();
-		if(!is_array($id))$id=array($id);
-		$count=count($id);
-		if($count==0)return 0;
-		foreach ($id as $value) {//检查所有id
-			$this->checkID($value);
-		}
-		$qustr=implode(',',array_fill(0,$count,'?'));
-		$pre = Danmaku::$PDO->prepare('DELETE FROM `danmaku` WHERE did IN('.$qustr.')');
-		$pre->execute($id);
-		return $pre->rowCount();
+		Access::requireLogin();
+		return parent::delete($id);
+	}
+	function deleteByVid($vid){//删除一个或多个视频的弹幕，返回影响的行数
+		Access::requireLogin();
+		$this->idName='vid';
+		$row=parent::delete($vid);
+		$this->idName='did';
+		return $row;
 	}
 	function update($id,$opt){
-		requireLogin();
-		$this->checkID($id);
-		if(is_array($opt))$opt=(object)$opt;
-		$name=array();
-		$args=array();
-		foreach ($opt as $key => $value) {
-			if(!in_array($key,$this->$writableColumn))
-				throw new Exception('Invalid option name');
-			$name[]=$key;
-			$args[]=$value;
-		}
-
-		$pre = Danmaku::$PDO->prepare('DELETE FROM `danmaku` WHERE `vid` =?');
-		$pre->execute($args);
-		return $pre->rowCount();
-	}
-	function deleteAllOf($vid){//删除一个视频的所有弹幕，返回影响的行数
-		requireLogin();
-		$this->checkID($vid);
-		$pre = Danmaku::$PDO->prepare('DELETE FROM `danmaku` WHERE `vid` =?');
-		$pre->execute(array($vid));
-		return $pre->rowCount();
+		Access::requireLogin();
+		return parent::update($id,$opt);
 	}
 	function get($option){
-		if(is_array($option))$option=(object)$option;
-		$condition=$option->condition;
-		$args=$option->args;
-		$limit=$option->limit;
-		$select=$option->select?$option->select:'*';
-		$order=$option->order?'DESC':'ASC';
-
-		if(!is_array($conditions))
-			throw new Exception("condition required");
-		$sql='SELECT '.$select.' FROM `danmaku` WHERE '.implode(' && ',$conditions).' ORDER BY `did` '.$order;
-
-		if(is_array($limit)){
-			$sql.=(' LIMIT '.implode(',',array_fill(0,count($limit),'?')));
-			$args=array_merge($args,$limit);
-		}
-		$pre = Danmaku::$PDO->prepare($sql);
-		$pre->execute($args);
-		return $pre->fetchAll();
-	}
-	function checkID($id){
-		if(!isInt($id))
-			throw new Exception('Invalid danmaku id');
+		return parent::get($option);
 	}
 }
 ?>

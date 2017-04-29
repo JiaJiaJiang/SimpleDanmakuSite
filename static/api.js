@@ -66,29 +66,21 @@ window.SAPI={
 		return localStorage.access;
 	},
 	refreshAccess:function(callback){
-		SAPI.get('video',{opt:'access'},function(err,xhr){
+		SAPI.get('video',{opt:'access'},function(err,r){
 			if(err){
 				console.error(err);
+				callback&&callback(false);
 				return;
 			}
-			try{
-				var r=JSON.parse(xhr.responseText);
-			}catch(e){
-				console.error(e);
-				return;
-			}
-			if(r.code===0){
-				var accessText=r.result.accessText.match(/(\w{13})(\w{13})(\w{13})(\w{13})/),
-					accessCode=r.result.accessCode;
-				accessText.shift();
-				var access='';
-				for(let i=0;i<accessCode.length;i++)
-					access+=accessText[1*accessCode[i]];
-				localStorage.access=access;
-				callback&&callback(access);
-				return;
-			}
-			callback(false);
+			var accessText=r.accessText.match(/(\w{13})(\w{13})(\w{13})(\w{13})/),
+				accessCode=r.accessCode;
+			accessText.shift();
+			var access='';
+			for(let i=0;i<accessCode.length;i++)
+				access+=accessText[1*accessCode[i]];
+			localStorage.access=access;
+			callback&&callback(access);
+			return;
 		});
 	}
 };

@@ -21,7 +21,7 @@ switch(@$_GET['opt']) {
 		}
 		$_SESSION['lastDanmakuTime']=$thit;
 		$dmID=$dnmakuOpt->add($dmInfo);
-		apiResult(0,$dmID,true);
+		apiResult(0,$dmID);
 	}
 	case 'delete':{//删除一个或多个弹幕
 		Access::requireLogin();
@@ -30,12 +30,13 @@ switch(@$_GET['opt']) {
 		if($ids===false)
 			throw new Exception('did error',-1);
 		$affected=$dnmakuOpt->delete($ids);
-		apiResult(0,$affected,true);
+		apiResult(0,$affected);
 	}
 	case 'get':{
 		$dnmakuOpt=new Danmaku();
 		$vid=@$_GET['vid'];
 		$limit=@$_GET['limit']?intval($_GET['limit']):1000;
+		$select='did,mode AS m,content AS c,time AS t,color AS co,size AS s,date AS d';
 		if(!is_numeric($vid)||!isIntStr($vid))
 			throw new Exception('vid error', -1);
 		if(!Access::hasLoggedIn())
@@ -46,11 +47,18 @@ switch(@$_GET['opt']) {
 			array(
 				'condition'=>$cond,
 				'args'=>$args,
-				'select'=>'did,mode AS m,content AS c,time AS t,color AS co,date AS d',
+				'select'=>$select,
 				'limit'=>$limit
 			)
 		);
-		apiResult(0,$result,true);
+		apiResult(0,$result);
+	}
+	case 'list':{
+		Access::requireLogin();
+		$danmakuOpt=new Danmaku();
+		$arg=json_decode(@$_GET['arg']);
+		$result=$danmakuOpt->get($arg);
+		apiResult(0,$result);
 	}
 	default:{
 		http_response_code(404);

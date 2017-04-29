@@ -14,34 +14,29 @@ switch(@$_GET['opt']) {
 		$videoOpt=new Video();
 		$videoInfo=json_decode(@$_GET['value']);
 		$videoID=$videoOpt->add($videoInfo);
-		apiResult(0,$videoID,true);
+		apiResult(0,$videoID);
 	}
 	case 'update':{//编辑视频
 		Access::requireLogin();
 		$videoOpt=new Video();
 		$videoInfo=json_decode(@$_GET['value']);
 		$affected=$videoOpt->update($_GET['vid'],$videoInfo);
-		apiResult(0,$affected,true);
+		apiResult(0,$affected);
 	}
 	case 'delete':{//删除一个或多个视频
 		Access::requireLogin();
 		$videoOpt=new Video();
 		$ids=parseIDList(@$_GET['vid']);
 		if($ids===false)
-			throw new Exception('vid error',-1);
+			throw new Exception('vid错误',-1);
 		$affected=$videoOpt->delete($ids);
-		apiResult(0,$affected,true);
+		apiResult(0,$affected);
 	}
 	case 'get':{//获取视频列表
 		Access::requireLogin();
-		$videoOpt=new Video();
-		$arg=json_decode(@$_GET['arg']);
-		/*$items=is_string(@$_GET['items'])?json_decode($_GET['items']):array('*');
-		$select=implode(',',$items);
-		$page=is_numeric(@$_GET['page'])?intval($_GET['page']):0;
-		$limit=is_numeric(@$_GET['limit'])?intval($_GET['limit']):15;*/
-		$result=$videoOpt->get($arg);
-		apiResult(0,$result,true);
+		apiResult(0,
+			(new Video())->get(json_decode(@$_GET['arg']))
+		);
 	}
 	case 'video':{//获取播放器用的视频信息
 		Access::requireAccess();
@@ -53,14 +48,17 @@ switch(@$_GET['opt']) {
 		//解析地址
 		require_once(dirname(__FILE__).'/../utils/convertLink.php');
 		$result->address=convertLink($result->address);
-		apiResult(0,$result,true);
-
+		apiResult(0,$result,false);
+		//播放数+1
+		$pre = Video::$PDO->prepare('UPDATE `video` SET playCount=playCount+1 WHERE vid=?');
+		$pre->execute(array($vid));
+		exit;
 	}
 	case 'access':{
 		$access=Access::generate();
 		$_SESSION['access']=$access->accessSession;
 		unset($access->accessSession);
-		apiResult(0,$access,true);
+		apiResult(0,$access);
 	}
 	default:{
 		http_response_code(404);
