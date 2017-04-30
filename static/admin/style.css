@@ -140,7 +140,7 @@ input.search{
 	width: 2.1em;
 	text-align: center;
 }
-.List .page input#total_page{
+.List .page input[id^='total_']{
 	border: 0;
 	pointer-events: none;
 }

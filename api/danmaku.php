@@ -10,7 +10,7 @@ require_once(dirname(__FILE__).'/../utils/access.php');
 
 switch(@$_GET['opt']) {
 	case 'add':{//添加弹幕
-		$dnmakuOpt=new Danmaku();
+		$danmakuOpt=new Danmaku();
 		$dmInfo=json_decode(@$_GET['value']);
 		Access::requireAccess();
 		$thit=time();
@@ -20,20 +20,20 @@ switch(@$_GET['opt']) {
 				throw new Exception('发送速度过快', -1);
 		}
 		$_SESSION['lastDanmakuTime']=$thit;
-		$dmID=$dnmakuOpt->add($dmInfo);
+		$dmID=$danmakuOpt->add($dmInfo);
 		apiResult(0,$dmID);
 	}
 	case 'delete':{//删除一个或多个弹幕
 		Access::requireLogin();
-		$dnmakuOpt=new Danmaku();
+		$danmakuOpt=new Danmaku();
 		$ids=parseIDList(@$_GET['did']);
 		if($ids===false)
 			throw new Exception('did error',-1);
-		$affected=$dnmakuOpt->delete($ids);
+		$affected=$danmakuOpt->delete($ids);
 		apiResult(0,$affected);
 	}
 	case 'get':{
-		$dnmakuOpt=new Danmaku();
+		$danmakuOpt=new Danmaku();
 		$vid=@$_GET['vid'];
 		$limit=@$_GET['limit']?intval($_GET['limit']):1000;
 		$select='did,mode AS m,content AS c,time AS t,color AS co,size AS s,date AS d';
@@ -42,11 +42,11 @@ switch(@$_GET['opt']) {
 		if(!Access::hasLoggedIn())
 			Access::requireAccess();
 		$cond=array('vid=?');
-		$args=array($vid);
-		$result=$dnmakuOpt->get(
+		$arg=array($vid);
+		$result=$danmakuOpt->get(
 			array(
 				'condition'=>$cond,
-				'args'=>$args,
+				'arg'=>$arg,
 				'select'=>$select,
 				'limit'=>$limit
 			)

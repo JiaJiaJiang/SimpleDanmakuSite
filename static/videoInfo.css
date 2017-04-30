@@ -11,7 +11,7 @@ body{
 }
 
 body>div{
-	background-color: rgba(148, 148, 148, 0.31);
+	background-color: rgba(199, 199, 199, 0.15);
 }
 #cover{
 	opacity: 0.4;
@@ -30,7 +30,7 @@ html:hover #cover{
 }
 
 #title{
-    background-color: rgba(115, 115, 115, 0.52);
+    background-color: rgba(177, 177, 177, 0.52);
 	margin: 0;
 	padding: 0.6em;
 	color: #424242;

@@ -57,6 +57,7 @@ function directIP(){
 
 
 //兼容无此参数的PHP版本
-define('JSON_UNESCAPED_UNICODE',256);
+if(!constant('JSON_UNESCAPED_UNICODE'))
+	define('JSON_UNESCAPED_UNICODE',256);
 
 ?>

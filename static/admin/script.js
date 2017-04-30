@@ -16,6 +16,10 @@ function addEvents(target,events){
 		});
 }
 
+function limitIn(value,min,max){
+	return value<min?min:(value>max?max:value);
+}
+
 function _Obj(t){return (typeof t == 'object');}
 function Object2HTML(obj,func){
 	let ele,o,e;
@@ -39,13 +43,60 @@ function Object2HTML(obj,func){
 }
 var O2H=Object2HTML;
 
-function List(tableHeads){
+function List(tableHeads,opt){
 	if(!(this instanceof List))return new List(tableHeads);
+	this.option={
+		editable:true,
+	};
+	Object.assign(this.option,opt);
 	var thisList=this;
-	this.page=1;
-	this.limit=20;
-	this.count=0;
-	this.editable=true;
+	this.listInfo={
+		page:1,
+		totalPage:1,
+		totalCount:0,
+		limit:20,
+	};
+	Object.defineProperties(this,{
+		limit:{
+			get:function(){return thisList.listInfo.limit;},
+			set:function(v){
+				v=limitIn(v,1,Infinity);
+				thisList.listInfo.limit=v;
+			},
+		},
+		page:{
+			get:function(){return thisList.listInfo.page;},
+			set:function(v){
+				v=limitIn(v,1,thisList.totalPage);
+				thisList.listInfo.page=v;
+				thisList._.current_page.value=v;
+				thisList.load();
+			},
+		},
+		totalPage:{
+			get:function(){return thisList.listInfo.totalPage;},
+			set:function(v){
+				v=limitIn(v,1,Infinity);
+				thisList.listInfo.totalPage=v;
+				thisList._.total_page.value=v;
+			},
+		},
+		totalCount:{
+			get:function(){return thisList.listInfo.totalCount;},
+			set:function(v){
+				v=limitIn(v,0,Infinity);
+				thisList.listInfo.totalCount=v;
+				thisList.totalPage=Math.ceil(thisList.totalCount/thisList.limit);
+				thisList._.total_count.value=v;
+			},
+		},
+		table:{
+			get:function(){return __.table;}
+		},
+		controls:{
+			get:function(){return __.controls;}
+		}
+	});
 	var __=this._={};
 	this.frame=O2H(
 		{_:'div',attr:{class:'List'},child:[
@@ -59,17 +110,21 @@ function List(tableHeads){
 				{_:'button',attr:{id:'deleteSelected'},child:['删除'],event:{click:function(){thisList.deleteSelected(thisList.getSelectedItem())}}},
 
 				{_:'span',attr:{class:'page'},child:[
-					{_:'input',attr:{id:'current_page'}},
+					{_:'button',attr:{id:'prePage'},child:['上一页']},
+					{_:'input',attr:{id:'current_page',value:1}},
 					'/',
-					{_:'input',attr:{id:'total_page',contenteditable:false}},
+					{_:'input',attr:{id:'total_page',value:1,contenteditable:false}},
+					{_:'button',attr:{id:'aftPage'},child:['下一页']},
+					{_:'span',attr:{style:'margin-left: 1em;'},child:[
+						'总数:',
+						{_:'input',attr:{id:'total_count',placeholder:'0'}},
+					]},
 				]},
 			]}
 		]}
 	);
 	for(var list=this.frame.querySelectorAll('[id]'),i=list.length;i--;)
 		__[list[i].id]=list[i];
-	this.table=__.table;
-	this.controls=__.controls;
 	var trth=this.frame.querySelector('tr');
 	this.tableItems=[];
 	for(var n in tableHeads){
@@ -81,21 +136,27 @@ function List(tableHeads){
 		keydown:function(e){
 			if(e.keyCode==13){
 				thisList.page=1*__.current_page.value;
-				thisList.load();
 			}
 		}
 	});
-
+	addEvents([__.prePage,__.aftPage],{
+		click:function(e){
+			var p=thisList.page,total=Math.ceil(this.count/this.limit);
+			if(e.target.id=='prePage'){
+				p-=1;
+			}else{
+				p+=1;
+			}
+			thisList.page=p;
+		}
+	});
 	this.table.addEventListener('click',function(e){
 		if(e.target.id=='edit')
 			thisList.edit(e.target.parentNode.parentNode.items);
 
 	});
-	this.refreshPage(1,0);
-	setTimeout(function(){
-		if(thisList.editable)
-			trth.appendChild(O2H({_:'th',child:[' ']}));
-	});
+	if(this.option.editable)
+		trth.appendChild(O2H({_:'th',child:[' ']}));
 }
 List.prototype.clearTable=function(){
 	for(var i=this.table.childNodes.length;--i;)
@@ -131,19 +192,12 @@ List.prototype.insert=function(items,rawItems){
 	this.tableItems.forEach(function(i){
 		tr.appendChild(O2H({_:'td',attr:{itemName:i},child:[items[i]]}));
 	});
-	if(this.editable)tr.appendChild(O2H({_:'td',child:[{_:'button',attr:{id:'edit'},child:['编辑']}]}));
+	if(this.option.editable)tr.appendChild(O2H({_:'td',child:[{_:'button',attr:{id:'edit'},child:['编辑']}]}));
 	this.table.appendChild(tr);
 };
 List.prototype.load=function(){};
 List.prototype.deleteSelected=function(){};
 List.prototype.edit=function(i){console.log(i)};
-List.prototype.refreshPage=function(current,totalCount,limit){
-	this.page=this._.current_page.value=Number(current);
-	if(limit!==undefined)this.limit=Number(limit);
-	if(totalCount!==undefined)this.count=Number(totalCount);
-	this._.total_page.value=Math.ceil(this.count/this.limit);
-};
-
 
 var editing={//保存正在编辑的内容的id,undefined为新建
 	video:undefined,
@@ -178,8 +232,9 @@ var videoList=new List(videoListItems);
 _.video_list.appendChild(videoList.frame);
 videoList.table.addEventListener('click',function(e){
 	if(e.target.getAttribute('itemname')=='danmakuCount'){
-		danmakuList._.search.value=e.target.parentNode.items.vid;
-		danmakuList.load();
+		danmakuList.vid=e.target.parentNode.items.vid;
+		danmakuList._.search.value='';
+		danmakuList.page=1;
 		danmakuList.frame.scrollIntoView(false);
 	}
 });
@@ -217,7 +272,7 @@ videoList.load=function(){
 			alert(err.message);
 			return;
 		}
-		thisList.refreshPage(thisList._.current_page.value,r[0].resultCount);
+		thisList.totalCount=r[0].resultCount;
 	});
 	
 }
@@ -226,7 +281,7 @@ videoList.edit=function(i){
 	var req={
 		opt:'get',
 		arg:{
-			item:['title','cover','description','address','option','hidden'],
+			item:['title','cover','description','address','option','cid','hidden'],
 			condition:['vid=?'],
 			arg:[i.vid]
 		}
@@ -269,8 +324,14 @@ videoList.load();
 
 //danmaku list
 var danmakuListItems={did:'ID',vid:'视频',content:'内容',mode:'模式',time:'时间',color:'颜色',size:'大小',date:'日期'};
-var danmakuList=new List(danmakuListItems);
+var danmakuList=new List(danmakuListItems,{editable:false});
 _.danmaku_list.appendChild(danmakuList.frame);
+danmakuList.vid=null;//用于video加载模式
+addEvents(danmakuList._.search,{
+	'input,keydown':function(){
+		danmakuList.vid=null;
+	}
+});
 danmakuList.load=function(){
 	var search=this._.search.value,thisList=this;
 	var req={
@@ -280,9 +341,15 @@ danmakuList.load=function(){
 			item:Object.keys(danmakuListItems)
 		}
 	};
-	if(search){//添加搜索条件
+	if(search){
+		if(search){//添加搜索条件
+			req.arg.condition=['did=? || content LIKE ?'];
+			req.arg.arg=[search,'%'+search+'%'];
+		}else{return;}
+		
+	}else{
 		req.arg.condition=['vid=?'];
-		req.arg.arg=[search];
+		req.arg.arg=[danmakuList.vid];
 	}
 	SAPI.get('danmaku',req,function(err,r){//请求列表
 		if(err){
@@ -302,15 +369,31 @@ danmakuList.load=function(){
 			alert(err.message);
 			return;
 		}
-		thisList.refreshPage(thisList._.current_page.value,r[0].resultCount);
+		thisList.totalCount=r[0].resultCount;
 	});
 	
 }
-danmakuList._.search.setAttribute('placeholder','视频ID');
+danmakuList.deleteSelected=function(list){
+	var l=[];
+	list.forEach(function(d){l.push(d.did)});
+	var req={
+		opt:'delete',
+		did:l.join(','),
+	};
+	SAPI.get('danmaku',req,function(err,affected){//请求列表
+		if(err){
+			alert(err.message);
+			return;
+		}
+		danmakuList.load();
+		videoList.load();
+		alert('已删除'+affected+'个弹幕');
+	});
+}
+//danmakuList._.search.setAttribute('placeholder','视频ID');
 
 
 //collection list
-//video list
 var collectionListItems={cid:'ID',name:'合集名',description:'描述',hidden:'隐'};
 var collectionList=new List(collectionListItems);
 _.collection_list.appendChild(collectionList.frame);
@@ -346,9 +429,8 @@ collectionList.load=function(){
 			alert(err.message);
 			return;
 		}
-		thisList.refreshPage(thisList._.current_page.value,r[0].resultCount);
+		thisList.totalCount=r[0].resultCount;
 	});
-	
 }
 collectionList.edit=function(i){
 	editing.collection=i.cid;

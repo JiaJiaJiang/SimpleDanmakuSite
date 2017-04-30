@@ -51,6 +51,7 @@ switch(@$_GET['opt']) {
 		//解析地址
 		require_once(dirname(__FILE__).'/../utils/convertLink.php');
 		$result->address=convertLink($result->address);
+		unset($result->hidden);
 		apiResult(0,$result,false);
 		//播放数+1
 		$pre = dbOpt::$PDO->prepare('UPDATE `video` SET playCount=playCount+1 WHERE vid=?');
