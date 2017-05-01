@@ -3,26 +3,27 @@ require_once(dirname(__FILE__).'/db.php');
 
 class Danmaku extends commonDBOpt{
 	function __construct(){
-		parent::__construct('danmaku','did',array('vid','content','type','time','color','size'));
+		parent::__construct('danmaku','did',array('vid','content','mode','time','color','size','date'));
 	}
 
 	function add($it){//添加弹幕，返回id
+		stdoutl(json_encode($it));
 		if(is_array($it))$it=(object)$it;
 		if(!is_object($it))
 			throw new Exception('Items is not a object',-1);
 		if(!isInt(@$it->vid))
 			throw new Exception('Invalid video id');
-		if(!isInt(@$it->$time)|| $it->$time<0)
+		if(!isInt(@$it->time)|| $it->time<0)
 			throw new Exception('Invalid danmaku time');
-		if(trim(@$it->$content)=='')
+		if(trim(@$it->content)=='')
 			throw new Exception('Invalid danmaku content');
-		if((@$it->$color=trim(@$it->$color))&&!(@$it->$color=isValidColor(@$it->$color)))
+		if((@$it->color=trim(@$it->color))&&!(@$it->color=isValidColor(@$it->color)))
 			throw new Exception('Invalid danmaku color');
 
-		$it->$type=intval(@$it->$type);
-		$it->$time=intval(@$it->$time);
-		$it->$size=intval(@$it->$size);
-		if($it->$type<0||$it->$type>3)$it->$type=0;
+		$it->mode=intval(@$it->mode);
+		$it->time=intval(@$it->time);
+		$it->size=intval(@$it->size);
+		if($it->mode<0||$it->mode>3)$it->mode=0;
 
 		return parent::add(@$it);
 	}

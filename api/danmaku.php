@@ -20,8 +20,8 @@ switch(@$_GET['opt']) {
 				throw new Exception('发送速度过快', -1);
 		}
 		$_SESSION['lastDanmakuTime']=$thit;
-		$dmID=$danmakuOpt->add($dmInfo);
-		apiResult(0,$dmID);
+		$dmInfo->date=$thit;
+		apiResult(0,$danmakuOpt->add($dmInfo));
 	}
 	case 'delete':{//删除一个或多个弹幕
 		Access::requireLogin();
