@@ -129,7 +129,7 @@ class commonDBOpt{
 
 		if($select!='*' && $rawItem){
 			foreach ($rawItem as $key) {
-				if(!preg_match('/^\w+$/', $key))
+				if(!preg_match('/^\w+(\ AS \w+)?$/', $key))
 					throw new Exception('项名错误:'.$key,-1);
 			}
 		}

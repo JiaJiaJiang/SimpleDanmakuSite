@@ -29,6 +29,31 @@ var tmp,NP=new NyaP({
 });
 document.body.appendChild(NP.player);
 
+if(self != top){//在iframe中，向父窗口发送信号
+	NP.globalHandle=function(e,arg){
+		console.log('send',e,arg)
+		window.parent.postMessage({
+			type:'playerEvent',
+			name:e,
+			arg:arg
+		},'*');
+	}
+	window.addEventListener("message",function(msg){
+		var data=msg.data;
+		if(typeof data =='object'&&data!=null){
+			switch(data.type){
+				case 'playerControl':{
+					playerControl(data.name,data.type);
+				}
+			}
+		}
+		//console.log('window message',msg);
+	});
+}
+function playerControl(name,arg){
+
+}
+
 
 function getSearchArg(name){
 	try{
@@ -74,6 +99,7 @@ function getDanmaku(){
 		var list=[];
 		r.forEach(function(d){
 			list.push({
+				_:'text',
 				text:d.c,
 				time:d.t,
 				mode:d.m,

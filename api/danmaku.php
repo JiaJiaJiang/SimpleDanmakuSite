@@ -36,7 +36,6 @@ switch(@$_GET['opt']) {
 		$danmakuOpt=new Danmaku();
 		$vid=@$_GET['vid'];
 		$limit=@$_GET['limit']?intval($_GET['limit']):1000;
-		$select='did,mode AS m,content AS c,time AS t,color AS co,size AS s,date AS d';
 		if(!is_numeric($vid)||!isIntStr($vid))
 			throw new Exception('vid error', -1);
 		if(!Access::hasLoggedIn())
@@ -47,7 +46,7 @@ switch(@$_GET['opt']) {
 			array(
 				'condition'=>$cond,
 				'arg'=>$arg,
-				'select'=>$select,
+				'item'=>array('did','mode AS m','content AS c','color AS co','time AS t','size AS s','date AS d'),
 				'limit'=>$limit
 			)
 		);
