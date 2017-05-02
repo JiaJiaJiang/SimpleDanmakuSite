@@ -47,7 +47,6 @@ document.body.appendChild(NP.player);
 
 if(self != top){//在iframe中，向父窗口发送信号
 	NP.globalHandle=function(e,arg){
-		console.log('send',e,arg)
 		window.parent.postMessage({
 			type:'playerEvent',
 			name:e,
