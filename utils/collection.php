@@ -45,6 +45,7 @@ class Collection extends commonDBOpt{
 		$pre = dbOpt::$PDO->prepare(
 			'SELECT vid,title FROM `video` WHERE cid=?'.($showHidden?'':' && hidden=0')
 		);
+		$this->execute($pre,array($cid));
 		$videoList=$pre->fetchAll();
 		$res->list=is_array($videoList)?$videoList:array();
 		return $res;
