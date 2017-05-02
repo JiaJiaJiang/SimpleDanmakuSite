@@ -51,6 +51,7 @@ setText($('#desc'),info.description);
 var vb=$('#video_list'),iframe=$('iframe');
 info.list.forEach(function(v,i){
 	var span=document.createElement('span');
+	span.info=v;
 	span.className='video_block';
 	span.vid=v.vid;
 	span.number=i+1;
@@ -66,9 +67,10 @@ function changeVideo(vid){
 		var s=vb.childNodes[i];
 		if(s.vid==vid){
 			location.hash=s.number;
+			document.title=s.info.title+' | '+info.name;
 			iframe.src='player/?id='+vid;
 			s.scrollIntoView(false);
-			return;;
+			return;
 		}
 	}
 }

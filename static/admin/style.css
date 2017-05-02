@@ -80,12 +80,14 @@ input.search{
 }
 .List{
     margin-bottom: 1em;
+    position: relative;
 }
 .List table{
 	width: 100%;
 	margin: 1em 0;
     text-align: center;
 	box-sizing: border-box;
+    max-width: 100%;
     font-family: monospace;
 	border: 1px solid #b1b1b1;
 	border-collapse: collapse;
@@ -97,7 +99,7 @@ input.search{
 .List table td[itemname='content']{
     text-overflow: ellipsis;
     white-space: pre-wrap;
-	word-break: break-all;
+	word-break: break-word;
     text-align: left;
     width: auto;
 }
