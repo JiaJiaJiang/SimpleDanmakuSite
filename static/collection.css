@@ -1,0 +1,30 @@
+html,body{
+	margin:0;
+	padding:0;
+	height: 100%;
+}
+body{
+	display: flex;
+	flex-direction:column;
+}
+#player_iframe{
+	flex-grow: 1;
+    width: 100%;
+    border: none;
+    background-color: #ccc;
+}
+#collection_info{
+	position: relative;
+    padding: 0.4em;
+}
+#collection_name{
+    padding: 0 1em;
+    display: inline;
+    margin: 0.2em 0.1em;
+    float: left;
+}
+#desc{
+    display: inline;
+    word-break: break-all;
+    color: #999;
+}

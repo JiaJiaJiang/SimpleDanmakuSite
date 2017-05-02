@@ -56,47 +56,7 @@ function List(tableHeads,opt){
 		totalCount:0,
 		limit:20,
 	};
-	Object.defineProperties(this,{
-		limit:{
-			get:function(){return thisList.listInfo.limit;},
-			set:function(v){
-				v=limitIn(v,1,Infinity);
-				thisList.listInfo.limit=v;
-			},
-		},
-		page:{
-			get:function(){return thisList.listInfo.page;},
-			set:function(v){
-				v=limitIn(v,1,thisList.totalPage);
-				thisList.listInfo.page=v;
-				thisList._.current_page.value=v;
-				thisList.load();
-			},
-		},
-		totalPage:{
-			get:function(){return thisList.listInfo.totalPage;},
-			set:function(v){
-				v=limitIn(v,1,Infinity);
-				thisList.listInfo.totalPage=v;
-				thisList._.total_page.value=v;
-			},
-		},
-		totalCount:{
-			get:function(){return thisList.listInfo.totalCount;},
-			set:function(v){
-				v=limitIn(v,0,Infinity);
-				thisList.listInfo.totalCount=v;
-				thisList.totalPage=Math.ceil(thisList.totalCount/thisList.limit);
-				thisList._.total_count.value=v;
-			},
-		},
-		table:{
-			get:function(){return __.table;}
-		},
-		controls:{
-			get:function(){return __.controls;}
-		}
-	});
+	
 	var __=this._={};
 	this.frame=O2H(
 		{_:'div',attr:{class:'List'},child:[
@@ -158,6 +118,47 @@ function List(tableHeads,opt){
 	if(this.option.editable)
 		trth.appendChild(O2H({_:'th',child:[' ']}));
 }
+Object.defineProperties(List.prototype,{
+	limit:{
+		get:function(){return this.listInfo.limit;},
+		set:function(v){
+			v=limitIn(v,1,Infinity);
+			this.listInfo.limit=v;
+		},
+	},
+	page:{
+		get:function(){return this.listInfo.page;},
+		set:function(v){
+			v=limitIn(v,1,this.totalPage);
+			this.listInfo.page=v;
+			this._.current_page.value=v;
+			this.load();
+		},
+	},
+	totalPage:{
+		get:function(){return this.listInfo.totalPage;},
+		set:function(v){
+			v=limitIn(v,1,Infinity);
+			this.listInfo.totalPage=v;
+			this._.total_page.value=v;
+		},
+	},
+	totalCount:{
+		get:function(){return this.listInfo.totalCount;},
+		set:function(v){
+			v=limitIn(v,0,Infinity);
+			this.listInfo.totalCount=v;
+			this.totalPage=Math.ceil(this.totalCount/this.limit);
+			this._.total_count.value=v;
+		},
+	},
+	table:{
+		get:function(){return this._.table;}
+	},
+	controls:{
+		get:function(){return this._.controls;}
+	}
+});
 List.prototype.clearTable=function(){
 	for(var i=this.table.childNodes.length;--i;)
 		this.table.removeChild(this.table.childNodes[i]);

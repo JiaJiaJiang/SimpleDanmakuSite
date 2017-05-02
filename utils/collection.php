@@ -33,16 +33,21 @@ class Collection extends commonDBOpt{
 		if(!Access::hasLoggedIn())$option->limit=array(1);
 		return parent::get($option);
 	}
-
-	function execute($pdostat,$arg){
-		try{
-			return $pdostat->execute($arg);
-		}catch(Exception $e){
-			$vioCode=dbOpt::getViolationCode($e);
-			$msg=@Collection::$errorInfo[$vioCode];
-			if($msg)throw new Exception($msg,$vioCode);
-			throw $e;
-		}
+	function collection($cid,$showHidden=false){
+		if(!isInt($cid))
+			throw new Exception('cid错误'.$cid,-1);
+		$pre = dbOpt::$PDO->prepare(
+			'SELECT name,description FROM `collection` WHERE cid=?'.($showHidden?'':' && hidden=0')
+		);
+		$this->execute($pre,array($cid));
+		$res=$pre->fetch();
+		if(!$res)return null;
+		$pre = dbOpt::$PDO->prepare(
+			'SELECT vid,title FROM `video` WHERE cid=?'.($showHidden?'':' && hidden=0')
+		);
+		$videoList=$pre->fetchAll();
+		$res->list=is_array($videoList)?$videoList:array();
+		return $res;
 	}
 }
 ?>

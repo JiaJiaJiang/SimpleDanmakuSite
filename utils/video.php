@@ -46,15 +46,5 @@ WHERE V.vid=?'.($showHidden?'':' && V.hidden=0 && (ISNULL(C.hidden)||C.hidden=0)
 		Access::requireLogin();
 		return parent::get($option);
 	}
-	function execute($pdostat,$arg){
-		try{
-			return $pdostat->execute($arg);
-		}catch(Exception $e){
-			$vioCode=dbOpt::getViolationCode($e);
-			$msg=@Video::$errorInfo[$vioCode];
-			if($msg)throw new Exception($msg,$vioCode);
-			throw $e;
-		}
-	}
 }
 ?>
