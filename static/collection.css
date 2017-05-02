@@ -40,6 +40,7 @@ iframe.fullPage{
     display: flex;
     padding: 0 0.9em;
     flex-wrap: wrap;
+    color: #565656;
     overflow-y: auto;
 }
 .video_block{

@@ -58,15 +58,13 @@ if(self != top){//在iframe中，向父窗口发送信号
 		if(typeof data =='object'&&data!=null){
 			switch(data.type){
 				case 'playerControl':{
-					playerControl(data.name,data.type);
+					playerControl(data.name,data.arg);
 				}
 			}
 		}
-		//console.log('window message',msg);
 	});
 }
 function playerControl(name,arg){
-
 }
 
 

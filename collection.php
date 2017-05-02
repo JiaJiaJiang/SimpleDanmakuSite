@@ -35,11 +35,11 @@ try{
 	<link rel="stylesheet" type="text/css" href="static/collection.css">
 </head>
 <body>
-<iframe id="player_iframe"></iframe>
 <div id="collection_info">
 	<h2 id="collection_name"></h2> <span id="desc"></span>
 </div>
 <div id="video_list"></div>
+<iframe id="player_iframe" allowfullscreen></iframe>
 </body>
 <script>
 var info=JSON.parse('<?php echo str_replace('\'','\\\'',json_encode($collInfo,JSON_UNESCAPED_UNICODE));?>'),
@@ -53,6 +53,7 @@ info.list.forEach(function(v,i){
 	var span=document.createElement('span');
 	span.className='video_block';
 	span.vid=v.vid;
+	span.number=i+1;
 	setText(span,i+1+' '+v.title);
 	vb.appendChild(span);
 });
@@ -64,6 +65,7 @@ function changeVideo(vid){
 	for(var i=vb.childNodes.length;i--;){
 		var s=vb.childNodes[i];
 		if(s.vid==vid){
+			location.hash=s.number;
 			iframe.src='player/?id='+vid;
 			s.scrollIntoView(false);
 			return;;
@@ -87,6 +89,18 @@ window.addEventListener('message',function(msg){
     }
 });
 
-info.list[0]&&changeVideo(info.list[0].vid);
+
+window.addEventListener('load',function(){
+	var number=location.hash.match(/\#(\d+)$/);
+	number=(number)?Number(number[1]):1;
+	for(var i=vb.childNodes.length;i--;){
+		var s=vb.childNodes[i];
+		if(s.number==number){
+			changeVideo(s.vid);
+			break;
+		}
+	}	
+});
+
 </script>
 </html>
