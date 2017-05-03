@@ -9,7 +9,7 @@
 </head>
 <body>
 </body>
-<link rel="stylesheet" type="text/css" href="../static/NyaP/NyaP.min.css">
+
 <script>
 var touchMode=false;//(window.navigator.userAgent.match(/mobile/)?true:false);
 var scriptVer='es2016';
@@ -19,7 +19,11 @@ try{
 }catch(e){
 	scriptVer='es2015';
 }
-document.write("<script src='../static/NyaP/NyaP"+(touchMode?"Touch":"")+"."+scriptVer+".min.js'><\/script>");
+var playerName='NyaP'+(touchMode?"Touch":"");
+document.write(
+	"<style>@import url('"+"../static/NyaP/"+playerName+".min.css"+"')</style>"+
+	"<script src='../static/NyaP/"+playerName+"."+scriptVer+".min.js'><\/script>"
+);
 </script>
 <script src='../static/api.js'></script>
 <script src='../static/playPage.js'></script>
