@@ -78,6 +78,7 @@ function List(tableHeads,opt){
 				{_:'button',attr:{id:'selectAll'},child:['全选'],event:{click:function(){thisList.select('all')}}},
 				{_:'button',attr:{id:'selectOpposite'},child:['反选'],event:{click:function(){thisList.select('opposite')}}},
 				{_:'button',attr:{id:'deleteSelected'},child:['删除'],event:{click:function(){thisList.deleteSelected(thisList.getSelectedItem())}}},
+				{_:'button',attr:{id:'refresh'},child:['刷新'],event:{click:function(){thisList.load()}}},
 
 				{_:'span',attr:{class:'page'},child:[
 					{_:'button',attr:{id:'prePage'},child:['上一页']},
@@ -406,7 +407,7 @@ danmakuList.deleteSelected=function(list){
 
 
 //collection list
-var collectionListItems={cid:'ID',name:'合集名',description:'描述',hidden:'隐'};
+var collectionListItems={cid:'ID',name:'合集名',description:'描述',vCount:'视频',hidden:'隐'};
 var collectionList=new List(collectionListItems);
 _.collection_list.appendChild(collectionList.frame);
 collectionList.load=function(){
@@ -419,7 +420,7 @@ collectionList.load=function(){
 		}
 	};
 	if(search){//添加搜索条件
-		req.arg.condition=['cid=? || name LIKE ? || description LIKE ?'];
+		req.arg.condition=['C.cid=? || name LIKE ? || description LIKE ?'];
 		req.arg.arg=[search,'%'+search+'%','%'+search+'%'];
 	}
 	SAPI.get('collection',req,function(err,r){//请求列表

@@ -40,7 +40,10 @@ ON V.cid=C.cid
 WHERE V.vid=?'.($showHidden?'':' && V.hidden=0 && (ISNULL(C.hidden)||C.hidden=0)');
 		$pre = dbOpt::$PDO->prepare($sql);
 		$pre->execute(array($vid));
-		return $pre->fetch();
+		$result=$pre->fetch();
+		require_once(dirname(__FILE__).'/../utils/convertLink.php');
+		if(@$result->cover)$result->cover=convertLink($result->cover);
+		return $result;
 	}
 	function get($option){
 		Access::requireLogin();

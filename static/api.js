@@ -49,15 +49,16 @@ window.SAPI={
 		});
 	},
 	parseResult:function(err,xhr,callback){//callback(err,result,code,xhr)
-		var code=null;
+		var code=null,re;
 		try{
 			if(err)throw(err);
-			var re=JSON.parse(xhr.responseText);
+			re=JSON.parse(xhr.responseText);
 			if((code=re.code)!=0){
 				throw(new Error(re.result));
 			}
 			callback(null,re.result,re.code,xhr);
 		}catch(e){
+			if(!re)e=new Error(xhr.responseText);
 			console.error(e);
 			callback(e,null,code,xhr);
 		}

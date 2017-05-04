@@ -1,5 +1,6 @@
 <?php
 require_once(dirname(__FILE__).'/db.php');
+require_once(dirname(__FILE__).'/access.php');
 
 class Collection extends commonDBOpt{
 	function __construct(){
@@ -29,9 +30,50 @@ class Collection extends commonDBOpt{
 	function get($option){
 		Access::requireLogin();
 		if(is_array($option))$option=(object)$option;
-		require_once(dirname(__FILE__).'/access.php');
 		if(!Access::hasLoggedIn())$option->limit=array(1);
 		return parent::get($option);
+	}
+	function getWithVideoCount($option){
+		Access::requireLogin();
+		if(is_array($option))$option=(object)$option;
+		if(!is_object($option))
+			throw new Exception('option不是一个对象',-1);
+		$countMode=@$option->countMode==true;
+		$condition=@$option->condition;
+		$arg=is_array(@$option->arg)?$option->arg:array();
+		$limit=@$option->limit;
+		$rawItem=@$option->item;
+		$select=is_array(@$option->item)?implode(',',dbOpt::checkSelectorArray($option->item)):'*';//item参数需要为数组，否则会变成*
+		$order=@$option->order?$option->order:'DESC';
+
+		if($select!='*' && $rawItem){
+			foreach ($rawItem as $key) {
+				if(!preg_match('/^\w+(\ AS \w+)?$/', $key))
+					throw new Exception('项名错误:'.$key,-1);
+			}
+		}
+		if($countMode)$select='count(*) AS resultCount';
+		$sql='SELECT '.$select.' FROM `collection` AS C
+left JOIN(
+	SELECT cid as vcid,count(*) as `vCount` FROM `video`
+	where cid is not null
+	group by cid
+) AS V
+on C.cid=V.vcid
+'.(is_array($condition)?('WHERE '.implode(' && ',$condition)):'');
+		if(!$countMode){
+			$sql.=' ORDER BY `'.$this->idName.'` '.$order;
+			if(is_array($limit)){
+				foreach ($limit as $key => $value) {
+					$limit[$key]=intval($value);
+				}
+				$sql.=(' LIMIT '.implode(',',array_fill(0,count($limit),'?')));
+				$arg=array_merge($arg,$limit);
+			}
+		}
+		$pre = dbOpt::$PDO->prepare($sql);
+		$this->execute($pre,$arg);
+		return $pre->fetchAll();
 	}
 	function collection($cid,$showHidden=false){
 		if(!isInt($cid))

@@ -33,7 +33,7 @@ switch(@$_GET['opt']) {
 	}
 	case 'get':{
 		apiResult(0,
-			(new Collection())->get(json_decode(@$_GET['arg']))
+			(new Collection())->getWithVideoCount(json_decode(@$_GET['arg']))
 		);
 	}
 	default:{
