@@ -15,7 +15,7 @@ function convertScript(地址){//解析入口
 	1:同上
 ]
 */
-function convertLink($address) {
+function convertLink($address,$useScriptName=true) {
 	$resource = explode(PHP_EOL, $address); //根据行分成不同源
 	$resultArray = array(); //结构：键名:源注释,键值:分段数组
 	for ($i = count($resource); $i--;) { //处理各个源
@@ -30,7 +30,12 @@ function convertLink($address) {
 			//转换
 			require_once(dirname(__FILE__).'/../convertScript/'.$result[2].'.php');
 			if(function_exists("convertScript")){
-				$resultArray[$result[2]]=convertScript($result[3]);
+				$resultAddr=convertScript($result[3]);
+				if($useScriptName){
+					$resultArray[$result[2]]=$resultAddr;
+				}else{
+					$resultArray[]=$resultAddr;
+				}
 				continue;
 			}
 		}else{

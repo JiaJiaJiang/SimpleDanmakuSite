@@ -129,6 +129,6 @@ function getDanmaku(){
 }
 
 //关闭loading
-window.addEventListener('load',function(){
+/*window.addEventListener('load',function(){
 	document.body.parentNode.style.backgroundImage='none';
-});
+});*/
