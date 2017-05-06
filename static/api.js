@@ -63,8 +63,13 @@ window.SAPI={
 			callback(e,null,code,xhr);
 		}
 	},
-	getAccess:function(){
-		return localStorage.access;
+	getAccess:function(callback){
+		var aT=localStorage.accessTime;
+		if(aT&&(aT=Number(aT))&&((Date.now()/1000)|0)-aT<=1800){
+			callback(localStorage.access);
+			return;
+		}
+		SAPI.refreshAccess(callback);
 	},
 	refreshAccess:function(callback){
 		SAPI.get('video',{opt:'access'},function(err,r){
@@ -80,6 +85,7 @@ window.SAPI={
 			for(let i=0;i<accessCode.length;i++)
 				access+=accessText[1*accessCode[i]];
 			localStorage.access=access;
+			localStorage.accessTime=r.accessTime;
 			callback&&callback(access);
 			return;
 		});

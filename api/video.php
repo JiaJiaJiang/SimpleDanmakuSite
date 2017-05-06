@@ -61,6 +61,7 @@ switch(@$_GET['opt']) {
 	case 'access':{
 		$access=Access::generate();
 		$_SESSION['access']=$access->accessSession;
+		$_SESSION['accessTime']=$access->accessTime;
 		unset($access->accessSession);
 		apiResult(0,$access);
 	}

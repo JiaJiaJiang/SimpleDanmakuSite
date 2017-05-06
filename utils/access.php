@@ -40,8 +40,9 @@ class Access{
 		return Access::hasLoggedIn()&&(@constant('dev')===true);
 	}
 	static function checkAccess(){
-		$accessCode=@$_GET['access'].autoIP();
-		return ($accessCode===@$_SESSION['access']);
+		$accessCode=@$_GET['access'];
+		return (@$_SESSION['access']===@$_GET['access'])
+			&&(@time()-intval(@$_SESSION['accessTime']))<=1800;
 	}
 	static function requireAccess(){
 		if(!@$_GET['access'])
@@ -50,19 +51,22 @@ class Access{
 			$errMsg='access error';
 			if(Access::devMode()){
 				$errMsg.="\nstored access:".@$_SESSION['access'];
-				$errMsg.="\get access:".@$_GET['access'].autoIP();
+				$errMsg.="\nget access:".@$_GET['access'];
+				$errMsg.="\naccess time:".@$_SESSION['accessTime'];
 			}
-			throw new Exception($errMsg, -4);
+			throw new Exception($errMsg, -5);
 		}
 	}
 	static function generate(){
 		$uid=array(uniqid(),uniqid(),uniqid(),uniqid());
 		$inds=array(0,1,2,3);
+		$time=@time();
 		shuffle($inds);
 		return (object)array(
-			'accessSession'=>$uid[$inds[0]].$uid[$inds[1]].$uid[$inds[2]].$uid[$inds[3]].autoIP(),
+			'accessSession'=>$uid[$inds[0]].$uid[$inds[1]].$uid[$inds[2]].$uid[$inds[3]],
 			'accessCode'=>implode('',$inds),
-			'accessText'=>implode('',$uid)
+			'accessText'=>implode('',$uid),
+			'accessTime'=>$time
 		);
 	}
 

@@ -33,13 +33,15 @@ var tmp,NP=new NyaP({
 			d2.style.color=d.color;
 		}
 		callback(d2);
-		SAPI.get('danmaku',{opt:'add',value:data,access:SAPI.getAccess()},function(err,r){
-			console.log(err,r);
-			if(err){
-				console.error(err);
-				return;
-			}
-			d2.did=Number(r);
+		SAPI.getAccess(function(access) {
+			SAPI.get('danmaku',{opt:'add',value:data,access:access},function(err,r){
+				console.log(err,r);
+				if(err){
+					console.error(err);
+					return;
+				}
+				d2.did=Number(r);
+			});
 		});
 	}
 });
@@ -91,34 +93,38 @@ function accessCallback(r){
 }
 //获取视频信息
 function getVideo(){
-	SAPI.get('video',{opt:'video',vid:vid,access:SAPI.getAccess()},function(err,r){
-		if(err)return;
-		document.title=r.title;
-		NP.video.src=r.address[0];
+	SAPI.getAccess(function(access){
+		SAPI.get('video',{opt:'video',vid:vid,access:access},function(err,r){
+			if(err)return;
+			document.title=r.title;
+			NP.video.src=r.address[0];
+		});
 	});
 }
 
 
 //获取弹幕
 function getDanmaku(){
-	SAPI.get('danmaku',{opt:'get',vid:vid,access:SAPI.getAccess()},function(err,r){
-		if(err)return;
-		var list=[];
-		r.forEach(function(d){
-			list.push({
-				_:'text',
-				text:d.c,
-				time:d.t,
-				mode:d.m,
-				style:{
-					fontSize:d.s,
-					color:(d.co||'fff')
-				},
-				date:d.d,
-				did:d.did
+	SAPI.getAccess(function(access){
+		SAPI.get('danmaku',{opt:'get',vid:vid,access:access},function(err,r){
+			if(err)return;
+			var list=[];
+			r.forEach(function(d){
+				list.push({
+					_:'text',
+					text:d.c,
+					time:d.t,
+					mode:d.m,
+					style:{
+						fontSize:d.s,
+						color:(d.co||'fff')
+					},
+					date:d.d,
+					did:d.did
+				});
 			});
-		});
-		NP.loadDanmakuList(list);
+			NP.loadDanmakuList(list);
+		});	
 	});
 }
 
