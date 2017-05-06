@@ -65,7 +65,7 @@ window.SAPI={
 	},
 	getAccess:function(callback){
 		var aT=localStorage.accessTime;
-		if(aT&&(aT=Number(aT))&&((Date.now()/1000)|0)-aT<=1800){
+		if(aT&&(aT=Number(aT))&&((Date.now()/1000)|0)-aT<=300){
 			callback(localStorage.access);
 			return;
 		}

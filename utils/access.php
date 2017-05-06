@@ -42,7 +42,7 @@ class Access{
 	static function checkAccess(){
 		$accessCode=@$_GET['access'];
 		return (@$_SESSION['access']===@$_GET['access'])
-			&&(@time()-intval(@$_SESSION['accessTime']))<=1800;
+			&&(@time()-intval(@$_SESSION['accessTime']))<=300;
 	}
 	static function requireAccess(){
 		if(!@$_GET['access'])
