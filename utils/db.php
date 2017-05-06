@@ -162,7 +162,11 @@ class commonDBOpt{
 			$vioCode=dbOpt::getViolationCode($e);
 			$msg=is_array(@$this::$errorInfo)?$this::$errorInfo[$vioCode]:null;
 			if($msg)throw new Exception($msg,$vioCode);
-			throw $e;
+			if(Access::hasLoggedIn()){
+				throw $e;
+			}else{
+				throw new Exception("数据库错误", -1);
+			}
 		}
 	}
 }
