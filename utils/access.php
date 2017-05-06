@@ -41,8 +41,10 @@ class Access{
 		return ($accessCode===@$_SESSION['access']);
 	}
 	static function requireAccess(){
-		if(!Access::checkAccess())
+		if(!@$_GET['access'])
 			throw new Exception('access required', -4);
+		if(!Access::checkAccess())
+			throw new Exception('access error', -4);
 	}
 	static function generate(){
 		$uid=array(uniqid(),uniqid(),uniqid(),uniqid());
