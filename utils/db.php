@@ -1,5 +1,6 @@
 <?php
 require_once(dirname(__FILE__)."/../config.php");
+require_once(dirname(__FILE__).'/access.php');
 
 
 function initPDO(){
@@ -10,12 +11,18 @@ function initPDO(){
 	if(@constant('dbPort'))$connectionInfo.=('port='.dbPort.';');
 	if(@constant('dbUnixSocket'))$connectionInfo.=('unix_socket='.dbUnixSocket.';');
 	$connectionInfo.=('dbname='.dbName.';');
-	dbOpt::$PDO=new PDO($connectionInfo,dbUser,dbPass,array(
-	    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-	    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-	    PDO::ATTR_EMULATE_PREPARES => false
-	));
-	require_once('access.php');
+	try{
+		dbOpt::$PDO=new PDO($connectionInfo,dbUser,dbPass,array(
+		    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+		    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+		    PDO::ATTR_EMULATE_PREPARES => false
+		));
+	}catch(Exception $e){
+		if(Access::hasLoggedIn()){
+			throw $e;
+		}
+		throw new Exception("数据库连接错误", -7);
+	}
 	if(Access::hasLoggedIn())
 		dbOpt::$PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 }
@@ -165,7 +172,7 @@ class commonDBOpt{
 			if(Access::hasLoggedIn()){
 				throw $e;
 			}else{
-				throw new Exception("数据库错误", -1);
+				throw new Exception("数据库错误", -8);
 			}
 		}
 	}
