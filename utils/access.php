@@ -36,6 +36,9 @@ class Access{
 		echo "login required";
 		exit;
 	}
+	static function devMode(){
+		return Access::hasLoggedIn()&&(@constant('dev')===true);
+	}
 	static function checkAccess(){
 		$accessCode=@$_GET['access'].autoIP();
 		return ($accessCode===@$_SESSION['access']);
@@ -45,7 +48,7 @@ class Access{
 			throw new Exception('access required', -4);
 		if(!Access::checkAccess()){
 			$errMsg='access error';
-			if(Access::hasLoggedIn()){
+			if(Access::devMode()){
 				$errMsg.="\nstored access:".@$_SESSION['access'];
 				$errMsg.="\get access:".@$_GET['access'].autoIP();
 			}

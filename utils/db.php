@@ -18,7 +18,7 @@ function initPDO(){
 		    PDO::ATTR_EMULATE_PREPARES => false
 		));
 	}catch(Exception $e){
-		if(Access::hasLoggedIn()){
+		if(Access::devMode()){
 			throw $e;
 		}
 		throw new Exception("数据库连接错误", -7);
@@ -169,7 +169,7 @@ class commonDBOpt{
 			$vioCode=dbOpt::getViolationCode($e);
 			$msg=is_array(@$this::$errorInfo)?$this::$errorInfo[$vioCode]:null;
 			if($msg)throw new Exception($msg,$vioCode);
-			if(Access::hasLoggedIn()){
+			if(Access::devMode()){
 				throw $e;
 			}else{
 				throw new Exception("数据库错误", -8);
