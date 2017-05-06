@@ -92,23 +92,17 @@ function accessCallback(r){
 //获取视频信息
 function getVideo(){
 	SAPI.get('video',{opt:'video',vid:vid,access:SAPI.getAccess()},function(err,r){
-		if(err){
-			console.error(err);
-			return;
-		}
+		if(err)return;
 		document.title=r.title;
 		NP.video.src=r.address[0];
-	})
+	});
 }
 
 
 //获取弹幕
 function getDanmaku(){
 	SAPI.get('danmaku',{opt:'get',vid:vid,access:SAPI.getAccess()},function(err,r){
-		if(err){
-			console.error(err);
-			return;
-		}
+		if(err)return;
 		var list=[];
 		r.forEach(function(d){
 			list.push({
@@ -125,7 +119,7 @@ function getDanmaku(){
 			});
 		});
 		NP.loadDanmakuList(list);
-	})
+	});
 }
 
 //关闭loading
