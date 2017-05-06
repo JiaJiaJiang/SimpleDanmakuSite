@@ -37,7 +37,7 @@ class Access{
 		exit;
 	}
 	static function checkAccess(){
-		$accessCode=@$_GET['access'].directIP();
+		$accessCode=@$_GET['access'].autoIP();
 		return ($accessCode===@$_SESSION['access']);
 	}
 	static function requireAccess(){
@@ -49,7 +49,7 @@ class Access{
 		$inds=array(0,1,2,3);
 		shuffle($inds);
 		return (object)array(
-			'accessSession'=>$uid[$inds[0]].$uid[$inds[1]].$uid[$inds[2]].$uid[$inds[3]].directIP(),
+			'accessSession'=>$uid[$inds[0]].$uid[$inds[1]].$uid[$inds[2]].$uid[$inds[3]].autoIP(),
 			'accessCode'=>implode('',$inds),
 			'accessText'=>implode('',$uid)
 		);

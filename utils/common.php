@@ -54,6 +54,9 @@ function parseIDList($arr){
 function directIP(){
 	return @$_SERVER['REMOTE_ADDR'];
 }
+function autoIP() {
+	return @$_SERVER['HTTP_VIA'] ? @$_SERVER['HTTP_X_FORWARDED_FOR'] : directIP();
+}
 
 
 //兼容无此参数的PHP版本
