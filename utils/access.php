@@ -43,8 +43,14 @@ class Access{
 	static function requireAccess(){
 		if(!@$_GET['access'])
 			throw new Exception('access required', -4);
-		if(!Access::checkAccess())
-			throw new Exception('access error', -4);
+		if(!Access::checkAccess()){
+			$errMsg='access error';
+			if(Access::hasLoggedIn()){
+				$errMsg.="\nstored access:".@$_SESSION['access'];
+				$errMsg.="\get access:".@$_GET['access'].autoIP();
+			}
+			throw new Exception($errMsg, -4);
+		}
 	}
 	static function generate(){
 		$uid=array(uniqid(),uniqid(),uniqid(),uniqid());
