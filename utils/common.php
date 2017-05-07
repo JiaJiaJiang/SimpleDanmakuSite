@@ -24,6 +24,10 @@ function allowedRequest(){
 	return true;
 }
 
+function modTime($path){
+	echo filemtime($_SERVER["DOCUMENT_ROOT"].'/'.$path);
+}
+
 function parseIDList($arr){
 	if(is_string($arr))$arr=explode(',',$arr);
 	if(!is_array($arr))return false;

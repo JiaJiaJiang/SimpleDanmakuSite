@@ -33,7 +33,7 @@ try{
 <head>
 	<meta charset="utf-8"/>
 	<title></title>
-	<link rel="stylesheet" type="text/css" href="static/videoInfo.css">
+	<link rel="stylesheet" type="text/css" href="static/videoInfo.css?<?php modTime('static/videoInfo.css');?>">
 </head>
 <body>
 	<h1 id="title"></h1>

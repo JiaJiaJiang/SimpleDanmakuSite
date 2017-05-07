@@ -32,7 +32,7 @@ try{
 <head>
 	<meta charset="utf-8"/>
 	<title></title>
-	<link rel="stylesheet" type="text/css" href="static/collection.css">
+	<link rel="stylesheet" type="text/css" href="static/collection.css?<?php modTime('static/collection.css');?>">
 </head>
 <body>
 <div id="collection_info">

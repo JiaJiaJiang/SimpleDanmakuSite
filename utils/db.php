@@ -159,9 +159,6 @@ class commonDBOpt{
 	function checkID($id){
 		if(!isInt($id))throw new Exception('Invalid id');
 	}
-	/*function execute($pdostat,$arg){
-		return $pdostat->execute($arg);
-	}*/
 	function execute($pdostat,$arg){
 		try{
 			return $pdostat->execute($arg);

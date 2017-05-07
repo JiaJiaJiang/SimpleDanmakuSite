@@ -14,13 +14,15 @@ if(Access::hasLoggedIn()){//已经登录了就跳转到index
 	exit;
 }
 
+require_once('../utils/common.php');
+
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
 	<title>登录</title>
-	<script src="../static/api.js"></script>
+	<script src="../static/api.js?<?php modTime('static/api.js');?>"></script>
 	<style>
 		html,body{height: 100%;}
 		input{

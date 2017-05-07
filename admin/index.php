@@ -5,7 +5,7 @@ if(!Access::hasLoggedIn()){//没有登录跳转到登录
 	require_once('login.php');
 	exit;
 }
-
+require_once('../utils/common.php');
 
 ?>
 <!DOCTYPE html>
@@ -63,5 +63,5 @@ if(!Access::hasLoggedIn()){//没有登录跳转到登录
 		</div>
 	</div>
 </body>
-<script src="../static/admin/script.js"></script>
+<script src="../static/admin/script.js?<?php modTime('static/admin/script.js');?>"></script>
 </html>
