@@ -511,6 +511,7 @@ var events=[
 			info[eles[i].name]=eles[i].value;
 			if(eles[i].name=='hidden'){info.hidden=1*eles.hidden.checked;}
 		}
+		if(!Number.isInteger(info.cid))delete info.cid;
 		console.log(info)
 		var mode=(typeof editing.video ==='number')?'update':'add';
 		SAPI.get('video',{opt:mode,value:JSON.stringify(info),vid:editing.video},function(err,r){
