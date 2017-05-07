@@ -94,5 +94,5 @@ window.SAPI={
 
 (function(){
 	var scripts=document.querySelectorAll('script');
-	SAPI.siteRoot=scripts[scripts.length-1].src.replace(/static\/api.js$/,'');
+	SAPI.siteRoot=scripts[scripts.length-1].src.replace(/static\/api\.js.*$/,'');
 })();
