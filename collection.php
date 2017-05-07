@@ -16,6 +16,9 @@ try{
 		http_response_code(404);
 		exit;
 	}
+	foreach ($collInfo as $key => $value) {
+		if(is_null($collInfo->$key))$collInfo->$key='';
+	}
 }catch(Exception $e){
 	http_response_code(500);
 	echo 'Error<BR>';

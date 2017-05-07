@@ -16,14 +16,17 @@ try{
 		http_response_code(404);
 		exit;
 	}
+	foreach ($videoInfo as $key => $value) {
+		if(is_null($videoInfo->$key))$videoInfo->$key='';
+	}
 }catch(Exception $e){
 	http_response_code(500);
 	echo 'Error<BR>';
 	require_once(dirname(__FILE__).'/utils/access.php');
 	if(Access::hasLoggedIn()){
-		echo '<div style="white-space:pre;">';
+		echo '<pre>';
 		var_dump($e);
-		echo '</div>';
+		echo '</pre>';
 	}
 	exit;
 }
