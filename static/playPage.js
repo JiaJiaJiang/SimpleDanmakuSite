@@ -46,6 +46,7 @@ var tmp,NP=new NyaP({
 	}
 });
 document.body.appendChild(NP.player);
+NP.player.focus();
 
 if(self != top){//在iframe中，向父窗口发送信号
 	NP.globalHandle=function(e,arg){
@@ -128,7 +129,4 @@ function getDanmaku(){
 	});
 }
 
-//关闭loading
-/*window.addEventListener('load',function(){
-	document.body.parentNode.style.backgroundImage='none';
-});*/
+

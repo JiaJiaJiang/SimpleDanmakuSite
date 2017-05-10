@@ -29,7 +29,7 @@ document.write(
 	"<script src='../static/NyaP/"+playerName+"."+scriptVer+".min.js?"+NyaPTime+"'><\/script>"
 );
 </script>
-<script src='../static/api.js'></script>
+<script src='../static/api.js?<?php modTime('static/api.js');?>'></script>
 <script>
 if(!window.NyaP){
 	scriptVer='es2015';

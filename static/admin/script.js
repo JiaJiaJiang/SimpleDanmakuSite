@@ -260,8 +260,8 @@ videoList.load=function(){
 		}
 	};
 	if(search){//添加搜索条件
-		req.arg.condition=['vid=? || title LIKE ? || description LIKE ?'];
-		req.arg.arg=[search,'%'+search+'%','%'+search+'%'];
+		req.arg.condition=['vid=? || cid=? || title LIKE ? || description LIKE ?'];
+		req.arg.arg=[search,search,'%'+search+'%','%'+search+'%'];
 	}
 	SAPI.get('video',req,function(err,r){//请求列表
 		if(err){
