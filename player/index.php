@@ -19,11 +19,16 @@ var touchMode=false,//(window.navigator.userAgent.match(/mobile/)?true:false);
 	NyaPTime=<?php modTime('static/NyaP');?>;
 try{
 	'use strict';
-	class a{}
+	[
+		'class a{}',//class
+		'()=>{}',//lambda
+		'{window}',//concise property
+	].foeEach(function(s){eval(s)});
 }catch(e){
 	scriptVer='es2015';
 }
 var playerName='NyaP'+(touchMode?"Touch":"");
+console.log('load player',playerName);
 document.write(
 	"<style>@import url('"+"../static/NyaP/"+playerName+".min.css?"+NyaPTime+"')</style>"+
 	"<script src='../static/NyaP/"+playerName+"."+scriptVer+".min.js?"+NyaPTime+"'><\/script>"
