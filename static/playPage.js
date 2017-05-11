@@ -29,10 +29,8 @@ var tmp,NP=new NyaP({
 			size:d.size
 		};
 		console.log(d);
-		let d2={_:'text',text:d.text,time:d.time,mode:d.mode,style:{fontSize:d.size},date:Date.now(),did:null}
-		if(d.color){
-			d2.style.color=d.color;
-		}
+		var d2={_:'text',text:d.text,time:d.time,mode:d.mode,style:{fontSize:d.size},date:Date.now(),did:null};
+		if(d.color)d2.style.color=d.color;
 		callback(d2);
 		SAPI.getAccess(function(access) {
 			SAPI.get('danmaku',{opt:'add',value:data,access:access},function(err,r){
