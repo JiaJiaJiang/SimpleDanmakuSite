@@ -37,13 +37,5 @@ document.write(
 );
 </script>
 <script src='../static/api.js?<?php modTime('static/api.js');?>'></script>
-<script>
-if(!window.NyaP){
-	scriptVer='es2015';
-	document.write(
-		"<script src='../static/NyaP/"+playerName+"."+scriptVer+".min.js?"+NyaPTime+"'><\/script>"
-	);
-}
-</script>
 <script src='../static/playPage.js?<?php modTime('static/playPage.js');?>'></script>
 </html>
