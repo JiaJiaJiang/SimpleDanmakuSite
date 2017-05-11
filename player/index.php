@@ -23,7 +23,7 @@ try{
 		'class a{}',//class
 		'()=>{}',//lambda
 		'{window}',//concise property
-	].foeEach(function(s){eval(s)});
+	].forEach(function(s){eval(s)});
 }catch(e){
 	scriptVer='es2015';
 }

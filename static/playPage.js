@@ -19,7 +19,7 @@ var tmp,NP=new NyaP({
 		allowLines:true,
 		screenLimit:0,
 	},
-	danmakuSend:(d,callback)=>{
+	danmakuSend:function(d,callback){
 		var data={
 			vid:vid,
 			content:d.text,
