@@ -28,7 +28,7 @@ try{
 	scriptVer='es2015';
 }
 var playerName='NyaP'+(touchMode?"Touch":"");
-console.log('load player',playerName);
+console.log('load player',playerName,scriptVer);
 document.write(
 	"<style>@import url('"+"../static/NyaP/"+playerName+".min.css?"+NyaPTime+"')</style>"+
 	"<script src='../static/NyaP/"+playerName+"."+scriptVer+".min.js?"+NyaPTime+"'><\/script>"

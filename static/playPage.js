@@ -1,3 +1,4 @@
+'use strict';
 //config
 var Config={
 	set:function(name,value){
