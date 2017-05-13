@@ -79,7 +79,8 @@ function getSearchArg(name){
 		return undefined;
 	}
 }
-var vid=getSearchArg('id');
+var vid=getSearchArg('id'),
+	danmakuLoaded=false;
 
 SAPI.refreshAccess(accessCallback);
 
@@ -91,20 +92,37 @@ function accessCallback(r){
 	getVideo();
 	getDanmaku();
 }
+
 //获取视频信息
 function getVideo(){
+	NP.loadingInfo('获取视频地址');
+	NP.video.addEventListener('error',function(e){
+		console.log(e)
+		NP.loadingInfo('视频错误');
+	});
 	SAPI.getAccess(function(access){
 		SAPI.get('video',{opt:'video',vid:vid,access:access},function(err,r){
 			if(err)return;
 			document.title=r.title;
-			NP.video.src=r.address[0];
+			if(danmakuLoaded){
+				loadVideo(r.address[0]);
+			}else{
+				setTimeout(function(){
+					loadVideo(r.address[0]);
+				},600);
+			}
 		});
 	});
+}
+function loadVideo(address){
+	NP.loadingInfo('加载视频');
+	NP.video.src=address;
 }
 
 
 //获取弹幕
 function getDanmaku(){
+	NP.loadingInfo('获取弹幕');
 	SAPI.getAccess(function(access){
 		SAPI.get('danmaku',{opt:'get',vid:vid,access:access},function(err,r){
 			if(err)return;
@@ -124,6 +142,8 @@ function getDanmaku(){
 				});
 			});
 			NP.loadDanmakuList(list);
+			NP.loadingInfo('弹幕已载入');
+			danmakuLoaded=true;
 		});	
 	});
 }
