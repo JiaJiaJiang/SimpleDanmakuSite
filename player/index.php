@@ -24,7 +24,7 @@ try{
 		'()=>{}',//lambda
 		'{window}',//concise property
 		'[...[]]',//expand array
-		'let a;const b;',//let const
+		'let a;const b=1;',//let const
 	].forEach(function(s){eval(s)});
 }catch(e){
 	scriptVer='es2015';

@@ -141,7 +141,7 @@ function getDanmaku(){
 					did:d.did
 				});
 			});
-			NP.loadDanmakuList(list);
+			NP.Danmaku.loadList(list);
 			NP.loadingInfo('弹幕已载入');
 			danmakuLoaded=true;
 		});	
