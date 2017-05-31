@@ -35,6 +35,7 @@ try{
 <head>
 	<meta charset="utf-8"/>
 	<title></title>
+	<script src='static/api.js?<?php modTime('static/api.js');?>'></script>
 	<link rel="stylesheet" type="text/css" href="static/collection.css?<?php modTime('static/collection.css');?>">
 </head>
 <body>
