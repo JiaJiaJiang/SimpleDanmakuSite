@@ -14,7 +14,7 @@ require_once('../utils/common.php');
 </body>
 
 <script>
-var touchMode=false,//(window.navigator.userAgent.match(/mobile/)?true:false);
+var touchMode=navigator.userAgent.match(/mobile/i) && ('ontouchstart' in window),//touch player
 	scriptVer='es2016',
 	NyaPTime=<?php modTime('static/NyaP');?>;
 try{
