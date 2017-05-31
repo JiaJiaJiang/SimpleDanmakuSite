@@ -13,8 +13,8 @@ require_once('../utils/common.php');
 <head>
 	<meta charset="utf-8">
 	<title>管理</title>
-	<script src="../static/api.js"></script>
-	<link rel="stylesheet" type="text/css" href="../static/admin/style.css">
+	<script src="../static/api.js?<?php modTime('static/api.js');?>"></script>
+	<link rel="stylesheet" type="text/css" href="../static/admin/style.css?<?php modTime('static/admin/style.css');?>">
 </head>
 <body>
 	<div id="frame">
