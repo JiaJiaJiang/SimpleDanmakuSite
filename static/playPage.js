@@ -111,7 +111,7 @@ function getVideo(){
 				NP.loadingInfo('无视频地址');
 				return;
 			}
-			var addr=r.address[(addresses.length*Math.random()+0.5)|0];
+			var addr=r.address[addresses[(addresses.length*Math.random()+0.5)|0]];
 			if(danmakuLoaded){
 				loadVideo(addr);
 			}else{
