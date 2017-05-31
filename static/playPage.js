@@ -11,6 +11,8 @@ var Config={
 		localStorage.removeItem('NyapConfig:'+name);
 	}
 }
+if(touchMode)window.NyaP=NyaPTouch;
+
 
 //初始化播放器
 var tmp,NP=new NyaP({
