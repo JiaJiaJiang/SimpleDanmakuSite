@@ -45,7 +45,7 @@ try{
 <iframe id="player_iframe" allowfullscreen></iframe>
 </body>
 <script>
-var info=JSON.parse('<?php echo str_replace('\'','\\\'',json_encode($collInfo,JSON_UNESCAPED_UNICODE));?>'),
+var info=JSON.parse(base64.decode('<?php echo base64_encode(json_encode($collInfo,JSON_UNESCAPED_UNICODE));?>')),
 	$=document.querySelector.bind(document);
 function setText(ele,text){ele.appendChild(document.createTextNode(text));}
 setText($('title'),info.name);

@@ -34,11 +34,13 @@ form{
 	flex-wrap: wrap;
 }
 form input{
-	min-width: 20em;
 	border: 1px solid #ccc;
 	padding: 0.6em;
 	box-sizing: border-box;
 	font-size: 14px;
+}
+form input[type="text"]{
+	min-width: 20em;
 }
 form textarea{
 	min-width: 100%;

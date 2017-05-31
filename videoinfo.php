@@ -36,6 +36,7 @@ try{
 <head>
 	<meta charset="utf-8"/>
 	<title></title>
+	<script src='static/api.js?<?php modTime('static/api.js');?>'></script>
 	<link rel="stylesheet" type="text/css" href="static/videoInfo.css?<?php modTime('static/videoInfo.css');?>">
 </head>
 <body>
@@ -51,7 +52,7 @@ try{
 	</div>
 </body>
 <script>
-var info=JSON.parse('<?php echo str_replace('\'','\\\'',json_encode($videoInfo,JSON_UNESCAPED_UNICODE));?>'),
+var info=JSON.parse(base64.decode('<?php echo base64_encode(json_encode($videoInfo,JSON_UNESCAPED_UNICODE));?>')),
 	$=document.querySelector.bind(document);
 function setText(ele,text){ele.appendChild(document.createTextNode(text));}
 setText($('title'),info.title);

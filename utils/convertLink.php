@@ -25,7 +25,7 @@ function convertLink($address,$useScriptName=true) {
 			continue;
 		}
 		//提取地址
-		preg_match("/^((\".*\")\:)?(.+)$/", $resource[$i], $result);
+		preg_match("/^(\"(.*)\"\:)?(.+)$/", $resource[$i], $result);
 		if($result[2] && is_file(dirname(__FILE__).'/../convertScript/'.$result[2].'.php')){//有前缀，有对应的转换脚本
 			//转换
 			require_once(dirname(__FILE__).'/../convertScript/'.$result[2].'.php');
@@ -42,7 +42,7 @@ function convertLink($address,$useScriptName=true) {
 			//直接加进结果数组
 			$resultArray[]=$resource[$i];	
 		}
-		return $resultArray;
 	}
+	return $resultArray;
 }
 ?>
