@@ -106,11 +106,17 @@ function getVideo(){
 		SAPI.get('video',{opt:'video',vid:vid,access:access},function(err,r){
 			if(err)return;
 			document.title=r.title;
+			var addresses=Object.keys(r.address);
+			if(!addresses.length){
+				NP.loadingInfo('无视频地址');
+				return;
+			}
+			var addr=r.address[(addresses.length*Math.random()+0.5)|0];
 			if(danmakuLoaded){
-				loadVideo(r.address[0]);
+				loadVideo(addr);
 			}else{
 				setTimeout(function(){
-					loadVideo(r.address[0]);
+					loadVideo(addr);
 				},600);
 			}
 		});
