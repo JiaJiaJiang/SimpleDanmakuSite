@@ -23,6 +23,21 @@ class Danmaku extends commonDBOpt{
 		$it->mode=intval(@$it->mode);
 		$it->time=intval(@$it->time);
 		$it->size=intval(@$it->size);
+		if(defined('allowedDanmakuSize')){
+			$list=json_decode(allowedDanmakuSize);
+			if(!in_array($it->size,$list)){
+				$nearest=0;
+				$minabs=0x7fffffff;
+				foreach ($list as $s) {
+					$abs=abs($s-$it->size);
+					if($abs<$minabs){
+						$minabs=$abs;
+						$nearest=$s;
+					}
+				}
+				$it->size=$nearest;
+			}
+		}
 		if($it->mode<0||$it->mode>3)$it->mode=0;
 
 		return parent::add(@$it);
