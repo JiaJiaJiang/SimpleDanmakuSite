@@ -37,6 +37,7 @@ try{
 	<title></title>
 	<script src='static/api.js?<?php modTime('static/api.js');?>'></script>
 	<link rel="stylesheet" type="text/css" href="static/collection.css?<?php modTime('static/collection.css');?>">
+	<script src="static/playerFrame.js?<?php modTime('static/playerFrame.js');?>"></script>
 </head>
 <body>
 <div id="collection_info">
@@ -78,23 +79,6 @@ function changeVideo(vid){
 		}
 	}
 }
-window.addEventListener('message',function(msg){
-  var data=msg.data;
-    if(typeof data =='object'&&data!=null){
-      switch(data.type){
-        case 'playerEvent':{
-          if(data.name=='playerModeChange'){
-            if(data.arg=='fullPage'){
-              iframe.classList.add('fullPage');
-            }else if(data.arg=='normal'){
-              iframe.classList.remove('fullPage');
-            }
-          }
-        }
-      }
-    }
-});
-
 
 window.addEventListener('load',function(){
 	var number=location.hash.match(/\#(\d+)$/);
