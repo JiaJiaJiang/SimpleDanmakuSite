@@ -26,6 +26,10 @@
 `dbPort`仅和`dbHost`同时存在，端口默认时可注释掉`dbPort`。
 使用unix socket连接时，取消`dbUnixSocket`的注释，并注释掉`dbPort`和`dbHost`。
 
+## 数据
+
+* allowedDanmakuSize:(string)限制提交的弹幕尺寸。值为序列化的尺寸数组，比如"[20,24,36]"。
+
 ## 日志
 目前日志并没有使用到，这是上个版本留下的配置项，由于可能会用到所以先放着了。
 
