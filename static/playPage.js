@@ -13,13 +13,22 @@ var Config={
 }
 if(touchMode)window.NyaP=NyaPTouch;
 
+var pageSettings={
+	withoutDanmaku:getSearchArg('withoutDanmaku')==1,
+}
 
 //初始化播放器
 var tmp,NP=new NyaP({
 	volume:(tmp=Config.get('volume'))!=undefined?tmp:1,
-	danmakuOption:{
-		allowLines:true,
-		screenLimit:0,
+	enableDanmaku:!pageSettings.withoutDanmaku,
+	danmakuModuleArg:{
+		TextDanmaku:{
+			//defaultStyle:{},
+			options:{
+				allowLines:true,
+				screenLimit:0,
+			},
+		}
 	},
 	danmakuSend:function(d,callback){
 		var data={
@@ -44,9 +53,9 @@ var tmp,NP=new NyaP({
 				d2.did=Number(r);
 			});
 		});
-	}
+	},
+	playerFrame:document.body,
 });
-document.body.appendChild(NP.player);
 NP.player.focus();
 
 if(self != top){//在iframe中，向父窗口发送信号
@@ -92,7 +101,7 @@ function accessCallback(r){
 		return;
 	}
 	getVideo();
-	getDanmaku();
+	pageSettings.withoutDanmaku||getDanmaku();
 }
 
 //获取视频信息
