@@ -15,7 +15,7 @@ function convertScript($url){
 	return $result;
 }
 ```
-而后在视频信息中填写以`poi:`为前缀的地址，转换过程将会把`poi:`后面的部分作为参数传给`convertScript`函数。
+而后在视频信息中填写以`"poi":`为前缀的地址，转换过程将会把`"poi":`后面的部分作为参数传给`convertScript`函数。
 
 *视频的地址结果为数组，因此对于经过转换的地址，会把结果保存在数组中对应脚本名的属性下，所以如果在一个地址中定义了多个同前缀的地址，那么后面的结果会覆盖已有的结果。*
 
@@ -34,6 +34,6 @@ function convertScript($url){
 ?>
 ```
 
-* 视频信息中填写地址:`poi:video/testvideo.mp4`
+* 视频信息中填写地址:`"poi":video/testvideo.mp4`
 
 * 转换结果:`http://simple.danmaku.site/video/testvideo.mp4`
