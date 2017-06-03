@@ -25,7 +25,7 @@ convertLink返回形式
 	...
 ]
 */
-function convertLink($address) {
+function convertLink($address,$onlyone=false) {
 	$resource = explode(PHP_EOL, $address); //根据行分成不同源
 	$resultArray = array(); //结构：键名:源注释,键值:分段数组
 	for ($i = count($resource); $i--;) { //处理各个源
@@ -61,6 +61,9 @@ function convertLink($address) {
 			//直接加进结果数组
 			$resultArray[]=addrPack('',$resource[$i]);
 		}
+	}
+	if($onlyone){
+		return $resultArray[0]->addr;
 	}
 	return $resultArray;
 }

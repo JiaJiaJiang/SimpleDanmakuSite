@@ -42,7 +42,7 @@ WHERE V.vid=?'.($showHidden?'':' && V.hidden=0 && (ISNULL(C.hidden)||C.hidden=0)
 		$pre->execute(array($vid));
 		$result=$pre->fetch();
 		require_once(dirname(__FILE__).'/../utils/convertLink.php');
-		if(@$result->cover)$result->cover=convertLink($result->cover,false);
+		if(@$result->cover)$result->cover=convertLink($result->cover,true);
 		return $result;
 	}
 	function get($option){
