@@ -4,18 +4,28 @@
 function convertScript(地址){//解析入口
 	//返回结果
 }
+
+convertScript返回格式
+格式1
+(string)地址
+
+格式2
+(array)
+array(
+	Object(name:名字,addr:地址),
+	...
+)
+
 */
 
 /*
-返回形式
+convertLink返回形式
 [
-	转换脚本名:转换脚本返回的结果,
-	转换脚本名:转换脚本返回的结果,
-	0:未经过转换过程的地址,
-	1:同上
+	Object(name:名字,addr:地址),
+	...
 ]
 */
-function convertLink($address,$useScriptName=true) {
+function convertLink($address) {
 	$resource = explode(PHP_EOL, $address); //根据行分成不同源
 	$resultArray = array(); //结构：键名:源注释,键值:分段数组
 	for ($i = count($resource); $i--;) { //处理各个源
@@ -30,19 +40,31 @@ function convertLink($address,$useScriptName=true) {
 			//转换
 			require_once(dirname(__FILE__).'/../convertScript/'.$result[2].'.php');
 			if(function_exists("convertScript")){
-				$resultAddr=convertScript($result[3]);
-				if($useScriptName){
-					$resultArray[$result[2]]=$resultAddr;
-				}else{
-					$resultArray[]=$resultAddr;
+				$convertResult=convertScript($result[3]);
+				if(is_object($convertResult)){
+					$resultArray[]=$convertResult;
+					continue;
+				}
+				if(!is_array($convertResult)){
+					$resultArray[]=addrPack($result[2],$convertResult);
+					continue;
+				}
+				foreach($convertResult as $value) {
+					if(is_array($value))$value=(object)$value;
+					if(is_object($value)){
+						$resultArray[]=$value;
+					}
 				}
 				continue;
 			}
 		}else{
 			//直接加进结果数组
-			$resultArray[]=$resource[$i];	
+			$resultArray[]=addrPack('',$resource[$i]);
 		}
 	}
 	return $resultArray;
+}
+function addrPack($name,$addr){
+	return (object)array('name'=>$name,'addr'=>$addr);
 }
 ?>

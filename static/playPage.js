@@ -115,17 +115,16 @@ function getVideo(){
 		SAPI.get('video',{opt:'video',vid:vid,access:access},function(err,r){
 			if(err)return;
 			document.title=r.title;
-			var addresses=Object.keys(r.address);
-			if(!addresses.length){
+			if(!r.address.length){
 				NP.loadingInfo('无视频地址');
 				return;
 			}
-			var addr=r.address[addresses[((addresses.length-1)*Math.random()+0.5)|0]];
+			var addr=r.address[((r.address.length-1)*Math.random()+0.5)|0];
 			if(danmakuLoaded){
-				loadVideo(addr);
+				loadVideo(addr.addr);
 			}else{
 				setTimeout(function(){
-					loadVideo(addr);
+					loadVideo(addr.addr);
 				},600);
 			}
 		});

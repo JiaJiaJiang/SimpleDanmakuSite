@@ -12,14 +12,14 @@
 ```php
 function convertScript($url){
 	//do something...
-	return $result;
+	return 地址;
+	//or
+	return addrPack(地址名,地址);
 }
 ```
 而后在视频信息中填写以`"poi":`为前缀的地址，转换过程将会把`"poi":`后面的部分作为参数传给`convertScript`函数。
 
-*视频的地址结果为数组，因此对于经过转换的地址，会把结果保存在数组中对应脚本名的属性下，所以如果在一个地址中定义了多个同前缀的地址，那么后面的结果会覆盖已有的结果。*
-
-> 如果在`convertScript`目录中未找到相应前缀的转换脚本，或者脚本中未定义`convertScript`函数，将直接返回原始链接。
+> 如果在`convertScript`目录中未找到相应前缀的转换脚本，或者脚本中未定义`convertScript`函数，将在结果数组中添加一个没有名字的地址。
 
 
 ## 示例
@@ -27,13 +27,31 @@ function convertScript($url){
 * 定义脚本`poi.php` 
 ```php
 <?php
+//格式一
 function convertScript($url){
 	$result="http://simple.danmaku.site/$url";
 	return $result;
+}
+
+//格式二
+function convertScript($url){
+	$result="http://simple.danmaku.site/$url";
+	return addrPack('io',$result);
 }
 ?>
 ```
 
 * 视频信息中填写地址:`"poi":video/testvideo.mp4`
 
-* 转换结果:`http://simple.danmaku.site/video/testvideo.mp4`
+* 转换结果:
+```
+//格式一
+[
+	{name:'',addr:'http://simple.danmaku.site/video/testvideo.mp4'}
+]
+
+//格式二
+[
+	{name:'io',addr:'http://simple.danmaku.site/video/testvideo.mp4'}
+]
+```
