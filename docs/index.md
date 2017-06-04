@@ -10,13 +10,13 @@
 * PHP >= 5.4
 * MySQL
 
-#安装
+## 安装
 
 新建一个数据库，把install目录下的`simpleDanmakuSite.sql`结构文件导入此库。
 
 复制一份`config_sample.php`文件，并改名为`config.php`,内容说明见[配置文件](config.md)。
 
-# 使用
+## 使用
 
 本弹幕站的主要形式是被其它页面引用播放器，所以没有自己的视频列表之类的页面。
 
