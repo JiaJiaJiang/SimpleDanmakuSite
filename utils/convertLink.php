@@ -10,6 +10,9 @@ convertScript返回格式
 (string)地址
 
 格式2
+(object)(name:名字,addr:地址)
+
+格式3
 (array)
 array(
 	Object(name:名字,addr:地址),

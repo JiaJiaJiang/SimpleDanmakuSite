@@ -1,3 +1,7 @@
+/*
+The MIT License (MIT)
+Copyright (c) luojia@luojia.me
+*/
 'use strict';
 //config
 var Config={

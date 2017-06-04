@@ -1,3 +1,7 @@
+/*
+The MIT License (MIT)
+Copyright (c) luojia@luojia.me
+*/
 html,body{
 	margin:0;
 	padding:0;
@@ -6,14 +10,6 @@ html,body{
 body{
 	display: flex;
 	flex-direction:column;
-}
-iframe.fullPage{
-	position: fixed;
-	width: 100%!important;
-	height: 100%!important;
-    top:0;
-    left: 0;
-	z-index: 99;
 }
 #player_iframe{
 	flex-grow: 1;
