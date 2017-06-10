@@ -25,6 +25,7 @@ function convertScript($url){
 ## 示例
 
 * 定义脚本`poi.php` 
+
 ```php
 <?php
 //格式一
