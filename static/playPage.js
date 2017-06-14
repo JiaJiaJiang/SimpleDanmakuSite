@@ -15,7 +15,18 @@ var Config={
 		localStorage.removeItem('NyapConfig:'+name);
 	}
 }
+
+var randCharList='1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM';
+function randomPageID(){
+	return '||||||||||||||||'.replace(/\|/g,function(){return randCharList[(Math.random()*(randCharList.length-1)+0.5)|0]});
+}
+
+if(!window.upid){//定义upid
+	window.upid=randomPageID();
+}
+
 if(touchMode)window.NyaP=NyaPTouch;
+
 
 var pageSettings={
 	withoutDanmaku:getSearchArg('withoutDanmaku')==1,
@@ -67,7 +78,8 @@ if(self != top){//在iframe中，向父窗口发送信号
 		window.parent.postMessage({
 			type:'playerEvent',
 			name:e,
-			arg:arg
+			arg:arg,
+			upid:upid,
 		},'*');
 	}
 	window.addEventListener("message",function(msg){
@@ -84,16 +96,13 @@ if(self != top){//在iframe中，向父窗口发送信号
 function playerControl(name,arg){
 }
 
-
 function getSearchArg(name){
-	try{
-		var reg=new RegExp(name+'=([^&]+)');
-		var r=document.location.search.match(reg);
-		return r[1];
-	}catch(e){
-		return undefined;
-	}
+	return SXHR.parseQuery(document.location.search)[name];
 }
+function getHashArg(name){
+	return SXHR.parseQuery(document.location.hash)[name];
+}
+
 var vid=getSearchArg('id'),
 	danmakuLoaded=false;
 
@@ -167,5 +176,3 @@ function getDanmaku(){
 		});	
 	});
 }
-
-
