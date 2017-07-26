@@ -41,8 +41,5 @@ Copyright (c) luojia@luojia.me
 		}
 		return i;
 	}
-})();
 
-window.addEventListener('message',function(msg){
-	var iframe=findIframe(msg.source);
-});
+})();
