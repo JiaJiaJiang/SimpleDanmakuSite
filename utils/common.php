@@ -3,7 +3,7 @@ require_once(dirname(__FILE__)."/../config.php");
 
 global $devMode;
 $devMode=(@constant('dev')===true);
-if($devMode)require_once('debug.php');
+require_once('debug.php');
 
 function isIntStr($num) {
 	return @preg_match('/^\d+$/',$num);

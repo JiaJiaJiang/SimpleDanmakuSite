@@ -2,9 +2,9 @@
 define('STDOUT',fopen('php://stdout', 'w'));
 
 function stdout($c){
-	fwrite(STDOUT, $c);  
+	if($GLOBALS['devMode']==true)fwrite(STDOUT, $c);  
 }
 function stdoutl($c){
-	stdout($c.PHP_EOL);  
+	if($GLOBALS['devMode']==true)stdout($c.PHP_EOL);  
 }
 ?>
