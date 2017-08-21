@@ -13,6 +13,7 @@ body{
 }
 #video_list > span.active{
     font-weight: bold;
+    background-color: #c6cdd4;
 }
 #player_iframe{
 	flex-grow: 1;

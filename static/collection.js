@@ -34,6 +34,7 @@ function changeVideo(vid){
 			document.title=s.info.title+' | '+info.name;
 			iframe.src='player/?id='+vid;
 			s.classList.add('active');
+			currentVid=s.vid;
 			s.scrollIntoView(false);
 			return;
 		}
