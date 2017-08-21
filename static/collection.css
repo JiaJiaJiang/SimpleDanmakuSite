@@ -11,10 +11,6 @@ body{
 	display: flex;
 	flex-direction:column;
 }
-#video_list > span.active{
-    font-weight: bold;
-    background-color: #c6cdd4;
-}
 #player_iframe{
 	flex-grow: 1;
     width: 100%;
@@ -51,5 +47,9 @@ body{
     cursor: pointer;
     padding: 0.2em 0.7em;
     border-radius: 0.2em;
-    background-color: #dde7f1;
+    background-color: #ecf0f3;
+}
+.video_block.active{
+    font-weight: bold;
+    background-color: #c6cdd4;
 }
