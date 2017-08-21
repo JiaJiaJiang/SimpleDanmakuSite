@@ -25,19 +25,20 @@ vb.addEventListener('click',function(e){
 });
 function changeVideo(vid){
 	if(currentVid==vid)return;
-	var si=0;
-	for(var i=vb.childNodes.length;i--;){
+	for(var i=vb.childNodes.length,si=0;i--;){
 		var s=vb.childNodes[i];
 		if(currentVid==s.vid){
 			s.classList.remove('active');
 			si++;
 		}else if(s.vid==vid){
-			location.hash=s.number;
-			document.title=s.info.title+' | '+info.name;
-			iframe.src='player/?id='+vid;
-			s.classList.add('active');
-			currentVid=s.vid;
-			s.scrollIntoView(false);
+			setTimeout(function(s){
+				location.hash=s.number;
+				document.title=s.info.title+' | '+info.name;
+				iframe.src='player/?id='+vid;
+				s.classList.add('active');
+				currentVid=s.vid;
+				s.scrollIntoView(false);
+			},0,s);
 			si++;
 		}
 		if(si==2)return;
