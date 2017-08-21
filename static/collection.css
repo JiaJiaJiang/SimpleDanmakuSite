@@ -11,6 +11,9 @@ body{
 	display: flex;
 	flex-direction:column;
 }
+#video_list > span.active{
+    font-weight: bold;
+}
 #player_iframe{
 	flex-grow: 1;
     width: 100%;

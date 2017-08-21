@@ -51,22 +51,6 @@ try{
 		<a id="play" target="_self" href="<?php echo 'player/?id='.$vid;?>">播放</a>
 	</div>
 </body>
-<script>
-var info=JSON.parse(base64.decode('<?php echo base64_encode(json_encode($videoInfo,JSON_UNESCAPED_UNICODE));?>')),
-	$=document.querySelector.bind(document);
-function setText(ele,text){ele.appendChild(document.createTextNode(text));}
-setText($('title'),info.title);
-setText($('#title'),info.title);
-setText($('#playCount'),'播放数:'+info.playCount);
-setText($('#danmakuCount'),'弹幕数:'+info.danmakuCount);
-setText($('#desc'),info.description);
-if(info.cover){
-	var div=document.createElement("div"),img=new Image();
-	document.body.appendChild(div);
-	div.id='cover';
-	div.style.opacity=0;
-	div.style.backgroundImage="url('"+(img.src=info.cover)+"')";
-	img.onload=function(){div.style.opacity='';}	
-}
-</script>
+<script>var info=JSON.parse(base64.decode('<?php echo base64_encode(json_encode($videoInfo,JSON_UNESCAPED_UNICODE));?>'));</script>
+<script src="static/videoInfo.js?<?php modTime('static/videoInfo.js');?>"></script>
 </html>

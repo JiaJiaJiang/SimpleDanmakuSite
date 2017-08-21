@@ -34,7 +34,7 @@ try{
 <html>
 <head>
 	<meta charset="utf-8"/>
-	<title></title>
+	<title>Loading</title>
 	<script src='static/api.js?<?php modTime('static/api.js');?>'></script>
 	<link rel="stylesheet" type="text/css" href="static/collection.css?<?php modTime('static/collection.css');?>">
 	<script src="static/playerFrame.js?<?php modTime('static/playerFrame.js');?>"></script>
@@ -46,51 +46,6 @@ try{
 <div id="video_list"></div>
 <iframe id="player_iframe" allowfullscreen></iframe>
 </body>
-<script>
-var info=JSON.parse(base64.decode('<?php echo base64_encode(json_encode($collInfo,JSON_UNESCAPED_UNICODE));?>')),
-	$=document.querySelector.bind(document);
-function setText(ele,text){ele.appendChild(document.createTextNode(text));}
-setText($('title'),info.name);
-setText($('#collection_name'),info.name);
-setText($('#desc'),info.description);
-var vb=$('#video_list'),iframe=$('iframe');
-info.list.forEach(function(v,i){
-	var span=document.createElement('span');
-	span.info=v;
-	span.className='video_block';
-	span.vid=v.vid;
-	span.number=i+1;
-	setText(span,i+1+' '+v.title);
-	vb.appendChild(span);
-});
-vb.addEventListener('click',function(e){
-	if(e.target.tagName!=='SPAN')return;
-	changeVideo(e.target.vid);
-});
-function changeVideo(vid){
-	for(var i=vb.childNodes.length;i--;){
-		var s=vb.childNodes[i];
-		if(s.vid==vid){
-			location.hash=s.number;
-			document.title=s.info.title+' | '+info.name;
-			iframe.src='player/?id='+vid;
-			s.scrollIntoView(false);
-			return;
-		}
-	}
-}
-
-window.addEventListener('load',function(){
-	var number=location.hash.match(/\#(\d+)$/);
-	number=(number)?Number(number[1]):1;
-	for(var i=vb.childNodes.length;i--;){
-		var s=vb.childNodes[i];
-		if(s.number==number){
-			changeVideo(s.vid);
-			break;
-		}
-	}	
-});
-
-</script>
+<script>var info=JSON.parse(base64.decode('<?php echo base64_encode(json_encode($collInfo,JSON_UNESCAPED_UNICODE));?>'));</script>
+<script src="static/collection.js?<?php modTime('static/collection.js');?>"></script>
 </html>
