@@ -25,10 +25,12 @@ vb.addEventListener('click',function(e){
 });
 function changeVideo(vid){
 	if(currentVid==vid)return;
+	var si=0;
 	for(var i=vb.childNodes.length;i--;){
 		var s=vb.childNodes[i];
 		if(currentVid==s.vid){
 			s.classList.remove('active');
+			si++;
 		}else if(s.vid==vid){
 			location.hash=s.number;
 			document.title=s.info.title+' | '+info.name;
@@ -36,8 +38,9 @@ function changeVideo(vid){
 			s.classList.add('active');
 			currentVid=s.vid;
 			s.scrollIntoView(false);
-			return;
+			si++;
 		}
+		if(si==2)return;
 	}
 }
 
