@@ -28,7 +28,7 @@
 
 ## 数据
 
-* allowedDanmakuSize:(string)限制提交的弹幕字号大小。值为序列化的尺寸数组，比如"[20,24,36]"。
+* allowedDanmakuSize: (string)限制提交的弹幕字号大小。值为序列化的尺寸数组，比如"[20,24,36]"。
 
 ## 日志
 目前日志并没有使用到，这是上个版本留下的配置项，由于可能会用到所以先放着了。
@@ -36,6 +36,10 @@
 * errorLog : (boolean)开关错误日志
 * warnLog : (boolean)开关警告日志
 * logPath : 日志目录，默认为系统临时目录
+
+## 播放器
+
+* playerOpt : (string)一个json文本，包含播放器初始化时需要的配置。具体配置项请看`NayP`播放器项目（的代码，因为我并没有写文档）。举例:`define('playerOpt','{plugins:[]}');`,配置一个插件列表。
 
 ## 开发
 
