@@ -32,9 +32,9 @@ var pageSettings={
 	withoutDanmaku:getSearchArg('withoutDanmaku')==1,
 }
 
+
 //初始化播放器
-var tmp,NP=new NyaP({
-	plugins:NyaP_plugins,
+var tmp,opt={
 	volume:(tmp=Config.get('volume'))!=undefined?tmp:1,
 	enableDanmaku:!pageSettings.withoutDanmaku,
 	danmakuModuleArg:{
@@ -71,7 +71,26 @@ var tmp,NP=new NyaP({
 		});
 	},
 	playerFrame:document.body,
-});
+};
+if(playerOpt){
+	playerOpt=base64.decode(playerOpt);
+	try{
+		playerOpt=JSON.parse(playerOpt);
+	}catch(e){
+		alert('播放器配置错误');
+	}
+	if(typeof playerOpt === 'object')
+	for(var sopt in playerOpt){
+		opt[sopt]=playerOpt[sopt];
+	}
+}
+if(NyaP_plugins){
+	opt.plugins||(opt.plugins=[]);
+	NyaP_plugins.forEach(function(p){opt.plugins.unshift(p);});
+}
+
+
+var NP=new NyaP(opt);
 NP.player.focus();
 
 if(self != top){//在iframe中，向父窗口发送信号
@@ -120,20 +139,20 @@ function accessCallback(r){
 
 //获取视频信息
 function getVideo(){
-	var _ligva=NP.loadingInfo('获取视频地址 -- ');
+	var _ligva=NP.loadingInfo('获取视频地址',true);
 	NP.video.addEventListener('error',function(e){
 		console.error(e)
-		_ligva.append('error');
+		_ligva.append('error:'+e.message);
 	});
 	SAPI.getAccess(function(access){
 		SAPI.get('video',{opt:'video',vid:vid,access:access},function(err,r){
 			if(err)return;
 			document.title=r.title;
 			if(!r.address || !r.address.length){
-				_ligva.append('no address');
+				_ligva.append('无地址');
 				return;
 			}
-			_ligva.append('done');
+			_ligva.append(NP.opt.loadingInfo.doneText);
 			var addr=r.address[((r.address.length-1)*Math.random()+0.5)|0];
 			if(danmakuLoaded){
 				loadVideo(addr.addr);
@@ -153,7 +172,7 @@ function loadVideo(address){
 
 //获取弹幕
 function getDanmaku(){
-	var _ligd=NP.loadingInfo('获取弹幕 -- ');
+	var _ligd=NP.loadingInfo('获取弹幕',true);
 	SAPI.getAccess(function(access){
 		SAPI.get('danmaku',{opt:'get',vid:vid,access:access},function(err,r){
 			if(err)return;
@@ -173,7 +192,7 @@ function getDanmaku(){
 				});
 			});
 			NP.Danmaku.loadList(list);
-			_ligd.append('done');
+			_ligd.append(NP.opt.loadingInfo.doneText);
 			danmakuLoaded=true;
 		});	
 	});

@@ -46,6 +46,7 @@ if(file_exists('./plugins')){
 	echo join(',',$name_list);
 }
 ?>];
+var playerOpt='<?php if(defined("playerOpt")){echo base64_encode(playerOpt);}else{echo '';}?>';
 
 </script>
 <script src='../static/api.js?<?php modTime('static/api.js');?>'></script>

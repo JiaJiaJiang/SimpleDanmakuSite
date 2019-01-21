@@ -23,6 +23,9 @@ define('allowedDanmakuSize',array(20,24,36));//允许提交的弹幕大小，不
 //开发用
 //define('dev',true);
 
+//播放器
+define('playerOpt','{plugins:[]}');//将被作为json交给播放页转换成对象并入初始化播放器的参数中
+
 /*
 //可定义requestControl函数来决定是否允许该请求访问api，比如是否来自同域
 function requestControl(){

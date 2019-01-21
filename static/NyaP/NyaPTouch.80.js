@@ -6671,6 +6671,10 @@ var NyaPCoreOptions = {
       options: {}
     }
   },
+  loadingInfo: {
+    doneText: 'ok',
+    contentSpliter: '...'
+  },
   //for sending danmaku
   defaultDanmakuColor: null,
   //a hex color(without #),when the color inputed is invalid,this color will be applied
@@ -6849,7 +6853,7 @@ function (_NyaPEventEmitter) {
 
     _this.collectEles(_this.videoFrame);
 
-    var _lilc = _this.loadingInfo(_('Loading core') + ' -- ');
+    var _lilc = _this.loadingInfo(_('Loading core'), true);
 
     if (_this._danmakuEnabled) {
       _this.danmakuContainer = (0, _Object2HTML.default)({
@@ -6859,7 +6863,7 @@ function (_NyaPEventEmitter) {
         }
       });
 
-      var _lildf = _this.loadingInfo(_('Loading danmaku frame') + ' -- ');
+      var _lildf = _this.loadingInfo(_('Loading danmaku frame'), true);
 
       _this.Danmaku = new _danmaku.default(_assertThisInitialized(_assertThisInitialized(_this)));
 
@@ -6867,7 +6871,7 @@ function (_NyaPEventEmitter) {
 
       _this.collectEles(_this.danmakuContainer);
 
-      _lildf.append('done');
+      _lildf.append(_this.opt.loadingInfo.doneText);
     }
 
     _this._.loadingAnimeInterval = setInterval(function () {
@@ -6918,13 +6922,13 @@ function (_NyaPEventEmitter) {
     _this.on('coreLoad', function () {
       _this.stats.coreLoaded = true;
 
-      _lilc.append('done'); //this.loadingInfo(_('Core loaded'));
+      _lilc.append(_this.opt.loadingInfo.doneText); //this.loadingInfo(_('Core loaded'));
 
     });
 
     if (Array.isArray(opt.plugins)) {
       //load plugins,opt.plugins is a list of url for plugins
-      var _lilp = _this.loadingInfo(_('Loading plugin') + ' -- ');
+      var _lilp = _this.loadingInfo(_('Loading plugin'), true);
 
       var pluginList = [];
       var _iteratorNormalCompletion2 = true;
@@ -6952,7 +6956,7 @@ function (_NyaPEventEmitter) {
       }
 
       Promise.all(pluginList).then(function () {
-        _lilp.append('done');
+        _lilp.append(_this.opt.loadingInfo.doneText);
 
         _this.emit('coreLoad');
       }).catch(function (e) {
@@ -6977,10 +6981,12 @@ function (_NyaPEventEmitter) {
   }, {
     key: "loadingInfo",
     value: function loadingInfo(text) {
+      var spliter = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       var d = (0, _Object2HTML.default)({
         _: 'div',
         child: [text]
       });
+      if (spliter) d.append(this.opt.loadingInfo.contentSpliter);
       this.$.loading_info.appendChild(d);
       return d;
     }
@@ -7363,7 +7369,7 @@ function (_NyaPlayerCore) {
       });
     }
 
-    var _licp = NP.loadingInfo(_('Creating player') + ' -- ');
+    var _licp = NP.loadingInfo(_('Creating player'), true);
 
     NP._.player = (0, _Object2HTML.default)({
       _: 'div',
@@ -7825,7 +7831,7 @@ function (_NyaPlayerCore) {
 
     if (opt.playerFrame instanceof HTMLElement) opt.playerFrame.appendChild(NP.player);
 
-    _licp.append('done');
+    _licp.append(_this.opt.loadingInfo.doneText);
 
     return _this;
   }
@@ -8360,6 +8366,7 @@ exports.i18n = i18n;
 i18n.langs['zh-CN'] = {
   'play': '播放',
   'Send': '发送',
+  'Done': '完成',
   'loop': '循环',
   'pause': '暂停',
   'muted': '静音',
