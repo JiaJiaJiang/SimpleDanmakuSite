@@ -34,6 +34,7 @@ var pageSettings={
 
 //初始化播放器
 var tmp,NP=new NyaP({
+	plugins:NyaP_plugins,
 	volume:(tmp=Config.get('volume'))!=undefined?tmp:1,
 	enableDanmaku:!pageSettings.withoutDanmaku,
 	danmakuModuleArg:{
@@ -119,19 +120,20 @@ function accessCallback(r){
 
 //获取视频信息
 function getVideo(){
-	NP.loadingInfo('获取视频地址');
+	var _ligva=NP.loadingInfo('获取视频地址 -- ');
 	NP.video.addEventListener('error',function(e){
-		console.log(e)
-		NP.loadingInfo('视频错误');
+		console.error(e)
+		_ligva.append('error');
 	});
 	SAPI.getAccess(function(access){
 		SAPI.get('video',{opt:'video',vid:vid,access:access},function(err,r){
 			if(err)return;
 			document.title=r.title;
-			if(!r.address.length){
-				NP.loadingInfo('无视频地址');
+			if(!r.address || !r.address.length){
+				_ligva.append('no address');
 				return;
 			}
+			_ligva.append('done');
 			var addr=r.address[((r.address.length-1)*Math.random()+0.5)|0];
 			if(danmakuLoaded){
 				loadVideo(addr.addr);
@@ -145,13 +147,13 @@ function getVideo(){
 }
 function loadVideo(address){
 	NP.loadingInfo('加载视频');
-	NP.video.src=address;
+	NP.src=address;
 }
 
 
 //获取弹幕
 function getDanmaku(){
-	NP.loadingInfo('获取弹幕');
+	var _ligd=NP.loadingInfo('获取弹幕 -- ');
 	SAPI.getAccess(function(access){
 		SAPI.get('danmaku',{opt:'get',vid:vid,access:access},function(err,r){
 			if(err)return;
@@ -171,7 +173,7 @@ function getDanmaku(){
 				});
 			});
 			NP.Danmaku.loadList(list);
-			NP.loadingInfo('弹幕已载入');
+			_ligd.append('done');
 			danmakuLoaded=true;
 		});	
 	});

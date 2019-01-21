@@ -45,7 +45,8 @@ function convertScript($url){
 * 视频信息中填写地址:`"poi":video/testvideo.mp4`
 
 * 转换结果:
-```
+
+```javascript
 //格式一
 [
 	{name:'',addr:'http://simple.danmaku.site/video/testvideo.mp4'}

@@ -12,12 +12,11 @@ require_once('../utils/common.php');
 </head>
 <body>
 </body>
-
 <script>
 var touchMode=navigator.userAgent.match(/mobile/i) && ('ontouchstart' in window),//touch player
-	scriptVer='es2016',
+	scriptVer=50,
 	NyaPTime=<?php modTime('static/NyaP');?>;
-try{
+try{//es2016 version feature test
 	'use strict';
 	[
 		'class a{}',//class
@@ -25,16 +24,29 @@ try{
 		'{window}',//concise property
 		'[...[]]',//expand array
 		'let a;const b=1;',//let const
+		'fetch.name==="fetch"',//fetch api
 	].forEach(function(s){eval(s)});
 }catch(e){
-	scriptVer='es2015';
+	console.log('not supported feature:',e);
+	scriptVer=80;
 }
 var playerName='NyaP'+(touchMode?"Touch":"");
 console.log('load player',playerName,scriptVer);
 document.write(
-	"<style>@import url('"+"../static/NyaP/"+playerName+".min.css?"+NyaPTime+"')</style>"+
-	"<script src='../static/NyaP/"+playerName+"."+scriptVer+".min.js?"+NyaPTime+"'><\/script>"
+	"<style>@import url('"+"../static/NyaP/"+playerName+".css?"+NyaPTime+"')</style>"+
+	"<script src='../static/NyaP/"+playerName+"."+scriptVer+".js?"+NyaPTime+"'><\/script>"
 );
+var NyaP_plugins=[<?php
+if(file_exists('./plugins')){
+	$plugin_list=glob('plugins/*.js');
+	$name_list=array();
+	foreach ($plugin_list as $name) {
+		array_push($name_list, "\"$name?".modTime("player/".$name,false)."\"");
+	}
+	echo join(',',$name_list);
+}
+?>];
+
 </script>
 <script src='../static/api.js?<?php modTime('static/api.js');?>'></script>
 <script src='../static/playPage.js?<?php modTime('static/playPage.js');?>'></script>
