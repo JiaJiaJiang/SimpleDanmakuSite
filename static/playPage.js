@@ -165,7 +165,7 @@ function getVideo(){
 	});
 }
 function loadVideo(address){
-	NP.loadingInfo('加载视频');
+	NP.loadingInfo(NP.i18n._('Loading video'));
 	NP.src=address;
 }
 
