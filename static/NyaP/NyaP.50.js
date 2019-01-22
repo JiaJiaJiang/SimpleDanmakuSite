@@ -3571,9 +3571,9 @@ class NyaP extends _NyaPCore.NyaPlayerCore {
         _loopChange: e => NP._iconActive('loop', e.value),
         click: e => NP.playToggle(),
         contextmenu: e => e.preventDefault(),
-        error: e => {
-          NP.msg(`视频加载错误:${e.message}`, 'error');
-          this.log('video error', 'error', e);
+        error: () => {
+          NP.msg(`视频加载错误`, 'error');
+          this.log('video error', 'error');
         }
       },
       danmaku_container: {

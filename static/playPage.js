@@ -141,8 +141,7 @@ function accessCallback(r){
 function getVideo(){
 	var _ligva=NP.loadingInfo('获取视频地址',true);
 	NP.video.addEventListener('error',function(e){
-		console.error(e)
-		_ligva.append('error:'+e.message);
+		_ligva.append('error');
 	});
 	SAPI.getAccess(function(access){
 		SAPI.get('video',{opt:'video',vid:vid,access:access},function(err,r){

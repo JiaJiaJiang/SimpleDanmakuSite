@@ -7001,10 +7001,10 @@ function (_NyaPlayerCore) {
         contextmenu: function contextmenu(e) {
           return e.preventDefault();
         },
-        error: function error(e) {
-          NP.msg("\u89C6\u9891\u52A0\u8F7D\u9519\u8BEF:".concat(e.message), 'error');
+        error: function error() {
+          NP.msg("\u89C6\u9891\u52A0\u8F7D\u9519\u8BEF", 'error');
 
-          _this.log('video error', 'error', e);
+          _this.log('video error', 'error');
         }
       },
       danmaku_container: {
