@@ -151,7 +151,7 @@ function getVideo(){
 				_ligva.append('无地址');
 				return;
 			}
-			if(typeof r.option==='string')
+			if(typeof r.option==='string' &&r.option)
 				r.option=JSON.parse(r.option);
 			_ligva.append(NP.opt.loadingInfo.doneText);
 			NP.emit('videoInfo',r);
