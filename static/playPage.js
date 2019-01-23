@@ -139,7 +139,7 @@ function accessCallback(r){
 
 //获取视频信息
 function getVideo(){
-	var _ligva=NP.loadingInfo('获取视频地址',true);
+	var _ligva=NP.loadingInfo('获取视频信息',true);
 	NP.video.addEventListener('error',function(e){
 		_ligva.append('error');
 	});
@@ -151,7 +151,10 @@ function getVideo(){
 				_ligva.append('无地址');
 				return;
 			}
+			if(typeof r.option==='string')
+				r.option=JSON.parse(r.option);
 			_ligva.append(NP.opt.loadingInfo.doneText);
+			NP.emit('videoInfo',r);
 			var addr=r.address[((r.address.length-1)*Math.random()+0.5)|0];
 			if(danmakuLoaded){
 				loadVideo(addr.addr);
