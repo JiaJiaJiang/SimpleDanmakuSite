@@ -13,7 +13,7 @@
 
 没有视频列表，因为设计之初就是为了把播放器插入其它网站的页面使用的。
 
-##### 如果你只是看上了播放器，请移步[NyaP](https://coding.net/u/luojia/p/NyaP/git)
+##### 如果你只是看上了播放器，请移步[NyaP](https://github.com/JiaJiaJiang/NyaP)
 
 
 [使用说明](http://jiajiajiang.github.io/SimpleDanmakuSite/)
