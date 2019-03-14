@@ -1267,6 +1267,11 @@ function init(DanmakuFrame, DanmakuFrameModule) {
           d,
           time = D.frame.time;
       if (D.danmakuCheckTime === time || !D.danmakuCheckSwitch) return;
+
+      if (D.danmakuCheckTime < time - 5000) {
+        this.recheckIndexMark(time - 5000); //ignore danmakus expired over 5 sec
+      }
+
       if (D.list.length) for (; D.indexMark < D.list.length && (d = D.list[D.indexMark]) && d.time <= time; D.indexMark++) {
         //add new danmaku
         if (D.options.screenLimit > 0 && D.DanmakuText.length >= D.options.screenLimit) {
@@ -1478,10 +1483,9 @@ function init(DanmakuFrame, DanmakuFrameModule) {
       }
     }
 
-    resetTimeOfDanmakuOnScreen(cTime) {
+    resetTimeOfDanmakuOnScreen(cTime = this.frame.time) {
       //cause the position of the danmaku is based on time
       //and if you don't want these danmaku on the screen to disappear after seeking,their time should be reset
-      if (cTime === undefined) cTime = this.frame.time;
       this.DanmakuText.forEach(t => {
         if (!t.danmaku) return;
         t.time = cTime - (this.danmakuMoveTime - t.time);
@@ -3360,7 +3364,7 @@ class NyaPEventEmitter {
 class NyaPlayerCore extends NyaPEventEmitter {
   constructor(opt) {
     super();
-    this.log('%c https://dev.tencent.com/u/luojia/p/NyaP/git ', 'log', "background:#6f8fa2;color:#ccc;padding:.3em");
+    this.log('%c https://github.com/JiaJiaJiang/NyaP ', 'log', "background:#6f8fa2;color:#ccc;padding:.3em");
     this.log('Language:' + _i18n.i18n.lang, 'debug');
     opt = this.opt = Object.assign({}, NyaPCoreOptions, opt);
     const $ = this.$ = {

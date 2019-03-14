@@ -2,6 +2,8 @@
 The MIT License (MIT)
 Copyright (c) luojia@luojia.me
 */
+console.log('%c SimpleDanmakuSite %c https://github.com/JiaJiaJiang/SimpleDanmakuSite ',"background:#e0e0e0;padding:.2em","background:#6f8fa2;color:#ccc;padding:.3em");
+
 'use strict';
 //config
 var Config={
