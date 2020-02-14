@@ -30,6 +30,9 @@ function modTime($path,$echo=true){
 		echo $time;
 	return $time;
 }
+function pModTime($path){
+	echo $path.'?t='.modTime($path,false);
+}
 
 function parseIDList($arr){
 	if(is_string($arr))$arr=explode(',',$arr);

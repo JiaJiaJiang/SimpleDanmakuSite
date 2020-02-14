@@ -32,9 +32,8 @@ switch(@$_GET['opt']) {
 		apiResult(0,$affected);
 	}
 	case 'get':{
-		apiResult(0,
-			(new Collection())->getWithVideoCount(json_decode(@$_GET['arg']))
-		);
+		Access::requireLogin();
+		apiResult(0,(new Collection())->get(json_decode(@$_GET['arg'])));
 	}
 	default:{
 		http_response_code(404);

@@ -38,14 +38,12 @@ switch(@$_GET['opt']) {
 		$limit=@$_GET['limit']?intval($_GET['limit']):1000;
 		if(!is_numeric($vid)||!isIntStr($vid))
 			throw new Exception('vid error', -1);
-		if(!Access::hasLoggedIn())
+		if(!Access::hasLoggedIn()){
 			Access::requireAccess();
-		$cond=array('vid=?');
-		$arg=array($vid);
+		}
 		$result=$danmakuOpt->get(
 			array(
-				'condition'=>$cond,
-				'arg'=>$arg,
+				'vid'=>$vid,
 				'item'=>array('did','mode AS m','content AS c','color AS co','time AS t','size AS s','date AS d'),
 				'limit'=>$limit
 			)
@@ -55,8 +53,7 @@ switch(@$_GET['opt']) {
 	case 'list':{
 		Access::requireLogin();
 		$danmakuOpt=new Danmaku();
-		$arg=json_decode(@$_GET['arg']);
-		$result=$danmakuOpt->get($arg);
+		$result=$danmakuOpt->get(json_decode(@$_GET['arg']));
 		apiResult(0,$result);
 	}
 	default:{

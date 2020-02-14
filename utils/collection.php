@@ -27,13 +27,24 @@ class Collection extends commonDBOpt{
 		if($count==0)return 0;
 		return parent::delete($cid);
 	}
-	function get($option){
+	function get($arg){
 		Access::requireLogin();
-		if(is_array($option))$option=(object)$option;
-		if(!Access::hasLoggedIn())$option->limit=array(1);
-		return parent::get($option);
+		if(is_array($arg))$arg=(object)$arg;
+		if(!Access::hasLoggedIn())$arg->limit=array(1);
+		if(@$arg->search){
+			$arg->condition=array('(cid=? || name LIKE ? || description LIKE ?)');
+			$arg->arg=array($arg->search,'%'.$arg->search.'%','%'.$arg->search.'%');
+		}
+		if(@$arg->cid){//获取合集视频信息
+			$arg->condition=array('cid=?');
+			$arg->arg=array($arg->cid);
+		}
+		if(@$arg->withVideoCount){//获取视频数量
+			$arg->extraItem=array('(select count(*) from video where cid=T.cid) as vCount');
+		}
+		return parent::get($arg);
 	}
-	function getWithVideoCount($option){
+/* 	function getWithVideoCount($option){
 		Access::requireLogin();
 		if(is_array($option))$option=(object)$option;
 		if(!is_object($option))
@@ -74,7 +85,7 @@ on C.cid=V.vcid
 		$pre = dbOpt::$PDO->prepare($sql);
 		$this->execute($pre,$arg);
 		return $pre->fetchAll();
-	}
+	} */
 	function collection($cid,$showHidden=false){
 		if(!isInt($cid))
 			throw new Exception('cid错误'.$cid,-1);

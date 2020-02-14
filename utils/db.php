@@ -63,7 +63,6 @@ new dbOpt();
 
 class commonDBOpt{
 	function __construct($table,$idName,$editableItems){
-		require_once(dirname(__FILE__).'/db.php');
 		require_once(dirname(__FILE__).'/common.php');
 		$this->table=$table;
 		$this->idName=$idName;
@@ -131,17 +130,21 @@ class commonDBOpt{
 		$arg=is_array(@$option->arg)?$option->arg:array();
 		$limit=@$option->limit;
 		$rawItem=@$option->item;
-		$select=is_array(@$option->item)?implode(',',dbOpt::checkSelectorArray($option->item)):'*';//item参数需要为数组，否则会变成*
-		$order=@$option->order?$option->order:'DESC';
-
-		if($select!='*' && $rawItem){
+		if($rawItem){
 			foreach ($rawItem as $key) {
 				if(!preg_match('/^\w+(\ AS \w+)?$/', $key))
 					throw new Exception('项名错误:'.$key,-1);
 			}
+		}else{$rawItem=array();}
+		if(is_array(@$option->extraItem)){
+			$rawItem=array_merge($rawItem,$option->extraItem);
 		}
+		$select=count($rawItem)>0?implode(',',dbOpt::checkSelectorArray($rawItem)):'*';//$rawItem数组需要有项目，否则会变成*
+		$order=@$option->order?$option->order:'DESC';
+
+		
 		if($countMode)$select='count(*) AS resultCount';
-		$sql='SELECT '.$select.' FROM `'.$this->table.'` '.(is_array($condition)?('WHERE '.implode(' && ',$condition)):'');
+		$sql='SELECT '.$select.' FROM `'.$this->table.'` AS T '.(is_array($condition)?('WHERE '.implode(' && ',$condition)):'');
 		if(!$countMode){
 			$sql.=' ORDER BY `'.$this->idName.'` '.$order;
 			if(is_array($limit)){
@@ -163,14 +166,13 @@ class commonDBOpt{
 		try{
 			return $pdostat->execute($arg);
 		}catch(Exception $e){
-			$vioCode=dbOpt::getViolationCode($e);
-			$msg=is_array(@$this::$errorInfo)?$this::$errorInfo[$vioCode]:null;
-			if($msg)throw new Exception($msg,$vioCode);
 			if(Access::devMode()){
 				throw $e;
-			}else{
-				throw new Exception("数据库错误", -8);
 			}
+			$vioCode=dbOpt::getViolationCode($e);
+			$msg=is_array(@$this::$errorInfo)?$this::$errorInfo[$vioCode]:(Access::hasLoggedIn()?$e->message:null);
+			if($msg)throw new Exception($msg,$vioCode);
+			throw new Exception("数据库错误", -8);
 		}
 	}
 }

@@ -34,9 +34,7 @@ switch(@$_GET['opt']) {
 	}
 	case 'get':{//获取视频列表
 		Access::requireLogin();
-		apiResult(0,
-			(new Video())->get(json_decode(@$_GET['arg']))
-		);
+		apiResult(0,(new Video())->get(json_decode(@$_GET['arg'])));
 	}
 	case 'video':{//获取播放器用的视频信息
 		Access::requireAccess();

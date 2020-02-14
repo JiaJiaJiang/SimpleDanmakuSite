@@ -45,9 +45,24 @@ WHERE V.vid=?'.($showHidden?'':' && V.hidden=0 && (ISNULL(C.hidden)||C.hidden=0)
 		if(@$result->cover)$result->cover=convertLink($result->cover,true);
 		return $result;
 	}
-	function get($option){
+	function get($arg){
 		Access::requireLogin();
-		return parent::get($option);
+		if(!is_array(@$arg->condition))$arg->condition=array();
+		if(!is_array(@$arg->arg))$arg->arg=array();
+		if(@$arg->search){//添加搜索条件
+			array_push($arg->condition,'(vid=? || cid=? || title LIKE ? || description LIKE ?)');
+			array_push($arg->arg,$arg->search,$arg->search,'%'.$arg->search.'%','%'.$arg->search.'%');
+		}
+		if(@$arg->vid){//获取单个视频信息
+			array_push($arg->condition,'vid=?');
+			array_push($arg->arg,$arg->vid);
+		}
+		if(@$arg->cid){//获取合集视频信息
+			array_push($arg->condition,'cid=?');
+			array_push($arg->arg,$arg->cid);
+		}
+		if(count($arg->condition)===0)$arg->condition=NULL;
+		return parent::get($arg);
 	}
 }
 ?>

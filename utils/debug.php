@@ -1,10 +1,11 @@
 <?php
+require_once(dirname(__FILE__).'/access.php');
 define('STDOUT',fopen('php://stdout', 'w'));
 
 function stdout($c){
-	if($GLOBALS['devMode']==true)fwrite(STDOUT, $c);  
+	if(Access::devMode())fwrite(STDOUT, $c);  
 }
 function stdoutl($c){
-	if($GLOBALS['devMode']==true)stdout($c.PHP_EOL);  
+	if(Access::devMode())stdout($c.PHP_EOL);  
 }
 ?>

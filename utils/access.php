@@ -1,5 +1,5 @@
 <?php
-require_once('common.php');
+require_once(dirname(__FILE__).'/common.php');
 
 class Access{
 	function __construct(){

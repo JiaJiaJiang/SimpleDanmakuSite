@@ -52,14 +52,36 @@ window.SXHR = {
 
 window.SAPI={
 	get:function(api, data, callback){
+		var hasCallback=typeof callback==='function',okFunc,noFunc;
 		SXHR.get(SAPI.siteRoot+'api/',Object.assign({api:api},data),function(err,xhr){
-			SAPI.parseResult(err,xhr,callback);
+			SAPI.parseResult(err,xhr,hasCallback?callback:function(err,result,code,xhr){
+				if(err)noFunc(err);
+				else{
+					okFunc(result);
+				}
+			});
 		});
+		if(!hasCallback){
+			return new Promise(function(ok,no){
+				okFunc=ok;noFunc=no;
+			});
+		}
 	},
 	post:function(api, data, callback){
+		var hasCallback=typeof callback==='function',okFunc,noFunc;
 		SXHR.post(SAPI.siteRoot+'api/?api='+api,data,function(err,xhr){
-			SAPI.parseResult(err,xhr,callback);
+			SAPI.parseResult(err,xhr,hasCallback?callback:function(err,result,code,xhr){
+				if(err)noFunc(err);
+				else{
+					okFunc(result);
+				}
+			});
 		});
+		if(!hasCallback){
+			return new Promise(function(ok,no){
+				okFunc=ok;noFunc=no;
+			});
+		}
 	},
 	parseResult:function(err,xhr,callback){//callback(err,result,code,xhr)
 		var code=null,re;
@@ -95,7 +117,7 @@ window.SAPI={
 				accessCode=r.accessCode;
 			accessText.shift();
 			var access='';
-			for(let i=0;i<accessCode.length;i++)
+			for(var i=0;i<accessCode.length;i++)
 				access+=accessText[1*accessCode[i]];
 			localStorage.access=access;
 			localStorage.accessTime=r.accessTime;

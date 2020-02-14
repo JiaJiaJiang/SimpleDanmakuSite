@@ -8,6 +8,7 @@
 ## 需求环境
 
 * PHP >= 5.6
+ * pdo_mysql扩展
 * MySQL
 
 ## 安装
@@ -15,6 +16,20 @@
 新建一个数据库，把install目录下的`simpleDanmakuSite.sql`结构文件导入此库。
 
 复制一份`config_sample.php`文件，并改名为`config.php`,内容说明见[配置文件](config.md)。
+
+### 导入数据库时出现外键约束错误？
+
+如果你导出了这个库的表后从其它数据库导入可能出现外键约束错误，此时你需要临时关闭外键检查来避免这个问题，在目标数据库执行mysql语句：
+
+```sql
+SET FOREIGN_KEY_CHECKS=0;
+```
+然后导入你的数据库，再恢复外键检查：
+```sql
+SET FOREIGN_KEY_CHECKS=1;
+```
+即可完成导入。
+
 
 ## 使用
 

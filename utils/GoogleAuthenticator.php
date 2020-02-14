@@ -48,7 +48,6 @@ class GoogleAuthenticator
         } else {
             throw new Exception('No source of secure random');
         }
-
         return $secret;
     }
 
@@ -102,7 +101,7 @@ class GoogleAuthenticator
     {
         $urlencoded = urlencode('otpauth://totp/'.$name.'?secret='.$secret.'');
 
-        return "https://pan.baidu.com/share/qrcode?w=300&h=300&url=$urlencoded";
+        return "https://qrcode.jp/qr?q=$urlencoded&s=10";
     }
 
     /**

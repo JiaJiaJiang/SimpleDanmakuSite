@@ -57,8 +57,19 @@ class Danmaku extends commonDBOpt{
 		Access::requireLogin();
 		return parent::update($id,$opt);
 	}
-	function get($option){
-		return parent::get($option);
+	function get($arg){
+		if(!is_array(@$arg->condition))$arg->condition=array();
+		if(!is_array(@$arg->arg))$arg->arg=array();
+		if(@$arg->search){//添加搜索条件
+			array_push($arg->condition,'(did=? || content LIKE ?)');
+			array_push($arg->arg,$arg->search,'%'.$arg->search.'%');
+		}
+		if(@$arg->vid){
+			array_push($arg->condition,'(vid=?)');
+			array_push($arg->arg,$arg->vid);
+		}
+		if(count($arg->condition)===0)$arg->condition=NULL;
+		return parent::get($arg);
 	}
 }
 ?>
