@@ -36,17 +36,19 @@ document.write(
 	"<style>@import url('"+"../static/NyaP/"+playerName+".css?"+NyaPTime+"')</style>"+
 	"<script src='../static/NyaP/"+playerName+"."+scriptVer+".js?"+NyaPTime+"'><\/script>"
 );
-var NyaP_plugins=[<?php
-if(file_exists('./plugins')){
+var NyaP_plugins=JSON.parse('<?php
 	$plugin_list=glob('plugins/*.js');
-	$name_list=array();
-	foreach ($plugin_list as $name) {
-		array_push($name_list, "\"$name?".modTime("player/".$name,false)."\"");
+	if(count($plugin_list)>0){
+		$name_list=array();
+		foreach($plugin_list as $name) {
+			array_push($name_list, $name.'?'.modTime('player/'.$name,false));
+		}
+		echo json_encode($name_list);
+	}else{
+		echo '""';
 	}
-	echo join(',',$name_list);
-}
-?>];
-var playerOpt='<?php if(defined("playerOpt")){echo base64_encode(playerOpt);}else{echo '';}?>';
+?>');
+var playerOpt='<?php echo defined("playerOpt")?base64_encode(playerOpt):'';?>';
 
 </script>
 <script src='../static/api.js?<?php modTime('static/api.js');?>'></script>

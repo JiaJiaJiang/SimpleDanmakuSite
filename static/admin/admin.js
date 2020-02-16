@@ -1,4 +1,7 @@
-
+/*
+The MIT License (MIT)
+Copyright (c) luojia@luojia.me
+*/
 function clamp(value,min,max){//limit value
 	return value<min?min:(value>max?max:value);
 }
@@ -182,7 +185,7 @@ class SimpleList  extends List{
 class VideoList extends SimpleList{
 	static listItems=[
 		['vid','ID',`<a v-bind:href="'../videoinfo.php?id='+data.itemID" target="_blank">{{data.itemID}}</a>`],
-		['title','标题',`<a v-bind:href="'../player?id='+data.itemID" target="_blank">{{data.title}}</a>`],
+		['title','标题',`<a v-bind:href="'../player/?id='+data.itemID" target="_blank">{{data.title}}</a>`],
 		['description','描述',`{{data.description}}`],
 		['date','日期',`{{data.date | formatDate}}`],
 		['danmakuCount','弹',`<button id="danmaku" v-bind:itemID="data.itemID">{{data.danmakuCount}}</button>`],

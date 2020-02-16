@@ -36,8 +36,8 @@ try{
 <head>
 	<meta charset="utf-8"/>
 	<title></title>
-	<script src='static/api.js?<?php modTime('static/api.js');?>'></script>
-	<link rel="stylesheet" type="text/css" href="static/videoInfo.css?<?php modTime('static/videoInfo.css');?>">
+	<script src='<?php pModTime('static/api.js');?>'></script>
+	<link rel="stylesheet" type="text/css" href="<?php pModTime('static/videoInfo.css');?>">
 </head>
 <body>
 	<h1 id="title"></h1>
@@ -52,5 +52,5 @@ try{
 	</div>
 </body>
 <script>var info=JSON.parse(base64.decode('<?php echo base64_encode(json_encode($videoInfo,JSON_UNESCAPED_UNICODE));?>'));</script>
-<script src="static/videoInfo.js?<?php modTime('static/videoInfo.js');?>"></script>
+<script src="<?php pModTime('static/videoInfo.js');?>"></script>
 </html>

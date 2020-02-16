@@ -58,6 +58,7 @@ class Danmaku extends commonDBOpt{
 		return parent::update($id,$opt);
 	}
 	function get($arg){
+		if(is_array($arg))$arg=(object)$arg;
 		if(!is_array(@$arg->condition))$arg->condition=array();
 		if(!is_array(@$arg->arg))$arg->arg=array();
 		if(@$arg->search){//添加搜索条件

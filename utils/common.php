@@ -25,13 +25,16 @@ function allowedRequest(){
 }
 
 function modTime($path,$echo=true){
-	$time=filemtime($_SERVER["DOCUMENT_ROOT"].'/'.$path);
+	$time=filemtime(dirname(__FILE__).'/../'.$path);
 	if($echo)
 		echo $time;
 	return $time;
 }
-function pModTime($path){
-	echo $path.'?t='.modTime($path,false);
+function pModTime($path,$echo=true){
+	$path.='?t='.modTime($path,false);
+	if($echo)
+		echo $path;
+	return $path;
 }
 
 function parseIDList($arr){

@@ -12,7 +12,7 @@ require_once('../utils/common.php');
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>新管理</title>
+	<title>管理</title>
 	<script src="../<?php pModTime('static/api.js');?>"></script>
 	<script src="../<?php pModTime('static/vue.min.js');?>"></script>
 	<!-- <script src="../<?php pModTime('static/vue-router.js');?>"></script> -->

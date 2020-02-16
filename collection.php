@@ -35,9 +35,9 @@ try{
 <head>
 	<meta charset="utf-8"/>
 	<title>Loading</title>
-	<script src='static/api.js?<?php modTime('static/api.js');?>'></script>
-	<link rel="stylesheet" type="text/css" href="static/collection.css?<?php modTime('static/collection.css');?>">
-	<script src="static/playerFrame.js?<?php modTime('static/playerFrame.js');?>"></script>
+	<script src='<?php pModTime('static/api.js');?>'></script>
+	<link rel="stylesheet" type="text/css" href="<?php pModTime('static/collection.css');?>">
+	<script src="<?php pModTime('static/playerFrame.js');?>"></script>
 </head>
 <body>
 <div id="collection_info">
@@ -47,5 +47,5 @@ try{
 <iframe id="player_iframe" allowfullscreen></iframe>
 </body>
 <script>var info=JSON.parse(base64.decode('<?php echo base64_encode(json_encode($collInfo,JSON_UNESCAPED_UNICODE));?>'));</script>
-<script src="static/collection.js?<?php modTime('static/collection.js');?>"></script>
+<script src="<?php pModTime('static/collection.js');?>"></script>
 </html>
