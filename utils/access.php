@@ -5,7 +5,7 @@ class Access{
 	function __construct(){
 		@session_start();
 		//为dev模式且登陆了的用户打开错误报告
-		if(Access::hasLoggedIn() && @constant('dev')===true){
+		if(Access::hasLoggedIn() && Access::devMode()){
 		    ini_set("display_errors", "On");
 		    error_reporting(E_ALL | E_STRICT);
 		}else{
@@ -37,7 +37,8 @@ class Access{
 		exit;
 	}
 	static function devMode(){
-		return Access::hasLoggedIn()&&(@constant('dev')===true);
+		global $devMode;
+		return Access::hasLoggedIn()&&($devMode===true);
 	}
 	static function checkAccess(){
 		$accessCode=@$_GET['access'];

@@ -23,6 +23,7 @@ var windowTemplate =`<div>
 var windowStyles=[
 	'$frame {position:absolute;top:50%;left:50%;width:20em;height:10em;}',
 	'$frame #fWindowUIFrame{border-radius: 0.3em;overflow: hidden;background:#fff;border:2px solid #bdbdbd;box-sizing:border-box;position:absolute;top:0;left:0;height:100%;width:100%;display:flex;flex-direction:column;align-content:stretch;}',
+	'$frame.maximize #fWindowUIFrame{border:none;}',
 	'$frame.maximize{top:0!important;left:0!important;width:100%!important;height:100%!important;}',
 	'$frame #fWindowTitleBar{flex-shrink:0;background:linear-gradient(45deg, #a2a2a2, transparent);height:1.5em;line-height:1em;width:100%;position:relative;flex-grow:0;}',
 	'$frame.active #fWindowTitleBar{background:linear-gradient(45deg, #4498fb, transparent);} ',
@@ -31,6 +32,7 @@ var windowStyles=[
 	'$frame #fWindowTitleBar>#fWindowFrameController>div{font-weight:700;font-family:monospace;background:#e8e8e8;display:inline-block;border:1px solid #ccc;cursor:pointer;box-sizing:border-box;width:1.7em;height:100%;text-align:center;text-shadow:1px 1px 1px #7d7d7d;vertical-align:middle;line-height:1.5em;}',
 	'$frame #fWindowTitleBar>#fWindowFrameController>div[type="close"]{background:red;color:#fff;}',
 	'$frame.maximize #fWindowTitleBar>#fWindowFrameController>div[type="maximize"]{display:none;}',
+	'$frame.maximize #fWindowResizer{display:none;}',
 	'$frame #fWindowTitleBar>#fWindowFrameController>div[type="normalize"]{display:none;}',
 	'$frame.maximize #fWindowTitleBar>#fWindowFrameController>div[type="normalize"]{display:inline-block;}',
 	'$frame #fWindowContentFrame{flex-grow:1;overflow:auto;width:100%;background:#f3f3f3;}',
@@ -46,10 +48,48 @@ var windowStyles=[
 	'$frame #fWindowResizer>div#LB{left:-2px;top:100%;cursor:nesw-resize;}',
 	'$frame #fWindowResizer>div#RT{right:-2px;top:-2px;cursor:nesw-resize;}',
 	'$frame #fWindowResizer>div#RB{right:-2px;top:100%;cursor:nwse-resize;}',
-	'',
 ];
 
-class FWindow{
+class FWindowEventEmitter{
+	constructor(){
+		this._events={};
+	}
+	emit(e,...arg){
+		if(e in this._events){
+			const hs=this._events[e];
+			try{
+				for(let h of hs){
+					if(h.apply(null,arg)===false)return;//stpp when callback return false
+				}
+			}catch(e){
+				console.error('event callback error',e);
+			}
+		}
+		this.globalEventHandle(e,...arg);
+	}
+	addEventListener(...args){
+		this.on(...args);
+	}
+	on(e,handle,top=false){
+		if(!(handle instanceof Function))return;
+		if(!(e in this._events))this._events[e]=[];
+		if(top)
+			this._events[e].unshift(handle);
+		else
+			this._events[e].push(handle);
+	}
+	removeEvent(e,handle){
+		if(!(e in this._events))return;
+		if(arguments.length===1){delete this._events[e];return;}
+		let ind;
+		if(ind=(this._events[e].indexOf(handle))>=0)this._events[e].splice(ind,1);
+		if(this._events[e].length===0)delete this._events[e];
+	}
+	globalEventHandle(name,...arg){}//所有事件会触发这个函数
+	log(){}
+}
+
+class FWindow extends FWindowEventEmitter{
 	static random(){return (Math.random()*0xFFFFFFFFFFFFFF).toString(16);}
 	static randomPrefix=this.random();
 	static defaultOpt={
@@ -70,8 +110,16 @@ class FWindow{
 	static windowTemplate=windowTemplate;
 	static vars={
 		zIndex:99,//zIndex for actived window
-		actived:null,//actived FWindow
+		actived:null,//actived FWindow,
 	};
+	static defaultEvents=null;//do not add events on this event emitter
+	static addDefaultEvent(...args){
+		console.log(this);
+		if(!this.hasOwnProperty('defaultEvents')){
+			this.defaultEvents=new FWindowEventEmitter();
+		}
+		this.defaultEvents.on(...args);
+	}
 	static $(id){
 		return this.windows.get(id);
 	}
@@ -98,6 +146,7 @@ class FWindow{
 	//return a promise,resolve to the return value when closed
 	get returnValue(){return this.vars.returnValue||(this.vars.returnValue=new Promise((ok)=>{this.vars.return=ok;}));}
 	constructor(options={}){
+		super();
 		let opt=this.opt = Object.assign({},this.constructor.defaultOpt,options);
 		this.ele={};
 		this.vars={
@@ -150,9 +199,11 @@ class FWindow{
 			}
 		});
 		//set content
+		this.emit('beforeContent',this);
 		if('content'in opt){
 			this.setContent(opt.content);
 		}
+		this.emit('afterContent',this);
 		//active return promise
 		this.returnValue;
 		//prevent page scroll
@@ -161,6 +212,7 @@ class FWindow{
 		this._defineEvents();
 		//focus
 		if(opt.focus)this.focus();
+		this.emit('windowCreated',this);
 	}
 	$(selector){
 		return this.el_frame.querySelector(selector);
@@ -191,7 +243,7 @@ class FWindow{
 		this.vars.return(returnValue);
 		return true;
 	}
-	event(selector,event,func){
+	domEvent(selector,event,func){
 		let el=(selector instanceof Node)?selector:this.$(selector);
 		el.addEventListener(event,func);
 		this.vars.definedEvents.push([el,event,func]);
@@ -224,13 +276,17 @@ class FWindow{
 	maximize(bool=!this.isMaximized()){
 		this.el_frame.classList[bool?'add':'remove']('maximize');
 	}
+	globalEventHandle(name,...arg){
+		this.constructor.defaultEvents
+			&&this.constructor.defaultEvents.emit(name,...arg);
+	}
 	isMaximized(){
 		return this.el_frame.classList.contains('maximize');
 	}
 	_defineEvents(){
-		this.event(this.el_frame,'mousedown',e=>this.focus());//active window
-		// this.event('#fWindowFrameController>div[type="close"]','click',e=>this.close());
-		this.event('#fWindowResizer','mousedrag',e=>{
+		this.domEvent(this.el_frame,'mousedown',e=>this.focus());//active window
+		// this.domEvent('#fWindowFrameController>div[type="close"]','click',e=>this.close());
+		this.domEvent('#fWindowResizer','mousedrag',e=>{
 			let id=e.target.id;
 			let rect=this.el_frame.getBoundingClientRect();
 			if(id.indexOf('L')>-1){
@@ -256,7 +312,7 @@ class FWindow{
 				else this.height=e.clientY-rect.top;
 			}
 		});
-		this.event('#fWindowTitle','mousedrag',e=>{
+		this.domEvent('#fWindowTitle','mousedrag',e=>{
 			if(this.isMaximized()){//cancel maximized
 				let //thisRect=this.el_frame.getBoundingClientRect(),
 					parentRect=this.el_frame.parentNode.getBoundingClientRect();
@@ -267,10 +323,10 @@ class FWindow{
 			this.left+=e.movementX;
 			this.top+=e.movementY;
 		});
-		this.event('#fWindowTitle','dblclick',e=>{
+		this.domEvent('#fWindowTitle','dblclick',e=>{
 			this.maximize();
 		});
-		this.event('#fWindowFrameController','click',e=>{
+		this.domEvent('#fWindowFrameController','click',e=>{
 			switch(e.target.getAttribute('type')){
 				case 'maximize':this.maximize(true);break;
 				case 'normalize':this.maximize(false);break;
@@ -284,7 +340,7 @@ class FWindow{
 		}
 	}
 	_makeItLocalScroll(i){
-		this.event(i,'wheel', e=>{
+		this.domEvent(i,'wheel', e=>{
 			var t=e.target,x=0,y=0;
 			if(i!=t && t.clientHeight<t.scrollHeight)return;
 			if(i!=t && t.clientWidth<t.scrollWidth)return;

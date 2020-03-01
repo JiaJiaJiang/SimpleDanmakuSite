@@ -13,6 +13,9 @@ function isInt($num){
 	if(is_string($num))return isIntStr($num);
 	return false;
 }
+function isValidId($id){
+	return isIntStr($id)||isInt($id);
+}
 function isValidColor($c){
 	preg_match("/^\#?((?:[\da-f\$]{3}){1,2})$/i",$c,$result);
 	return count($result)?$result[1]:false;

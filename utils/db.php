@@ -66,27 +66,46 @@ class commonDBOpt{
 		require_once(dirname(__FILE__).'/common.php');
 		$this->table=$table;
 		$this->idName=$idName;
-		$this->editableItems=$editableItems;
+		$this->editableItems=$editableItems?$editableItems:array();
 		dbOpt::checkSelectorArray($editableItems);
 		$this->editableItemsStr=implode(',', $editableItems);
 	}
 	public $table=null;
 	public $idName=null;
-	public $editableItems=array();
+	public $editableItems;
 	public $editableItemsStr=null;
 	function add($info){
 		if(is_array($info))$info=(object)$info;
 		if(!is_object($info))
 			throw new Exception('info不是对象',-1);
-		$args=array();
-		$info->date=time();
-		foreach($this->editableItems as $value) {
-			$args[]=property_exists($info, $value)?$info->$value:null;
+		$values=array();
+		foreach($this->editableItems as &$value) {
+			$values[]=property_exists($info, $value)?$info->$value:null;
 		}
-		$pre = dbOpt::$PDO->prepare('INSERT INTO `'.$this->table.'` ('.$this->editableItemsStr.') VALUES ('.implode(',',array_fill(0,count($this->editableItems),'?')).')');
-		stdoutl("values:".implode(' ', $args));
-		$this->execute($pre,$args);
+		$sql = "INSERT INTO `{$this->table}` ({$this->editableItemsStr}) VALUES (".implode(',',array_fill(0,count($this->editableItems),'?')).')';
+		$this->prepareExe($sql,$values);
 		return dbOpt::$PDO->lastInsertId();
+	}
+	function batchAdd($list){
+		if(!is_array($list))throw new Exception('Array expected');
+		$valueGroup=array();
+		$valueGroupCount=0;
+		foreach($list as &$info){
+			if(!is_object($info))
+				throw new Exception('info不是对象',-1);
+			$tvalue=array();
+			foreach($this->editableItems as &$value) {
+				$tvalue[]=property_exists($info, $value)?$info->$value:null;
+			}
+			array_push($valueGroup,$tvalue);
+			$valueGroupCount++;
+		}
+		$sql = "INSERT INTO `{$this->table}` ({$this->editableItemsStr}) VALUES ".'('.implode(',',array_fill(0,count($this->editableItems),'?')).')';
+		$pre = dbOpt::$PDO->prepare($sql);
+		foreach($valueGroup as &$values){
+			$this->execute($pre,$values);
+		}
+		return $valueGroupCount;
 	}
 	function update($id,$info){
 		$this->checkID($id);
@@ -95,7 +114,7 @@ class commonDBOpt{
 			throw new Exception('info不是对象',-1);
 		$items=array();
 		$values=array();
-		foreach ($info as $key => $value) {
+		foreach ($info as $key => &$value) {
 			if(!in_array($key,$this->editableItems))
 				throw new Exception('项名错误:'.$key);
 			$items[]="`$key`=?";
@@ -103,23 +122,41 @@ class commonDBOpt{
 		}
 		$values[]=$id;
 		$itemStr=implode(',', $items);
-		$sql='UPDATE `'.$this->table.'` SET '.$itemStr.' WHERE `'.$this->idName.'`=?';
-		
-		$pre = dbOpt::$PDO->prepare($sql);
-		$this->execute($pre,$values);
-		return $pre->rowCount();
+		$sql="UPDATE `{$this->table}` SET $itemStr WHERE `{$this->idName}`=?";
+		return $this->prepareExe($sql,$values)->rowCount();
+	}
+	function batchUpdate($ids,$info){//ids:array	info:object
+		$idPlaceHolder=array();
+		foreach($ids as &$id){
+			$this->checkID($id);
+			$idPlaceHolder[]='?';
+		}
+		if(is_array($info))$info=(object)$info;
+		if(!is_object($info))
+		throw new Exception('info不是对象',-1);
+		$items=array();
+		$values=array();
+		foreach ($info as $key => &$value) {
+			if(!in_array($key,$this->editableItems))
+				throw new Exception('项名错误:'.$key);
+			$items[]="`$key`=?";
+			$values[]=$value;
+		}
+		$values=array_merge($values,$ids);
+		$sql="UPDATE `{$this->table}` SET ".implode(',', $items).' WHERE `'.$this->idName.'` in ('.implode(',', $idPlaceHolder).')';
+		return $this->prepareExe($sql,$values)->rowCount();
 	}
 	function delete($id){
 		if(!is_array($id))$id=array($id);
 		$count=count($id);
 		if($count==0)return 0;
-		foreach ($id as $value) {
+		foreach ($id as &$value) {
 			$this->checkID($value);
 		}
 		$qustr=implode(',',array_fill(0,$count,'?'));//组成问号组
-		$pre = dbOpt::$PDO->prepare('DELETE FROM `'.$this->table.'` WHERE `'.$this->idName.'` IN('.$qustr.')');
-		$this->execute($pre,$id);
-		return $pre->rowCount();
+		return $this->prepareExe(
+			"DELETE FROM `{$this->table}` WHERE `{$this->idName}` IN($qustr)",$id
+		)->rowCount();
 	}
 	function get($option){
 		if(is_array($option))$option=(object)$option;
@@ -127,11 +164,11 @@ class commonDBOpt{
 			throw new Exception('option不是一个对象',-1);
 		$countMode=@$option->countMode==true;
 		$condition=@$option->condition;
-		$arg=is_array(@$option->arg)?$option->arg:array();
+		$values=is_array(@$option->arg)?$option->arg:array();
 		$limit=@$option->limit;
 		$rawItem=@$option->item;
 		if($rawItem){
-			foreach ($rawItem as $key) {
+			foreach ($rawItem as &$key) {
 				if(!preg_match('/^\w+(\ AS \w+)?$/', $key))
 					throw new Exception('项名错误:'.$key,-1);
 			}
@@ -148,30 +185,35 @@ class commonDBOpt{
 		if(!$countMode){
 			$sql.=' ORDER BY `'.$this->idName.'` '.$order;
 			if(is_array($limit)){
-				foreach ($limit as $key => $value) {
+				foreach ($limit as $key => &$value) {
 					$limit[$key]=intval($value);
 				}
 				$sql.=(' LIMIT '.implode(',',array_fill(0,count($limit),'?')));
-				$arg=array_merge($arg,$limit);
+				$values=array_merge($values,$limit);
 			}
 		}
-		$pre = dbOpt::$PDO->prepare($sql);
-		$this->execute($pre,$arg);
-		return $pre->fetchAll();
+		return $this->prepareExe($sql,$values)->fetchAll();
 	}
 	function checkID($id){
-		if(!isInt($id))throw new Exception('Invalid id');
+		if(!isValidId($id))throw new Exception('Invalid id');
+	}
+	function prepareExe($sql,$values){
+		$pre = dbOpt::$PDO->prepare($sql);
+		$this->execute($pre,$values);
+		return $pre;
 	}
 	function execute($pdostat,$arg){
 		try{
 			return $pdostat->execute($arg);
 		}catch(Exception $e){
-			if(Access::devMode()){
-				throw $e;
+			$throwDetail=Access::hasLoggedIn()||Access::devMode();
+			if($throwDetail){
+				$vioCode=dbOpt::getViolationCode($e);
+				$msg=(property_exists($this,'errorInfo')&&is_array(@$this::$errorInfo))
+						?$this::$errorInfo[$vioCode]
+						:$e->getMessage();
+				if($msg)throw new Exception($msg,$vioCode);
 			}
-			$vioCode=dbOpt::getViolationCode($e);
-			$msg=is_array(@$this::$errorInfo)?$this::$errorInfo[$vioCode]:(Access::hasLoggedIn()?$e->message:null);
-			if($msg)throw new Exception($msg,$vioCode);
 			throw new Exception("数据库错误", -8);
 		}
 	}

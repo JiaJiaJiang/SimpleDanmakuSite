@@ -21,7 +21,7 @@ try{
 	}
 }catch(Exception $e){
 	http_response_code(500);
-	echo 'Error<BR>';
+	echo 'Error<br>';
 	require_once(dirname(__FILE__).'/utils/access.php');
 	if(Access::hasLoggedIn()){
 		echo '<div style="white-space:pre;">';

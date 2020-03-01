@@ -10,6 +10,7 @@ class Video extends commonDBOpt{
 	);
 	function add($info){
 		Access::requireLogin();
+		if(!isset($info->date))$info->date=time();
 		return parent::add($info);
 	}
 	function update($vid,$info){
@@ -53,11 +54,11 @@ WHERE V.vid=?'.($showHidden?'':' && V.hidden=0 && (ISNULL(C.hidden)||C.hidden=0)
 			array_push($arg->condition,'(vid=? || cid=? || title LIKE ? || description LIKE ?)');
 			array_push($arg->arg,$arg->search,$arg->search,'%'.$arg->search.'%','%'.$arg->search.'%');
 		}
-		if(@$arg->vid){//获取单个视频信息
+		if(isValidId(@$arg->vid)){//获取单个视频信息
 			array_push($arg->condition,'vid=?');
 			array_push($arg->arg,$arg->vid);
 		}
-		if(@$arg->cid){//获取合集视频信息
+		if(isValidId(@$arg->cid)){//获取合集视频信息
 			array_push($arg->condition,'cid=?');
 			array_push($arg->arg,$arg->cid);
 		}

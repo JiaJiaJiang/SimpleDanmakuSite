@@ -5,42 +5,55 @@ class Danmaku extends commonDBOpt{
 	function __construct(){
 		parent::__construct('danmaku','did',array('vid','content','mode','time','color','size','date'));
 	}
-
-	function add($it){//添加弹幕，返回id
-		stdoutl(json_encode($it));
-		if(is_array($it))$it=(object)$it;
-		if(!is_object($it))
+	static function validateDanmaku(&$dmObj){
+		if(is_array($dmObj))$dmObj=(object)$dmObj;
+		if(!is_object($dmObj))
 			throw new Exception('Items is not a object',-1);
-		if(!isInt(@$it->vid))
-			throw new Exception('Invalid video id');
-		if(!isInt(@$it->time)|| $it->time<0)
-			throw new Exception('Invalid danmaku time');
-		if(trim(@$it->content)=='')
+		if(!isInt(@$dmObj->vid)||$dmObj->vid<0)
+			throw new Exception('Invalid video id :'.$dmObj->vid);
+		if(!isInt(@$dmObj->time)|| $dmObj->time<0)
+			throw new Exception('Invalid danmaku time :'.$dmObj->time);
+		if(trim(@$dmObj->content)=='')
 			throw new Exception('Invalid danmaku content');
-		if((@$it->color=trim(@$it->color))&&!(@$it->color=isValidColor(@$it->color)))
-			throw new Exception('Invalid danmaku color');
+		if((@$dmObj->color=trim(@$dmObj->color))&&!(@$dmObj->color=isValidColor(@$dmObj->color)))
+			throw new Exception('Invalid danmaku color :'.$dmObj->color);
 
-		$it->mode=intval(@$it->mode);
-		$it->time=intval(@$it->time);
-		$it->size=intval(@$it->size);
+		$dmObj->mode=intval(@$dmObj->mode);
+		$dmObj->time=intval(@$dmObj->time);
+		$dmObj->size=intval(@$dmObj->size);
 		if(defined('allowedDanmakuSize')){
-			$list=json_decode(allowedDanmakuSize);
-			if(!in_array($it->size,$list)){
+			if(!is_array(allowedDanmakuSize)){
+				$Logger->error('setting','allowedDanmakuSize is not an array');
+				return;
+			}
+			// $list=json_decode(allowedDanmakuSize);
+			
+			if(!in_array($dmObj->size,allowedDanmakuSize)){
 				$nearest=0;
 				$minabs=0x7fffffff;
-				foreach ($list as $s) {
-					$abs=abs($s-$it->size);
+				foreach(allowedDanmakuSize as &$s) {
+					$abs=abs($s-$dmObj->size);
 					if($abs<$minabs){
 						$minabs=$abs;
 						$nearest=$s;
 					}
 				}
-				$it->size=$nearest;
+				$dmObj->size=$nearest;
 			}
 		}
-		if($it->mode<0||$it->mode>3)$it->mode=0;
-
+		if($dmObj->mode<0||$dmObj->mode>3)$dmObj->mode=0;
+		if(!isset($dmObj->date))$dmObj->date=time();
+	}
+	function add($it){//添加弹幕，返回id
+		// stdoutl(json_encode($it));
+		Danmaku::validateDanmaku($it);
 		return parent::add(@$it);
+	}
+	function batchAdd($list){
+		foreach($list as &$info){
+			Danmaku::validateDanmaku($info);
+		}
+		return parent::batchAdd($list);
 	}
 	function delete($id){//删除一条或多条弹幕，返回影响的行数
 		Access::requireLogin();
@@ -50,7 +63,7 @@ class Danmaku extends commonDBOpt{
 		Access::requireLogin();
 		$this->idName='vid';
 		$row=parent::delete($vid);
-		$this->idName='did';
+		$this->idName='did';//恢复idName
 		return $row;
 	}
 	function update($id,$opt){
@@ -65,7 +78,7 @@ class Danmaku extends commonDBOpt{
 			array_push($arg->condition,'(did=? || content LIKE ?)');
 			array_push($arg->arg,$arg->search,'%'.$arg->search.'%');
 		}
-		if(@$arg->vid){
+		if(isValidId(@$arg->vid)){
 			array_push($arg->condition,'(vid=?)');
 			array_push($arg->arg,$arg->vid);
 		}

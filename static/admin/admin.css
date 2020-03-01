@@ -1,3 +1,6 @@
+html{
+	min-height: 100%;
+}
 #frame{
 	margin: 0 auto;
 	width: 90%;
@@ -14,15 +17,16 @@ hr{
 	background: #ccc;
 	background: linear-gradient(to right, #ccc 0%,rgba(0,0,0,0.5) 16%, rgba(0,0,0,0));
 }
-button.main{
+button.main,a.main{
 	font-size: 1em;
 	padding: 0.4em 1em;
 	border: 1px solid #000;
 	margin: 0.3em 0.2em;
 	background: #f1f1f1;
+	text-decoration: none;
 	border-radius: 0.2em;
 }
-button.small{
+button.small,a.small{
 	font-size: 0.8em;
 	background: #fbfbfb;
 }
@@ -130,6 +134,7 @@ input#search{
 }
 .List #controls{
 	font-size: 1em;
+	margin-top: 0.7em;
 }
 .List #controls *{
 	font-size: inherit;
