@@ -28,6 +28,7 @@ switch(@$_GET['opt']) {
 		$count=0;
 		$dmList=json_decode(file_get_contents('php://input'));//获取body中的json
 		$danmakuOpt=new Danmaku();
+		set_time_limit(0);
 		apiResult(0,$danmakuOpt->batchAdd($dmList));
 	}
 	case 'clear':{
@@ -36,6 +37,7 @@ switch(@$_GET['opt']) {
 		$ids=parseIDList(@$_GET['vid']);
 		if($ids===false)
 			throw new Exception('vid error',-1);
+		set_time_limit(0);
 		apiResult(0,$danmakuOpt->deleteByVid(parseIDList($ids)));
 	}
 	case 'delete':{//删除一个或多个弹幕
@@ -43,7 +45,8 @@ switch(@$_GET['opt']) {
 		$danmakuOpt=new Danmaku();
 		$ids=parseIDList(@$_GET['did']);
 		if($ids===false)
-			throw new Exception('did error',-1);
+		throw new Exception('did error',-1);
+		set_time_limit(0);
 		$affected=$danmakuOpt->delete($ids);
 		apiResult(0,$affected);
 	}
