@@ -22,16 +22,16 @@ class Danmaku extends commonDBOpt{
 		$dmObj->time=intval(@$dmObj->time);
 		$dmObj->size=intval(@$dmObj->size);
 		if(defined('allowedDanmakuSize')){
-			if(!is_array(allowedDanmakuSize)){
-				$Logger->error('setting','allowedDanmakuSize is not an array');
+			$list=json_decode(allowedDanmakuSize);
+			if(!is_array($list)){
+				$Logger->error('setting','allowedDanmakuSize is not a json type array');
 				return;
 			}
-			// $list=json_decode(allowedDanmakuSize);
 			
-			if(!in_array($dmObj->size,allowedDanmakuSize)){
+			if(!in_array($dmObj->size,$list)){
 				$nearest=0;
 				$minabs=0x7fffffff;
-				foreach(allowedDanmakuSize as &$s) {
+				foreach($list as &$s) {
 					$abs=abs($s-$dmObj->size);
 					if($abs<$minabs){
 						$minabs=$abs;

@@ -18,7 +18,7 @@ define("warnLog",false);//是否记录警告
 //define("logPath",'');//记录日志的目录，注释掉即使用系统临时目录/simpleDanmakuSite/
 
 //数据
-define('allowedDanmakuSize',array(20,24,36));//允许提交的弹幕大小，不定义为不限制
+define('allowedDanmakuSize','[20,24,36]');//允许提交的弹幕大小，不定义为不限制
 
 //开发用
 //define('dev',true);

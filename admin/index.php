@@ -1,4 +1,5 @@
 <?php
+$entry=__FILE__;//让其它页面识别自己为被包含
 require_once('../utils/access.php');
 require_once('../utils/common.php');
 
