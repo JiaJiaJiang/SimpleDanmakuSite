@@ -1,11 +1,11 @@
 <?php
 require_once('../utils/access.php');
+require_once('../utils/common.php');
 
 if(!Access::hasLoggedIn()){//没有登录跳转到登录
 	require_once('login.php');
 	exit;
 }
-require_once('../utils/common.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -15,35 +15,47 @@ require_once('../utils/common.php');
 	<title>管理</title>
 	<script src="../<?php pModTime('static/api.js');?>"></script>
 	<script src="../<?php pModTime('static/vue.min.js');?>"></script>
-	<!-- <script src="../<?php pModTime('static/vue-router.js');?>"></script> -->
 	<script src="../<?php pModTime('static/floatWindow.js');?>"></script>
 <link rel="stylesheet" type="text/css" href="../<?php pModTime('static/admin/admin.css');?>">
 </head>
 <body>
+	<div><?php include('./templates.php');?></div>
 	<div id="frame">
 		<h1>管理</h1>
 		<hr/>
 		<button onclick="location='login.php?exit=1'" class="main">登出</button>
-		<button @click="danmakuViewer" class="main">全局弹幕搜索</button>
-		<div class="setting_block" id="block_video">
-			<h2>视频</h2>
-			<hr/>
-			<div id="video_list">
-				<div id="video_List"></div>
-			</div>
-
-			<button id="new_video" class="main small" @click="createVideo">新建</button>
-		</div>
-		<div class="setting_block" id="block_collection">
-			<h2>合集</h2>
-			<hr/>
-			<div id="collection_list">
-				<div id="collection_List"></div>
-			</div>
-			<button id="new_collection" class="main small" @click="createCollection">新建</button>
-			
+		<?php
+			function cmp($a, $b)
+			{
+				return $a->index-$b->index;
+			}
+			$page_list=glob('page/*.php',GLOB_NOESCAPE|GLOB_NOSORT);
+			$info=array();
+			foreach($page_list as $name) {
+				$pageInfo=include($name);
+				$pageInfo->page=substr($name,5,-4);
+				array_push($info,$pageInfo);
+			}
+			usort($info, "cmp");
+			foreach($info as $page) {
+				echo "<a href='?page=$page->page' class=\"main\">$page->name</a>";
+			}
+		?>
+		<?php
+		$getPage=true;
+		if(($page=@$_GET['page']) && preg_match("/^[\w\d]+$/",$page)){
+		}else{$page='video';}
+		?>
+		<div id="el_pageFrame" page="<?php echo $page;?>">
+		<?php include("page/$page.php");?>
 		</div>
 	</div>
-<script src="../<?php pModTime('static/admin/admin.js');?>"></script>
+	<?php
+		$plugin_list=glob("plugins/*.$page.php",GLOB_NOESCAPE);//页面插件
+		$plugin_list=array_merge($plugin_list,glob("plugins/*.common.php",GLOB_NOESCAPE));//通用插件
+		foreach($plugin_list as $name) {
+			include($name);//加载插件
+		}
+	?>
 </body>
 </html>

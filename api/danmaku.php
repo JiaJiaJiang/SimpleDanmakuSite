@@ -10,9 +10,9 @@ require_once(dirname(__FILE__).'/../utils/access.php');
 
 switch(@$_GET['opt']) {
 	case 'add':{//添加弹幕
+		Access::requireAccess();
 		$danmakuOpt=new Danmaku();
 		$dmInfo=json_decode(@$_GET['value']);
-		Access::requireAccess();
 		$thit=time();
 		if(!Access::hasLoggedIn()&&array_key_exists('lastDanmakuTime',$_SESSION)){//检查发送时间间隔
 			$lst = intval($_SESSION['lastDanmakuTime']);
@@ -22,6 +22,21 @@ switch(@$_GET['opt']) {
 		$_SESSION['lastDanmakuTime']=$thit;
 		$dmInfo->date=$thit;
 		apiResult(0,$danmakuOpt->add($dmInfo));
+	}
+	case 'batchAdd':{
+		Access::requireLogin();
+		$count=0;
+		$dmList=json_decode(file_get_contents('php://input'));//获取body中的json
+		$danmakuOpt=new Danmaku();
+		apiResult(0,$danmakuOpt->batchAdd($dmList));
+	}
+	case 'clear':{
+		Access::requireLogin();
+		$danmakuOpt=new Danmaku();
+		$ids=parseIDList(@$_GET['vid']);
+		if($ids===false)
+			throw new Exception('vid error',-1);
+		apiResult(0,$danmakuOpt->deleteByVid(parseIDList($ids)));
 	}
 	case 'delete':{//删除一个或多个弹幕
 		Access::requireLogin();

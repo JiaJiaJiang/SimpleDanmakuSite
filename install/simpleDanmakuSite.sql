@@ -9,7 +9,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 
-CREATE TABLE `collection` (
+CREATE TABLE `collection`(
   `cid` mediumint(8) UNSIGNED NOT NULL,
   `name` varchar(50) NOT NULL,
   `description` mediumtext,

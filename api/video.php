@@ -23,6 +23,16 @@ switch(@$_GET['opt']) {
 		$affected=$videoOpt->update($_GET['vid'],$videoInfo);
 		apiResult(0,$affected);
 	}
+	case 'batchUpdate':{//批量编辑视频
+		Access::requireLogin();
+		$videoOpt=new Video();
+		$ids=parseIDList(@$_GET['vid']);
+		if($ids===false)
+			throw new Exception('vid错误',-1);
+		$videoInfo=json_decode(@$_GET['value']);
+		$affected=$videoOpt->batchUpdate($ids,$videoInfo);
+		apiResult(0,$affected);
+	}
 	case 'delete':{//删除一个或多个视频
 		Access::requireLogin();
 		$videoOpt=new Video();

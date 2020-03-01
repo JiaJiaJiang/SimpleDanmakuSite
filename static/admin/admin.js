@@ -15,50 +15,27 @@ var adminPanel=new Vue({
 		createVideo(){
 			new VideoEditWindow({
 				location:'center',
-				parent:document.body,
-			}).center().returnValue.then(v=>v&&videoList.load());;//关闭窗口后刷新列表
+				parent:document.firstElementChild,
+			}).center().returnValue.then(v=>v&&window.videoList&&videoList.load());;//关闭窗口后刷新列表
 		},
 		createCollection(){
 			new CollectionEditWindow({
 				location:'center',
-				parent:document.body,
-			}).center().returnValue.then(v=>v&&collectionList.load());;//关闭窗口后刷新列表
+				parent:document.firstElementChild,
+			}).center().returnValue.then(v=>v&&window.collectionList&&collectionList.load());;//关闭窗口后刷新列表
 		},
 		danmakuViewer(){
 			new DanmakuListWindow({
 				title:`弹幕列表`,
 				location:'center',
-				parent:document.body,
+				parent:document.firstElementChild,
 			}).center().returnValue.then(v=>v&&this.load());//关闭窗口后刷新列表
 		}
 	}
 });
 
 class List{
-	static listTemplate=`<div class="List">
-	<input v-model.trim="search" id="search" placeholder="搜索" @keypress.enter="load" />
-	<table border="1">
-		<tr class="tableHead"><th v-if="selector"></th><th v-for="h in heads">{{h}}</th></tr>
-		<tr v-for="data in listData"><td><input v-if="selector" v-model="checked" type="checkbox" class="selector" v-bind:value="data.itemID"></td><!--rowTemplate--></tr>
-	</table>
-	<div class="controls" id="controls">
-		<span v-if="selector">
-		<button @click="select('all')">全选</button>
-		<button @click="select('opposite')">反选</button>
-		<button @click="deleteSelected()">删除</button>
-		</span>
-		<button @click="load()">刷新</button>
-		<span class="page">
-			<span v-show="loading">加载中..</span>
-			<button @click="pageOffset(-1)">上一页</button>
-			<input id="current_page" v-model.number="currentPage" @keypress.enter="load">
-			/
-			<input id="total_page" v-model="totalPage" contenteditable="false">
-			<button @click="pageOffset(1)">下一页</button>
-			<span style="margin-left: 1em;">总数:<input id="total_count" v-model="totalCount" placeholder="0" contenteditable="false"></span>
-		</span>
-	</div>
-</div>`;
+	static listTemplate=document.querySelector('#template-list').innerHTML;
 	constructor(options){
 		let opt=this.opt=Object.assign({},options);
 		//generate row template and heads
@@ -84,9 +61,26 @@ class List{
 				listData:[],
 				checked:[],
 				heads:heads,
-				selector:opt.selector||true
+				selector:opt.selector||true,
+				button_selectAll:true,
+				button_selectOpposite:true,
+				button_delete:true,
+				button_refresh:true,
+			},
+			watch:{
+				limit:()=>this.load()
 			},
 			filters:{
+				toSec(mills){
+					return mills/1000;
+				},
+				formatTime(sec,total=sec){
+					let r,s=sec|0,h=(s/3600)|0;
+					if(total>=3600)s=s%3600;
+					r=[padTime((s/60)|0),padTime(s%60)];
+					(total>=3600)&&r.unshift(h);
+					return r.join(':');
+				},
 				formatDate(timestamp){
 					return (new Date(timestamp*1000)).toLocaleString();
 				},
@@ -101,6 +95,10 @@ class List{
 				deleteSelected(){
 					THIS.delete(THIS.vue.$data.checked.slice());
 				},
+				search2(){
+					THIS.vue.$data.currentPage=1;
+					THIS.load();
+				},
 				load(){
 					THIS.load();
 				},
@@ -113,7 +111,9 @@ class List{
 	clearTable(){
 		this.vue.$data.listData.splice(0);
 	}
-	delete(){}
+	delete(){
+		return confirm('确定要删除吗？');
+	}
 	load(){
 		this.page=this.page;
 	}
@@ -130,7 +130,7 @@ class List{
 	$(selector){return this.vue.$el.querySelector(selector)}
 	$$(selector){return this.vue.$el.querySelectorAll(selector)}
 	get selected(){return this.vue.$data.checked;}
-	get el_table(){return this.$('table')}
+	get el_table(){return this.vue.$refs.table}
 	get limit(){return this.vue.limit;}
 	set limit(v){this.vue.limit=clamp(v,1,Infinity);}
 	get page(){return this.vue.currentPage;}
@@ -167,9 +167,22 @@ class SimpleList  extends List{
 			alert(err.message||err);
 			return;
 		}
+		if(this.page>this.totalPage){
+			this.page=this.totalPage;
+			this.load();
+			return;
+		}
 		this.vue.$data.loading=false;
 	}
+	addBottomButton(text,ev){
+		let b=document.createElement('button');
+		b.innerHTML=text;
+		b.className='main small';
+		b.addEventListener('click',ev);
+		this.vue.$el.appendChild(b);
+	}
 	async delete(api,arg,ids,name){
+		if(!super.delete())return;
 		try{
 			let affected=await SAPI.get(api,{
 				opt:'delete',
@@ -211,7 +224,7 @@ class VideoList extends SimpleList{
 					id:wid,
 					vid:vid,
 					location:'center',
-					parent:document.body,
+					parent:document.firstElementChild,
 				}).center().returnValue.then(v=>v&&this.load());//关闭窗口后刷新列表
 			}else if(t.id=='edit'){
 				let vid=Number(t.getAttribute('itemID'));
@@ -221,7 +234,7 @@ class VideoList extends SimpleList{
 				new VideoEditWindow({
 					vid:vid,
 					location:'center',
-					parent:document.body,
+					parent:document.firstElementChild,
 				}).center().returnValue.then(v=>v&&this.load());;//关闭窗口后刷新列表
 			}
 		});
@@ -265,7 +278,7 @@ class CollectionList extends SimpleList{
 				(new CollectionEditWindow({
 					cid,
 					location:'center',
-					parent:document.body,
+					parent:document.firstElementChild,
 				})).returnValue.then(v=>this.load());;//关闭窗口后刷新列表;
 			}else if(t.id=='video_list'){
 				let cid=Number(t.getAttribute('itemID'));
@@ -276,7 +289,7 @@ class CollectionList extends SimpleList{
 					cid,
 					id:wid,
 					location:'center',
-					parent:document.body,
+					parent:document.firstElementChild,
 				})).returnValue.then(v=>this.load());;//关闭窗口后刷新列表;
 			}
 		});
@@ -298,13 +311,33 @@ class CollectionList extends SimpleList{
 		return super.delete('collection','cid',ids,'合集');
 	}
 }
+class CollectionVideoList extends VideoList{
+	constructor(ele,cid){
+		super(ele,cid);
+		this.vue.$refs.deleteButton.innerHTML='移除';
+	}
+	async delete(ids){
+		if(!confirm('确定要移除吗？'))return;
+		try{
+			let affected=await SAPI.get('video',{
+				opt:'batchUpdate',
+				vid:ids.join(','),
+				value:{cid:null},
+			});//请求删除合集id
+			this.load();
+			alert('已移除'+affected+'个视频');
+		}catch(err){
+			alert(err.message||err);
+		}
+	}
+}
 class DanmakuList extends SimpleList{
 	static listItems=[
 		['did','ID',`{{data.did}}`],
 		['vid','视频',`{{data.vid}}`],
 		['content','内容',`{{data.content}}`],
 		['mode','模式',`{{data.mode}}`],
-		['time','时间',`{{data.time | formatTime}}`],
+		['time','时间',`{{data.time | toSec | formatTime}}`],
 		['color','颜色',`{{data.color}}`],
 		['size','大小',`{{data.size}}`],
 		['date','日期',`{{data.date | formatDate}}`],
@@ -313,21 +346,13 @@ class DanmakuList extends SimpleList{
 		super({
 			el:ele,
 			vueMixins:{
-				filters:{
-					formatTime(sec,total){
-						let r,s=sec|0,h=(s/3600)|0;
-						if(total>=3600)s=s%3600;
-						r=[padTime((s/60)|0),padTime(s%60)];
-						(total>=3600)&&r.unshift(h);
-						return r.join(':');
-					}
-				}
 			}
 		});
 		this.vid=vid;
 		this.load();
 	}
 	async load(){
+		this.page=this.page;
 		let req={
 			opt:'list',
 			arg:{
@@ -343,6 +368,7 @@ class DanmakuList extends SimpleList{
 		return super.delete('danmaku','did',ids,'弹幕');
 	}
 }
+
 class EditWindow extends FWindow{
 	constructor(opt){
 		super(opt);
@@ -351,7 +377,7 @@ class EditWindow extends FWindow{
 		this.changed=0;
 		this.vue=new Vue({
 			el:this.el_content.firstChild,
-			template:this.constructor.template,
+			template:document.querySelector(this.constructor.template).innerHTML,
 			data:opt.data,
 			mixins:opt.vueMixins,
 			methods:{
@@ -376,15 +402,7 @@ class CollectionEditWindow extends EditWindow{
 	static formatId(v){
 		return `window_collection_${v}`
 	}
-	static template=`<form onsubmit="return false;" style="display: flex;">
-		<input type="text" v-model.trim="name" placeholder="合集名" maxlength="100" style="flex-grow: 1;">
-		<textarea v-model.trim="description" placeholder="描述"></textarea>
-		<span style="line-height:2em;" class="check_span">
-			<label><input type="checkbox" v-model.trim="hidden">隐藏</label>
-		</span>
-		<span class="strech_for_fill"></span>
-		<button @click="save" class="main small" style="float:right;">保存</button>
-	</form>`;
+	static template='#template-CollectionEditWindow';
 	constructor(opt){
 		let o={
 			width:350,
@@ -438,7 +456,7 @@ class CollectionEditWindow extends EditWindow{
 				opt.cid=Number(r);
 				this.setCid(opt.cid);
 			}
-			collectionList.load();
+			window.collectionList&&collectionList.load();
 			this.changed=0;
 			this.close(true);
 		}catch(e){
@@ -450,19 +468,7 @@ class VideoEditWindow extends EditWindow{
 	static formatId(v){
 		return `window_video_${v}`
 	}
-	static template=`<form @change="change" onsubmit="return false;" style="display: flex;">
-	<input v-model.trim="title" type="text" placeholder="标题" maxlength="100" style="flex-grow: 1;">
-	<input v-model.trim="cover" type="text" placeholder="封面地址" style="flex-grow: 2.5;">
-	<input v-model.trim.number="cid" type="text" placeholder="合集id" style="flex-grow: 1;">
-	<textarea v-model.trim="description" placeholder="描述"></textarea>
-	<textarea v-model.trim="address" placeholder="地址"></textarea>
-	<textarea v-model="option" placeholder="其它选项(Json)"></textarea>
-	<span style="line-height:2em;" class="check_span">
-		<label><input v-model="hidden" type="checkbox" value="0">隐藏</label>
-	</span>
-	<span class="strech_for_fill"></span>
-	<button @click="save" class="main small" style="float:right;">保存</button>
-</form>`;
+	static template='#template-VideoEditWindow';
 	constructor(opt){
 		let o={
 			width:720,
@@ -480,13 +486,13 @@ class VideoEditWindow extends EditWindow{
 			},
 		};
 		super(Object.assign({},o,opt));
-		if(opt.vid)
+		if(opt.vid>=0)
 			this.load(opt.vid);
 		this.setVid(opt.vid);
 	}
 	setVid(vid){
 		this.id=this.constructor.formatId((vid!==undefined)?vid:this.constructor.random());
-		this.setTitle(vid?`编辑视频:${vid}`:`新建视频`);
+		this.setTitle(vid>=0?`编辑视频:${vid}`:`新建视频`);
 	}
 	async load(vid){
 		var req={
@@ -517,15 +523,15 @@ class VideoEditWindow extends EditWindow{
 		if(!info.title){alert('没有标题');return;}
 		if(!info.cid)info.cid=null;
 		let opt=this.opt;
-		var mode=(typeof this.opt.vid ==='number')?'update':'add';
+		var mode=(typeof opt.vid ==='number')?'update':'add';
 		try{
 			let r=await SAPI.get('video',{opt:mode,value:JSON.stringify(info),vid:opt.vid});
 			if(mode=='update'&&r==0)throw new Error('未改动');
-			if(!opt.vid){
+			if(mode==='add'){
 				opt.vid=Number(r);
 				this.setVid(opt.vid);
 			}
-			videoList.load();
+			window.videoList&&videoList.load();
 			this.changed=0;
 			this.close(true);
 		}catch(e){
@@ -533,6 +539,7 @@ class VideoEditWindow extends EditWindow{
 		}
 	}
 }
+
 class FillListWindow extends FWindow{
 	constructor(opt){
 		super(Object.assign({},{width:627,height:565},opt));
@@ -546,8 +553,49 @@ class DanmakuListWindow extends FillListWindow{
 		return `window_danmakuList_${v}`
 	}
 	constructor(opt){
-		super(Object.assign({},{width:627,height:565},opt));
-		new DanmakuList(this.el_content.firstChild,opt.vid);
+		super(Object.assign({},{width:820,height:565},opt));
+		this.list=new DanmakuList(this.el_content.firstChild,opt.vid);
+	}
+}
+DanmakuListWindow.addDefaultEvent('afterContent',win=>{
+	setTimeout(() => {
+		win.list.addBottomButton('清空弹幕',async ()=>{
+			if(!confirm('确定要清空此视频的弹幕吗？\n删除大量弹幕可能耗时较长，请等待。'))return;
+			try{
+				let affected=await SAPI.get('danmaku',{
+					opt:'clear',
+					vid:win.list.vid,
+				});//批量删除视频弹幕
+				win.list.load();
+				alert('已删除'+affected+'条弹幕');
+			}catch(err){
+				alert(err.message||err);
+			}
+		});
+	});
+});
+class CollectionAddVideoWindow extends FillListWindow{
+	//addToCollection
+	static formatId(v){
+		return `window_videoList_${v}`
+	}
+	constructor(opt){
+		super(Object.assign({},{width:820,height:730},opt));
+		this.setTitle(`向合集${opt.cid}添加视频`)
+		this.list=new VideoList(this.el_content.firstChild);
+		this.list.addBottomButton('添加选中视频',async e=>{
+			try{
+				let affected=await SAPI.get('video',{
+					opt:'batchUpdate',
+					vid:this.list.vue.$data.checked.join(','),
+					value:{cid:opt.cid},
+				});//批量修改视频cid
+				this.list.load();
+				alert('已添加'+affected+'个视频');
+			}catch(err){
+				alert(err.message||err);
+			}
+		});
 	}
 }
 class CollectionListWindow extends FillListWindow{
@@ -556,11 +604,22 @@ class CollectionListWindow extends FillListWindow{
 	}
 	constructor(opt){
 		super(Object.assign({},{width:950,height:565},opt));
-		new VideoList(this.el_content.firstChild,opt.cid);
-		this.el_content.firstChild.append('此删除会删掉视频条目，而非从合集移除。');
+		this.list=new CollectionVideoList(this.el_content.firstChild,opt.cid);
+		this.list.addBottomButton('添加',e=>{
+			new CollectionAddVideoWindow({
+				location:'center',
+				parent:document.firstElementChild,
+				cid:opt.cid
+			}).center().returnValue.then(v=>v&&this.list.load());;//关闭窗口后刷新列表
+		});
 	}
 }
 
-
-var videoList=new VideoList('#video_List');
-var collectionList=new CollectionList('#collection_List');
+switch(el_pageFrame.getAttribute('page')){
+	case 'video':
+		var videoList=new VideoList('#video_List');
+		break;
+	case 'collection':
+		var collectionList=new CollectionList('#collection_List');
+		break;
+}
