@@ -12,7 +12,7 @@ if(!Access::hasLoggedIn()){//没有登录跳转到登录
 <html>
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>管理</title>
 	<script src="../<?php pModTime('static/api.js');?>"></script>
 	<script src="../<?php pModTime('static/vue.min.js');?>"></script>

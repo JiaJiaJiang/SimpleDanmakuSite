@@ -5,6 +5,7 @@ require_once('../utils/common.php');
 <html>
 <head>
 	<title>加载中</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta charset="utf-8">
 	<style>
 		html{position: absolute;width: 100%;height:100%;background-repeat: no-repeat;background-position: center;}
