@@ -38,41 +38,46 @@ var pageSettings={
 //初始化播放器
 var tmp,opt={
 	volume:(tmp=Config.get('volume'))!=undefined?tmp:1,
-	enableDanmaku:!pageSettings.withoutDanmaku,
-	danmakuModuleArg:{
-		TextDanmaku:{
-			//defaultStyle:{},
-			options:{
-				allowLines:true,
-				screenLimit:0,
+	danmaku:{
+		enable:!pageSettings.withoutDanmaku,
+		modules:{
+			TextDanmaku:{
+				defaultStyle:{},
+				options:{
+					allowLines:true,//allow multi-line danmaku
+					screenLimit:0,//danmaku limit on a screen
+					autoShiftRenderingMode:true, //set true to enable auto rendering mode changing between css and canvas
+					renderingMode:1,//css mode
+				},
 			},
-		}
-	},
-	danmakuSend:function(d,callback){
-		var data={
-			vid:vid,
-			content:d.text,
-			mode:d.mode,
-			time:d.time,
-			color:d.color,
-			size:d.size
-		};
-		console.log(d);
-		var d2={_:'text',text:d.text,time:d.time,mode:d.mode,style:{fontSize:d.size},date:Date.now(),did:null};
-		if(d.color)d2.style.color=d.color;
-		callback(d2);
-		SAPI.getAccess(function(access) {
-			SAPI.get('danmaku',{opt:'add',value:data,access:access},function(err,r){
-				console.log(err,r);
-				if(err){
-					console.error(err);
-					return;
-				}
-				d2.did=Number(r);
+		},
+		send:function(d,callback){
+			var data={
+				vid:vid,
+				content:d.text,
+				mode:d.mode,
+				time:d.time,
+				color:d.color,
+				size:d.size
+			};
+			console.log(d);
+			var d2={_:'text',text:d.text,time:d.time,mode:d.mode,style:{fontSize:d.size},date:Date.now(),did:null};
+			if(d.color)d2.style.color=d.color;
+			callback(d2);
+			SAPI.getAccess(function(access) {
+				SAPI.get('danmaku',{opt:'add',value:data,access:access},function(err,r){
+					console.log(err,r);
+					if(err){
+						console.error(err);
+						return;
+					}
+					d2.did=Number(r);
+				});
 			});
-		});
+		},
 	},
-	playerFrame:document.body,
+	playerContainer:document.body,
+	fullScreenToFullPageIfNotSupported:true,
 };
 if(playerOpt){
 	playerOpt=base64.decode(playerOpt);
@@ -82,9 +87,9 @@ if(playerOpt){
 		alert('播放器配置错误');
 	}
 	if(typeof playerOpt === 'object')
-	for(var sopt in playerOpt){
-		opt[sopt]=playerOpt[sopt];
-	}
+		for(var sopt in playerOpt){
+			opt[sopt]=playerOpt[sopt];
+		}
 }
 if(NyaP_plugins){
 	opt.plugins||(opt.plugins=[]);
@@ -141,21 +146,21 @@ function accessCallback(r){
 
 //获取视频信息
 function getVideo(){
-	var _ligva=NP.loadingInfo('获取视频信息',true);
+	NP.stat('获取视频信息');
 	NP.video.addEventListener('error',function(e){
-		_ligva.append('error');
+		NP.statResult('获取视频信息',e);
 	});
 	SAPI.getAccess(function(access){
 		SAPI.get('video',{opt:'video',vid:vid,access:access},function(err,r){
 			if(err)return;
 			document.title=r.title;
 			if(!r.address || !r.address.length){
-				_ligva.append('无地址');
+				NP.statResult('获取视频信息','无地址');
 				return;
 			}
 			if(typeof r.option==='string' &&r.option)
 				r.option=JSON.parse(r.option);
-			_ligva.append(NP.opt.loadingInfo.doneText);
+			NP.statResult('获取视频信息');
 			NP.emit('videoInfo',r);
 			var addr=r.address[((r.address.length-1)*Math.random()+0.5)|0];
 			if(danmakuLoaded){
@@ -169,14 +174,14 @@ function getVideo(){
 	});
 }
 function loadVideo(address){
-	NP.loadingInfo(NP.i18n._('Loading video'));
-	NP.src=address;
+	NP.stat(NP.i18n._('Loading video'));
+	NP.setVideoSrc(address);
 }
 
 
 //获取弹幕
 function getDanmaku(){
-	var _ligd=NP.loadingInfo('获取弹幕',true);
+	NP.stat('获取弹幕');
 	SAPI.getAccess(function(access){
 		SAPI.get('danmaku',{opt:'get',vid:vid,access:access},function(err,r){
 			if(err)return;
@@ -196,7 +201,7 @@ function getDanmaku(){
 				});
 			});
 			NP.Danmaku.loadList(list);
-			_ligd.append(NP.opt.loadingInfo.doneText);
+			NP.statResult('获取弹幕');
 			danmakuLoaded=true;
 		});	
 	});

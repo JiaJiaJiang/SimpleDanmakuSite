@@ -14,7 +14,8 @@ require_once('../utils/common.php');
 <body>
 </body>
 <script>
-var touchMode=navigator.userAgent.match(/mobile/i) && ('ontouchstart' in window),//touch player
+var ua=navigator.userAgent,
+	touchMode=(ua.match(/mobile/i) || ua.match(/android/i))&& ('ontouchstart' in window),//touch player
 	scriptVer=50,
 	NyaPTime=<?php modTime('static/NyaP');?>;
 try{//es2016 version feature test
@@ -29,7 +30,7 @@ try{//es2016 version feature test
 	].forEach(function(s){eval(s)});
 }catch(e){
 	console.log('not supported feature:',e);
-	scriptVer=80;
+	scriptVer=90;
 }
 var playerName='NyaP'+(touchMode?"Touch":"");
 console.log('load player',playerName,scriptVer);

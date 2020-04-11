@@ -24,6 +24,7 @@ class Danmaku extends commonDBOpt{
 		if(defined('allowedDanmakuSize')){
 			$list=json_decode(allowedDanmakuSize);
 			if(!is_array($list)){
+				global $Logger;
 				$Logger->error('setting','allowedDanmakuSize is not a json type array');
 				return;
 			}
