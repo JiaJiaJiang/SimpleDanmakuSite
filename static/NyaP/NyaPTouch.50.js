@@ -6987,6 +6987,8 @@ const NyaPCommonOptions = {
         options: {}
       }
     },
+    defaultDanmakuColor: null,
+    //a hex color(without #),default when the color inputed is invalid
     send: d => {
       return _promise.default.reject();
     } //the method for sending danmaku
@@ -6995,10 +6997,12 @@ const NyaPCommonOptions = {
   // for ui
   uiOptions: {
     danmakuColor: null,
-    //a hex color(without #),when the color inputed is invalid,this color will be applied
+    //default color to fill the color option input
     danmakuMode: 0,
     //0: right to left.
-    danmakuSize: 24
+    danmakuSize: 24,
+    autoHideDanmakuInput: true //hide danmakuinput after danmaku sending
+
   },
   loadingInfo: {
     //text replacement at loading time (for left-bottom message)
@@ -7126,7 +7130,7 @@ class NyaPCommon extends _index.NyaPlayerCore {
 
     _index.DomTools.addEvents(this.video, {
       loadedmetadata: e => {
-        this.statResult('loading_video', null);
+        this.statResult('loading_video');
         clearInterval(this._.loadingAnimationInterval);
         let lf = this.$('#loading_frame');
         if (lf.parentNode) //remove loading animation
@@ -7237,6 +7241,35 @@ class NyaPCommon extends _index.NyaPlayerCore {
   _setDisplayTime(current = null, total = null) {
     if (current !== null) this.$('#current_time').innerHTML = current;
     if (total !== null) this.$('#total_time').innerHTML = total;
+  }
+
+  send() {
+    let color = this._.danmakuColor || this.opt.danmaku.defaultDanmakuColor,
+        text = this.$('#danmaku_input').value,
+        size = this._.danmakuSize,
+        mode = this._.danmakuMode,
+        time = this.Danmaku.time,
+        d = {
+      color,
+      text,
+      size,
+      mode,
+      time
+    };
+    let S = this.Danmaku.send(d, danmaku => {
+      if (danmaku && danmaku._ === 'text') this.$('#danmaku_input').value = '';
+      danmaku.highlight = true;
+      this.Danmaku.load(danmaku, true);
+
+      if (this.opt.uiOptions.autoHideDanmakuInput) {
+        this.danmakuInput(false);
+      }
+    });
+
+    if (!S) {
+      this.danmakuInput(false);
+      return;
+    }
   }
 
 }
@@ -7728,7 +7761,7 @@ class NyaPTouch extends _NyaPCommon.NyaPCommon {
               var _context4;
 
               NP._.danmakuColor = undefined;
-              c = NP.Danmaku.isVaildColor(NP.opt.defaultDanmakuColor);
+              c = NP.Danmaku.isVaildColor(NP.opt.danmaku.defaultDanmakuColor);
               (0, _forEach.default)(_context4 = _NyaPCommon.Utils.toArray($('#danmaku_color_box').childNodes)).call(_context4, cp => cp.classList.remove('active'));
             }
           }
@@ -7816,7 +7849,7 @@ class NyaPTouch extends _NyaPCommon.NyaPCommon {
         let el = icon(`danmakuMode${m}`);
         $('#danmaku_mode_box').appendChild(el);
 
-        if ((0, _isInteger.default)(opt.defaultDanmakuMode) && m === ((_opt = opt) === null || _opt === void 0 ? void 0 : (_opt$uiOptions = _opt.uiOptions) === null || _opt$uiOptions === void 0 ? void 0 : _opt$uiOptions.danmakuMode)) {
+        if ((0, _isInteger.default)((_opt = opt) === null || _opt === void 0 ? void 0 : (_opt$uiOptions = _opt.uiOptions) === null || _opt$uiOptions === void 0 ? void 0 : _opt$uiOptions.danmakuMode) && m === opt.uiOptions.danmakuMode) {
           el.click();
         }
       });
@@ -7832,26 +7865,6 @@ class NyaPTouch extends _NyaPCommon.NyaPCommon {
 
     if (opt.playerContainer instanceof HTMLElement) opt.playerContainer.appendChild(NP.player);
     this.statResult('creating_player');
-  }
-
-  send() {
-    let color = this._.danmakuColor || this.opt.defaultDanmakuColor,
-        text = this.$('#danmaku_input').value,
-        size = this._.danmakuSize,
-        mode = this._.danmakuMode,
-        time = this.time,
-        d = {
-      color,
-      text,
-      size,
-      mode,
-      time
-    };
-    this.Danmaku.send(d, danmaku => {
-      if (danmaku && danmaku._ === 'text') this.$('#danmaku_input').value = '';
-      danmaku.highlight = true;
-      this.load(danmaku, true);
-    });
   }
 
   controlsToggle(bool = this.$('#controls').hidden) {

@@ -56,11 +56,10 @@ var tmp,opt={
 				vid:vid,
 				content:d.text,
 				mode:d.mode,
-				time:d.time,
+				time:Math.round(d.time),
 				color:d.color,
 				size:d.size
 			};
-			console.log(d);
 			var d2={_:'text',text:d.text,time:d.time,mode:d.mode,style:{fontSize:d.size},date:Date.now(),did:null};
 			if(d.color)d2.style.color=d.color;
 			callback(d2);
@@ -174,7 +173,6 @@ function getVideo(){
 	});
 }
 function loadVideo(address){
-	NP.stat(NP.i18n._('Loading video'));
 	NP.setVideoSrc(address);
 }
 

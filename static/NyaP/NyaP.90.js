@@ -10018,8 +10018,6 @@ var _NyaPCommon2 = require("./NyaPCommon.js");
 var O2H = _NyaPCommon2.DomTools.Object2HTML; //NyaP options
 
 var NyaPOptions = {
-  autoHideDanmakuInput: true,
-  //hide danmakuinput after danmaku sending
   danmakuColors: ['fff', '6cf', 'ff0', 'f00', '0f0', '00f', 'f0f', '000'],
   //colors in the danmaku style pannel
   danmakuModes: [0, 3, 2, 1],
@@ -10349,7 +10347,7 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
             NP._.danmakuColor = c;
           } else {
             NP._.danmakuColor = undefined;
-            c = NP.Danmaku.isVaildColor(NP.opt.defaultDanmakuColor);
+            c = NP.Danmaku.isVaildColor(NP.opt.danmaku.defaultDanmakuColor);
             i.style.backgroundColor = c ? "#".concat(c) : '';
           }
         }
@@ -10701,39 +10699,6 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
       this.emit('progressRefresh');
     }
   }, {
-    key: "send",
-    value: function send() {
-      var _this4 = this;
-
-      var color = this._.danmakuColor || this.opt.defaultDanmakuColor,
-          text = this.$('#danmaku_input').value,
-          size = this._.danmakuSize,
-          mode = this._.danmakuMode,
-          time = this.time,
-          d = {
-        color: color,
-        text: text,
-        size: size,
-        mode: mode,
-        time: time
-      };
-      var S = this.Danmaku.send(d, function (danmaku) {
-        if (danmaku && danmaku._ === 'text') _this4.$('#danmaku_input').value = '';
-        danmaku.highlight = true;
-
-        _this4.load(danmaku, true);
-
-        if (_this4.opt.autoHideDanmakuInput) {
-          _this4.danmakuInput(false);
-        }
-      });
-
-      if (!S) {
-        this.danmakuInput(false);
-        return;
-      }
-    }
-  }, {
     key: "_progressDrawer",
     value: function _progressDrawer() {
       var ctx = this._.progressContext,
@@ -10800,12 +10765,12 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
   }, {
     key: "drawProgress",
     value: function drawProgress() {
-      var _this5 = this;
+      var _this4 = this;
 
       if (this._.drawingProgress) return;
       this._.drawingProgress = true;
       requestAnimationFrame(function () {
-        return _this5._progressDrawer();
+        return _this4._progressDrawer();
       }); //prevent progress bar drawing multi times in a frame
     }
   }]);
@@ -10878,6 +10843,8 @@ var NyaPCommonOptions = {
         options: {}
       }
     },
+    defaultDanmakuColor: null,
+    //a hex color(without #),default when the color inputed is invalid
     send: function send(d) {
       return _promise.default.reject();
     } //the method for sending danmaku
@@ -10886,10 +10853,12 @@ var NyaPCommonOptions = {
   // for ui
   uiOptions: {
     danmakuColor: null,
-    //a hex color(without #),when the color inputed is invalid,this color will be applied
+    //default color to fill the color option input
     danmakuMode: 0,
     //0: right to left.
-    danmakuSize: 24
+    danmakuSize: 24,
+    autoHideDanmakuInput: true //hide danmakuinput after danmaku sending
+
   },
   loadingInfo: {
     //text replacement at loading time (for left-bottom message)
@@ -11033,7 +11002,7 @@ var NyaPCommon = /*#__PURE__*/function (_NyaPlayerCore) {
 
     _index.DomTools.addEvents(_this.video, {
       loadedmetadata: function loadedmetadata(e) {
-        _this.statResult('loading_video', null);
+        _this.statResult('loading_video');
 
         clearInterval(_this._.loadingAnimationInterval);
 
@@ -11171,6 +11140,39 @@ var NyaPCommon = /*#__PURE__*/function (_NyaPlayerCore) {
       if (current !== null) this.$('#current_time').innerHTML = current;
       if (total !== null) this.$('#total_time').innerHTML = total;
     }
+  }, {
+    key: "send",
+    value: function send() {
+      var _this3 = this;
+
+      var color = this._.danmakuColor || this.opt.danmaku.defaultDanmakuColor,
+          text = this.$('#danmaku_input').value,
+          size = this._.danmakuSize,
+          mode = this._.danmakuMode,
+          time = this.Danmaku.time,
+          d = {
+        color: color,
+        text: text,
+        size: size,
+        mode: mode,
+        time: time
+      };
+      var S = this.Danmaku.send(d, function (danmaku) {
+        if (danmaku && danmaku._ === 'text') _this3.$('#danmaku_input').value = '';
+        danmaku.highlight = true;
+
+        _this3.Danmaku.load(danmaku, true);
+
+        if (_this3.opt.uiOptions.autoHideDanmakuInput) {
+          _this3.danmakuInput(false);
+        }
+      });
+
+      if (!S) {
+        this.danmakuInput(false);
+        return;
+      }
+    }
   }]);
   return NyaPCommon;
 }(_index.NyaPlayerCore);
@@ -11179,7 +11181,7 @@ exports.NyaPCommon = NyaPCommon;
 
 var MsgBox = /*#__PURE__*/function () {
   function MsgBox(text, type, parentNode) {
-    var _this3 = this;
+    var _this4 = this;
 
     (0, _classCallCheck2.default)(this, MsgBox);
     this.using = false;
@@ -11190,7 +11192,7 @@ var MsgBox = /*#__PURE__*/function () {
       }
     });
     msg.addEventListener('click', function () {
-      return _this3.remove();
+      return _this4.remove();
     });
     this.parentNode = parentNode;
     this.setText(text);
@@ -11209,11 +11211,11 @@ var MsgBox = /*#__PURE__*/function () {
 
       return setTimeout;
     }(function (time) {
-      var _this4 = this;
+      var _this5 = this;
 
       if (this.timeout) clearTimeout(this.timeout);
       this.timeout = (0, _setTimeout3.default)(function () {
-        return _this4.remove();
+        return _this5.remove();
       }, time || Math.max((this.texts ? this.texts.length : 0) * 0.6 * 1000, 5000));
     })
   }, {
@@ -11237,7 +11239,7 @@ var MsgBox = /*#__PURE__*/function () {
   }, {
     key: "show",
     value: function show() {
-      var _this5 = this;
+      var _this6 = this;
 
       if (this.using) return;
       this.msg.style.opacity = 0;
@@ -11247,15 +11249,15 @@ var MsgBox = /*#__PURE__*/function () {
       }
 
       this.msg.parentNode && (0, _setTimeout3.default)(function () {
-        _this5.using = true;
-        _this5.msg.style.opacity = 1;
+        _this6.using = true;
+        _this6.msg.style.opacity = 1;
       }, 0);
       this.setTimeout();
     }
   }, {
     key: "remove",
     value: function remove() {
-      var _this6 = this;
+      var _this7 = this;
 
       if (!this.using) return;
       this.using = false;
@@ -11267,7 +11269,7 @@ var MsgBox = /*#__PURE__*/function () {
       }
 
       (0, _setTimeout3.default)(function () {
-        _this6.msg.parentNode && _this6.msg.parentNode.removeChild(_this6.msg);
+        _this7.msg.parentNode && _this7.msg.parentNode.removeChild(_this7.msg);
       }, 600);
     }
   }]);

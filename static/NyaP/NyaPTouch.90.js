@@ -10026,6 +10026,8 @@ var NyaPCommonOptions = {
         options: {}
       }
     },
+    defaultDanmakuColor: null,
+    //a hex color(without #),default when the color inputed is invalid
     send: function send(d) {
       return _promise.default.reject();
     } //the method for sending danmaku
@@ -10034,10 +10036,12 @@ var NyaPCommonOptions = {
   // for ui
   uiOptions: {
     danmakuColor: null,
-    //a hex color(without #),when the color inputed is invalid,this color will be applied
+    //default color to fill the color option input
     danmakuMode: 0,
     //0: right to left.
-    danmakuSize: 24
+    danmakuSize: 24,
+    autoHideDanmakuInput: true //hide danmakuinput after danmaku sending
+
   },
   loadingInfo: {
     //text replacement at loading time (for left-bottom message)
@@ -10181,7 +10185,7 @@ var NyaPCommon = /*#__PURE__*/function (_NyaPlayerCore) {
 
     _index.DomTools.addEvents(_this.video, {
       loadedmetadata: function loadedmetadata(e) {
-        _this.statResult('loading_video', null);
+        _this.statResult('loading_video');
 
         clearInterval(_this._.loadingAnimationInterval);
 
@@ -10319,6 +10323,39 @@ var NyaPCommon = /*#__PURE__*/function (_NyaPlayerCore) {
       if (current !== null) this.$('#current_time').innerHTML = current;
       if (total !== null) this.$('#total_time').innerHTML = total;
     }
+  }, {
+    key: "send",
+    value: function send() {
+      var _this3 = this;
+
+      var color = this._.danmakuColor || this.opt.danmaku.defaultDanmakuColor,
+          text = this.$('#danmaku_input').value,
+          size = this._.danmakuSize,
+          mode = this._.danmakuMode,
+          time = this.Danmaku.time,
+          d = {
+        color: color,
+        text: text,
+        size: size,
+        mode: mode,
+        time: time
+      };
+      var S = this.Danmaku.send(d, function (danmaku) {
+        if (danmaku && danmaku._ === 'text') _this3.$('#danmaku_input').value = '';
+        danmaku.highlight = true;
+
+        _this3.Danmaku.load(danmaku, true);
+
+        if (_this3.opt.uiOptions.autoHideDanmakuInput) {
+          _this3.danmakuInput(false);
+        }
+      });
+
+      if (!S) {
+        this.danmakuInput(false);
+        return;
+      }
+    }
   }]);
   return NyaPCommon;
 }(_index.NyaPlayerCore);
@@ -10327,7 +10364,7 @@ exports.NyaPCommon = NyaPCommon;
 
 var MsgBox = /*#__PURE__*/function () {
   function MsgBox(text, type, parentNode) {
-    var _this3 = this;
+    var _this4 = this;
 
     (0, _classCallCheck2.default)(this, MsgBox);
     this.using = false;
@@ -10338,7 +10375,7 @@ var MsgBox = /*#__PURE__*/function () {
       }
     });
     msg.addEventListener('click', function () {
-      return _this3.remove();
+      return _this4.remove();
     });
     this.parentNode = parentNode;
     this.setText(text);
@@ -10357,11 +10394,11 @@ var MsgBox = /*#__PURE__*/function () {
 
       return setTimeout;
     }(function (time) {
-      var _this4 = this;
+      var _this5 = this;
 
       if (this.timeout) clearTimeout(this.timeout);
       this.timeout = (0, _setTimeout3.default)(function () {
-        return _this4.remove();
+        return _this5.remove();
       }, time || Math.max((this.texts ? this.texts.length : 0) * 0.6 * 1000, 5000));
     })
   }, {
@@ -10385,7 +10422,7 @@ var MsgBox = /*#__PURE__*/function () {
   }, {
     key: "show",
     value: function show() {
-      var _this5 = this;
+      var _this6 = this;
 
       if (this.using) return;
       this.msg.style.opacity = 0;
@@ -10395,15 +10432,15 @@ var MsgBox = /*#__PURE__*/function () {
       }
 
       this.msg.parentNode && (0, _setTimeout3.default)(function () {
-        _this5.using = true;
-        _this5.msg.style.opacity = 1;
+        _this6.using = true;
+        _this6.msg.style.opacity = 1;
       }, 0);
       this.setTimeout();
     }
   }, {
     key: "remove",
     value: function remove() {
-      var _this6 = this;
+      var _this7 = this;
 
       if (!this.using) return;
       this.using = false;
@@ -10415,7 +10452,7 @@ var MsgBox = /*#__PURE__*/function () {
       }
 
       (0, _setTimeout3.default)(function () {
-        _this6.msg.parentNode && _this6.msg.parentNode.removeChild(_this6.msg);
+        _this7.msg.parentNode && _this7.msg.parentNode.removeChild(_this7.msg);
       }, 600);
     }
   }]);
@@ -10887,7 +10924,7 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
               var _context11;
 
               NP._.danmakuColor = undefined;
-              c = NP.Danmaku.isVaildColor(NP.opt.defaultDanmakuColor);
+              c = NP.Danmaku.isVaildColor(NP.opt.danmaku.defaultDanmakuColor);
               (0, _forEach.default)(_context11 = _NyaPCommon2.Utils.toArray($('#danmaku_color_box').childNodes)).call(_context11, function (cp) {
                 return cp.classList.remove('active');
               });
@@ -10981,7 +11018,7 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
         var el = icon("danmakuMode".concat(m));
         $('#danmaku_mode_box').appendChild(el);
 
-        if ((0, _isInteger.default)(opt.defaultDanmakuMode) && m === ((_opt = opt) === null || _opt === void 0 ? void 0 : (_opt$uiOptions = _opt.uiOptions) === null || _opt$uiOptions === void 0 ? void 0 : _opt$uiOptions.danmakuMode)) {
+        if ((0, _isInteger.default)((_opt = opt) === null || _opt === void 0 ? void 0 : (_opt$uiOptions = _opt.uiOptions) === null || _opt$uiOptions === void 0 ? void 0 : _opt$uiOptions.danmakuMode) && m === opt.uiOptions.danmakuMode) {
           el.click();
         }
       });
@@ -11003,30 +11040,6 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
   }
 
   (0, _createClass2.default)(NyaPTouch, [{
-    key: "send",
-    value: function send() {
-      var _this2 = this;
-
-      var color = this._.danmakuColor || this.opt.defaultDanmakuColor,
-          text = this.$('#danmaku_input').value,
-          size = this._.danmakuSize,
-          mode = this._.danmakuMode,
-          time = this.time,
-          d = {
-        color: color,
-        text: text,
-        size: size,
-        mode: mode,
-        time: time
-      };
-      this.Danmaku.send(d, function (danmaku) {
-        if (danmaku && danmaku._ === 'text') _this2.$('#danmaku_input').value = '';
-        danmaku.highlight = true;
-
-        _this2.load(danmaku, true);
-      });
-    }
-  }, {
     key: "controlsToggle",
     value: function controlsToggle() {
       var bool = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.$('#controls').hidden;

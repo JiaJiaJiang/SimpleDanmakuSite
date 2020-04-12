@@ -6977,8 +6977,6 @@ var _NyaPCommon = require("./NyaPCommon.js");
 const O2H = _NyaPCommon.DomTools.Object2HTML; //NyaP options
 
 const NyaPOptions = {
-  autoHideDanmakuInput: true,
-  //hide danmakuinput after danmaku sending
   danmakuColors: ['fff', '6cf', 'ff0', 'f00', '0f0', '00f', 'f0f', '000'],
   //colors in the danmaku style pannel
   danmakuModes: [0, 3, 2, 1],
@@ -7266,7 +7264,7 @@ class NyaP extends _NyaPCommon.NyaPCommon {
             NP._.danmakuColor = c;
           } else {
             NP._.danmakuColor = undefined;
-            c = NP.Danmaku.isVaildColor(NP.opt.defaultDanmakuColor);
+            c = NP.Danmaku.isVaildColor(NP.opt.danmaku.defaultDanmakuColor);
             i.style.backgroundColor = c ? `#${c}` : '';
           }
         }
@@ -7593,35 +7591,6 @@ class NyaP extends _NyaPCommon.NyaPCommon {
     this.emit('progressRefresh');
   }
 
-  send() {
-    let color = this._.danmakuColor || this.opt.defaultDanmakuColor,
-        text = this.$('#danmaku_input').value,
-        size = this._.danmakuSize,
-        mode = this._.danmakuMode,
-        time = this.time,
-        d = {
-      color,
-      text,
-      size,
-      mode,
-      time
-    };
-    let S = this.Danmaku.send(d, danmaku => {
-      if (danmaku && danmaku._ === 'text') this.$('#danmaku_input').value = '';
-      danmaku.highlight = true;
-      this.load(danmaku, true);
-
-      if (this.opt.autoHideDanmakuInput) {
-        this.danmakuInput(false);
-      }
-    });
-
-    if (!S) {
-      this.danmakuInput(false);
-      return;
-    }
-  }
-
   _progressDrawer() {
     const ctx = this._.progressContext,
           c = this.$('#progress'),
@@ -7747,6 +7716,8 @@ const NyaPCommonOptions = {
         options: {}
       }
     },
+    defaultDanmakuColor: null,
+    //a hex color(without #),default when the color inputed is invalid
     send: d => {
       return _promise.default.reject();
     } //the method for sending danmaku
@@ -7755,10 +7726,12 @@ const NyaPCommonOptions = {
   // for ui
   uiOptions: {
     danmakuColor: null,
-    //a hex color(without #),when the color inputed is invalid,this color will be applied
+    //default color to fill the color option input
     danmakuMode: 0,
     //0: right to left.
-    danmakuSize: 24
+    danmakuSize: 24,
+    autoHideDanmakuInput: true //hide danmakuinput after danmaku sending
+
   },
   loadingInfo: {
     //text replacement at loading time (for left-bottom message)
@@ -7886,7 +7859,7 @@ class NyaPCommon extends _index.NyaPlayerCore {
 
     _index.DomTools.addEvents(this.video, {
       loadedmetadata: e => {
-        this.statResult('loading_video', null);
+        this.statResult('loading_video');
         clearInterval(this._.loadingAnimationInterval);
         let lf = this.$('#loading_frame');
         if (lf.parentNode) //remove loading animation
@@ -7997,6 +7970,35 @@ class NyaPCommon extends _index.NyaPlayerCore {
   _setDisplayTime(current = null, total = null) {
     if (current !== null) this.$('#current_time').innerHTML = current;
     if (total !== null) this.$('#total_time').innerHTML = total;
+  }
+
+  send() {
+    let color = this._.danmakuColor || this.opt.danmaku.defaultDanmakuColor,
+        text = this.$('#danmaku_input').value,
+        size = this._.danmakuSize,
+        mode = this._.danmakuMode,
+        time = this.Danmaku.time,
+        d = {
+      color,
+      text,
+      size,
+      mode,
+      time
+    };
+    let S = this.Danmaku.send(d, danmaku => {
+      if (danmaku && danmaku._ === 'text') this.$('#danmaku_input').value = '';
+      danmaku.highlight = true;
+      this.Danmaku.load(danmaku, true);
+
+      if (this.opt.uiOptions.autoHideDanmakuInput) {
+        this.danmakuInput(false);
+      }
+    });
+
+    if (!S) {
+      this.danmakuInput(false);
+      return;
+    }
   }
 
 }
