@@ -3620,7 +3620,7 @@ var TextDanmaku = /*#__PURE__*/function (_DanmakuFrameModule) {
       d.style.fontSize = Math.round((d.style.fontSize || this.defaultStyle.fontSize) * this.options.danmakuSizeScale);
       if (isNaN(d.style.fontSize) || d.style.fontSize === Infinity || d.style.fontSize === 0) d.style.fontSize = this.defaultStyle.fontSize * this.options.danmakuSizeScale;
       if (typeof d.mode !== 'number') d.mode = 0;
-      if (autoAddToScreen && ind < this.indexMark) this._addNewDanmaku(d);
+      if (autoAddToScreen) this._addNewDanmaku(d);
       return d;
     }
   }, {

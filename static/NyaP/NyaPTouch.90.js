@@ -3620,7 +3620,7 @@ var TextDanmaku = /*#__PURE__*/function (_DanmakuFrameModule) {
       d.style.fontSize = Math.round((d.style.fontSize || this.defaultStyle.fontSize) * this.options.danmakuSizeScale);
       if (isNaN(d.style.fontSize) || d.style.fontSize === Infinity || d.style.fontSize === 0) d.style.fontSize = this.defaultStyle.fontSize * this.options.danmakuSizeScale;
       if (typeof d.mode !== 'number') d.mode = 0;
-      if (autoAddToScreen && ind < this.indexMark) this._addNewDanmaku(d);
+      if (autoAddToScreen) this._addNewDanmaku(d);
       return d;
     }
   }, {
@@ -10470,6 +10470,8 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 
 var _splice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/splice"));
 
+var _setImmediate2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set-immediate"));
+
 var _isInteger = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/number/is-integer"));
 
 var _forEach = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/for-each"));
@@ -11059,6 +11061,21 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
       this.$('#control_bottom').style.transform = "translate3d(0,-".concat(y, "px,0)");
     }
   }, {
+    key: "danmakuInput",
+    value: function danmakuInput() {
+      var _this2 = this;
+
+      var bool = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._.bottomControlTransformY === 0;
+      //hide or show danmaku input
+      var $ = this.$;
+      if (bool) this._bottomControlTransformY(this.$('#control_bottom').offsetHeight - NP.opt.bottomControlHeight);else {
+        this._bottomControlTransformY(0);
+      }
+      (0, _setImmediate2.default)(function () {
+        bool ? $('#danmaku_input').focus() : _this2._.player.focus();
+      });
+    }
+  }, {
     key: "drawProgress",
     value: function drawProgress() {
       var V = this.video,
@@ -11202,7 +11219,7 @@ function lineLength(ax, ay, bx, by) {
 
 window.NyaPTouch = NyaPTouch;
 
-},{"./NyaPCommon.js":323,"@babel/runtime-corejs3/core-js-stable/date/now":18,"@babel/runtime-corejs3/core-js-stable/instance/concat":20,"@babel/runtime-corejs3/core-js-stable/instance/for-each":23,"@babel/runtime-corejs3/core-js-stable/instance/splice":27,"@babel/runtime-corejs3/core-js-stable/instance/starts-with":28,"@babel/runtime-corejs3/core-js-stable/number/is-integer":30,"@babel/runtime-corejs3/core-js-stable/object/assign":31,"@babel/runtime-corejs3/core-js-stable/set-timeout":39,"@babel/runtime-corejs3/helpers/assertThisInitialized":57,"@babel/runtime-corejs3/helpers/classCallCheck":59,"@babel/runtime-corejs3/helpers/createClass":60,"@babel/runtime-corejs3/helpers/getPrototypeOf":63,"@babel/runtime-corejs3/helpers/inherits":64,"@babel/runtime-corejs3/helpers/interopRequireDefault":65,"@babel/runtime-corejs3/helpers/possibleConstructorReturn":70}],325:[function(require,module,exports){
+},{"./NyaPCommon.js":323,"@babel/runtime-corejs3/core-js-stable/date/now":18,"@babel/runtime-corejs3/core-js-stable/instance/concat":20,"@babel/runtime-corejs3/core-js-stable/instance/for-each":23,"@babel/runtime-corejs3/core-js-stable/instance/splice":27,"@babel/runtime-corejs3/core-js-stable/instance/starts-with":28,"@babel/runtime-corejs3/core-js-stable/number/is-integer":30,"@babel/runtime-corejs3/core-js-stable/object/assign":31,"@babel/runtime-corejs3/core-js-stable/set-immediate":37,"@babel/runtime-corejs3/core-js-stable/set-timeout":39,"@babel/runtime-corejs3/helpers/assertThisInitialized":57,"@babel/runtime-corejs3/helpers/classCallCheck":59,"@babel/runtime-corejs3/helpers/createClass":60,"@babel/runtime-corejs3/helpers/getPrototypeOf":63,"@babel/runtime-corejs3/helpers/inherits":64,"@babel/runtime-corejs3/helpers/interopRequireDefault":65,"@babel/runtime-corejs3/helpers/possibleConstructorReturn":70}],325:[function(require,module,exports){
 module.exports={"zh-CN":{"play":"播放","Send":"发送","Done":"完成","loop":"循环","pause":"暂停","muted":"静音","volume":"音量","settings":"设置","wheeling":"滚轮","hex color":"Hex颜色","Loading core":"加载核心","Loading video":"加载视频","Loading plugin":"加载插件","full page(P)":"全页模式(P)","Loading danmaku":"加载弹幕","Creating player":"创建播放器","full screen(F)":"全屏模式(F)","danmaku toggle(D)":"弹幕开关(D)","Input danmaku here":"在这里输入弹幕","Loading danmaku frame":"加载弹幕框架","danmaku input(Enter)":"弹幕输入框(回车)","Failed to change to fullscreen mode":"无法切换到全屏模式","loading_core":"加载核心","loading_plugin":"加载插件","loading_danmakuFrame":"加载弹幕框架","creating_player":"创建播放器","loading_danmaku":"加载弹幕","loading_video":"加载视频"}}
 },{}]},{},[324])
 
