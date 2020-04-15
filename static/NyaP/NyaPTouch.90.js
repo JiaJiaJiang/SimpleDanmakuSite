@@ -10313,7 +10313,9 @@ var NyaPCommon = /*#__PURE__*/function (_NyaPlayerCore) {
   }, {
     key: "_iconActive",
     value: function _iconActive(name, bool) {
-      this.$("#icon_span_".concat(name)).classList[bool ? 'add' : 'remove']('active_icon');
+      var _this$$;
+
+      (_this$$ = this.$("#icon_span_".concat(name))) === null || _this$$ === void 0 ? void 0 : _this$$.classList[bool ? 'add' : 'remove']('active_icon');
     }
   }, {
     key: "_setDisplayTime",
@@ -10554,7 +10556,7 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
 
     _this.stat('creating_player');
 
-    var fullScreenToFullPage = opt.fullScreenToFullPageIfNotSupported && _this._.ios; //create player elements
+    _this._.fullScreenToFullPage = opt.fullScreenToFullPageIfNotSupported && _this._.ios; //create player elements
 
     _this._.player = O2H({
       _: 'div',
@@ -10645,9 +10647,9 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
               prop: {
                 id: 'progress_rightside_button'
               },
-              child: [icon(fullScreenToFullPage ? 'fullPage' : 'fullScreen', {
+              child: [icon(_this._.fullScreenToFullPage ? 'fullPage' : 'fullScreen', {
                 click: function click(e) {
-                  return _this.playerMode(fullScreenToFullPage ? 'fullPage' : 'fullScreen');
+                  return _this.playerMode(_this._.fullScreenToFullPage ? 'fullPage' : 'fullScreen');
                 }
               })]
             }]
@@ -10738,7 +10740,9 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
     var events = {
       main_video: {
         playing: function playing(e) {
-          return NP._iconActive('play', true);
+          NP._setDisplayTime(null, _NyaPCommon2.Utils.formatTime(video.duration, video.duration));
+
+          NP._iconActive('play', true);
         },
         pause: function pause(e) {
           NP._iconActive('play', false);
@@ -10965,7 +10969,7 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
       playerModeChange: function playerModeChange(mode) {
         var _context12;
 
-        (0, _forEach.default)(_context12 = ['fullScreen']).call(_context12, function (m) {
+        (0, _forEach.default)(_context12 = ['fullScreen', 'fullPage']).call(_context12, function (m) {
           NP._iconActive(m, mode === m);
         });
       }

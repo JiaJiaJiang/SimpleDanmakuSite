@@ -29,7 +29,7 @@ convertLink返回形式
 ]
 */
 function convertLink($address,$onlyone=false) {
-	$resource = explode(PHP_EOL, $address); //根据行分成不同源
+	$resource = preg_split("/[\n\r]/", $address); //根据行分成不同源
 	$resultArray = array(); //结构：键名:源注释,键值:分段数组
 	for ($i = count($resource); $i--;) { //处理各个源
 		$resource[$i] = trim($resource[$i]); //清除两边空格和空行

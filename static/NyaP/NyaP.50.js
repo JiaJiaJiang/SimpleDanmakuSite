@@ -7964,7 +7964,9 @@ class NyaPCommon extends _index.NyaPlayerCore {
   }
 
   _iconActive(name, bool) {
-    this.$(`#icon_span_${name}`).classList[bool ? 'add' : 'remove']('active_icon');
+    var _this$$;
+
+    (_this$$ = this.$(`#icon_span_${name}`)) === null || _this$$ === void 0 ? void 0 : _this$$.classList[bool ? 'add' : 'remove']('active_icon');
   }
 
   _setDisplayTime(current = null, total = null) {

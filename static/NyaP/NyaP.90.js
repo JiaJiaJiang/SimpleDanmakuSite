@@ -11130,7 +11130,9 @@ var NyaPCommon = /*#__PURE__*/function (_NyaPlayerCore) {
   }, {
     key: "_iconActive",
     value: function _iconActive(name, bool) {
-      this.$("#icon_span_".concat(name)).classList[bool ? 'add' : 'remove']('active_icon');
+      var _this$$;
+
+      (_this$$ = this.$("#icon_span_".concat(name))) === null || _this$$ === void 0 ? void 0 : _this$$.classList[bool ? 'add' : 'remove']('active_icon');
     }
   }, {
     key: "_setDisplayTime",

@@ -21,22 +21,39 @@ function stdoutl($c){
 class Log{
 	private $errorLogFile;
 	private $warnLogFile;
+	private $logReady=false;
+	private $logPath;
 	function __construct(){
+	}
+	function init(){
+		if($this->logReady)return;
+		$this->logPath=defined('logPath')?realpath(logPath):false;
+		if($this->logPath==false)return;
 		global $errorLog;
 		global $warnLog;
-		$logPath=defined('logPath')?realpath(logPath):sys_get_temp_dir().DIRECTORY_SEPARATOR.'SimpleDanmakuSite';
-		stdoutl('Log Path:'.$logPath);
+		// stdoutl('Log Path:'.$logPath);
 		@mkdir($logPath,600,true);
 		if($errorLog===true)$this->errorLogFile=fopen($logPath.DIRECTORY_SEPARATOR."SimpleDanmakuSite_Error.log",'a');
 		if($warnLog===true)$this->warnLogFile=fopen($logPath.DIRECTORY_SEPARATOR."SimpleDanmakuSite_Warn.log",'a');
+		$this->logReady=true;
 	}
 	function error($type,$log){
+		global $errorLog;
+		if($errorLog!==true)return;
+		if(!$this->logReady){
+			$this->init();
+		}
 		if(!$this->errorLogFile)return;
 		$msg=gmdate(DATE_RFC822).": [$type]$log".PHP_EOL;
 		fwrite($this->errorLogFile,$msg);
 		fwrite(STDERR,'[error]'.$msg);
 	}
 	function warn($type,$log){
+		global $warnLog;
+		if($warnLog!==true)return;
+		if(!$this->logReady){
+			$this->init();
+		}
 		if(!$this->warnLogFile)return;
 		$msg=gmdate(DATE_RFC822).": [$type]$log".PHP_EOL;
 		fwrite($this->warnLogFile,$msg);

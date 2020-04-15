@@ -7235,7 +7235,9 @@ class NyaPCommon extends _index.NyaPlayerCore {
   }
 
   _iconActive(name, bool) {
-    this.$(`#icon_span_${name}`).classList[bool ? 'add' : 'remove']('active_icon');
+    var _this$$;
+
+    (_this$$ = this.$(`#icon_span_${name}`)) === null || _this$$ === void 0 ? void 0 : _this$$.classList[bool ? 'add' : 'remove']('active_icon');
   }
 
   _setDisplayTime(current = null, total = null) {
@@ -7415,7 +7417,7 @@ class NyaPTouch extends _NyaPCommon.NyaPCommon {
     }
 
     this.stat('creating_player');
-    let fullScreenToFullPage = opt.fullScreenToFullPageIfNotSupported && this._.ios; //create player elements
+    this._.fullScreenToFullPage = opt.fullScreenToFullPageIfNotSupported && this._.ios; //create player elements
 
     this._.player = O2H({
       _: 'div',
@@ -7504,8 +7506,8 @@ class NyaPTouch extends _NyaPCommon.NyaPCommon {
               prop: {
                 id: 'progress_rightside_button'
               },
-              child: [icon(fullScreenToFullPage ? 'fullPage' : 'fullScreen', {
-                click: e => this.playerMode(fullScreenToFullPage ? 'fullPage' : 'fullScreen')
+              child: [icon(this._.fullScreenToFullPage ? 'fullPage' : 'fullScreen', {
+                click: e => this.playerMode(this._.fullScreenToFullPage ? 'fullPage' : 'fullScreen')
               })]
             }]
           }, {
@@ -7586,7 +7588,11 @@ class NyaPTouch extends _NyaPCommon.NyaPCommon {
 
     const events = {
       main_video: {
-        playing: e => NP._iconActive('play', true),
+        playing: e => {
+          NP._setDisplayTime(null, _NyaPCommon.Utils.formatTime(video.duration, video.duration));
+
+          NP._iconActive('play', true);
+        },
         pause: e => {
           NP._iconActive('play', false);
         },
@@ -7796,7 +7802,7 @@ class NyaPTouch extends _NyaPCommon.NyaPCommon {
       playerModeChange: mode => {
         var _context5;
 
-        (0, _forEach.default)(_context5 = ['fullScreen']).call(_context5, m => {
+        (0, _forEach.default)(_context5 = ['fullScreen', 'fullPage']).call(_context5, m => {
           NP._iconActive(m, mode === m);
         });
       }
