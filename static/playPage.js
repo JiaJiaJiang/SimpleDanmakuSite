@@ -173,7 +173,9 @@ function getVideo(){
 	});
 }
 function loadVideo(address){
-	NP.setVideoSrc(address);
+	requestAnimationFrame(()=>{
+		NP.setVideoSrc(address);
+	});
 }
 
 

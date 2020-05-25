@@ -761,7 +761,6 @@ class NyaPlayerCore extends NyaPEventEmitter {
       this.on('coreLoad', () => done());
       this.on('coreLoadError', e => done(e));
     }
-    this.log('%c https://github.com/JiaJiaJiang/NyaP-Core/ ', 'log', "background:#6f8fa2;color:#ccc;padding:.3em");
     this.debug('Languages:' + this.i18n.langsArr.join(','));
     opt = this.opt = _utils.Utils.deepAssign({}, NyaPCoreOptions, opt); //add events
 
@@ -1025,6 +1024,13 @@ class DomTools {
     });
   }
 
+  static setAttrs(ele, obj) {
+    //set multi attrs to a Element
+    for (let a in obj) ele.setAttribute(a, obj[a]);
+
+    return ele;
+  }
+
   static fullscreenElement() {
     const d = document;
     return d.webkitFullscreenElement || d.msFullscreenElement || d.mozFullScreenElement || d.fullscreenElement;
@@ -1247,13 +1253,6 @@ class Utils {
     r = [padTime(s / 60 | 0), padTime(s % 60)];
     total >= 3600 && r.unshift(h);
     return r.join(':');
-  }
-
-  static setAttrs(ele, obj) {
-    //set multi attrs to a Element
-    for (let a in obj) ele.setAttribute(a, obj[a]);
-
-    return ele;
   }
 
   static rand(min, max) {
@@ -2593,7 +2592,8 @@ danmaku obj struct
 	time:(number)msec time,
 	text:(string),
 	style:(object)to be combined whit default style,
-	mode:(number)
+	mode:(number),
+	onScreen:(bool)on the screen
 }
 
 danmaku mode
@@ -3285,6 +3285,8 @@ class RenderingDanmakuManager {
   }
 
   add(t) {
+    if (t.danmaku.onScreen) return;
+    t.danmaku.onScreen = true;
     this.dText.DanmakuText.push(t);
     this.totalArea += t._cache.width * t._cache.height; //cumulate danmaku area
 
@@ -3295,6 +3297,7 @@ class RenderingDanmakuManager {
   remove(t) {
     var _context9;
 
+    t.danmaku.onScreen = false;
     let ind = (0, _indexOf.default)(_context9 = this.dText.DanmakuText).call(_context9, t);
 
     if (ind >= 0) {
@@ -6976,14 +6979,7 @@ var _NyaPCommon = require("./NyaPCommon.js");
 
 const O2H = _NyaPCommon.DomTools.Object2HTML; //NyaP options
 
-const NyaPOptions = {
-  danmakuColors: ['fff', '6cf', 'ff0', 'f00', '0f0', '00f', 'f0f', '000'],
-  //colors in the danmaku style pannel
-  danmakuModes: [0, 3, 2, 1],
-  //0:right	1:left	2:bottom	3:top  ;; mode in the danmaku style pannel
-  danmakuSizes: [20, 24, 36] //danmaku size buttons in the danmaku style pannel
-
-}; //normal player
+const NyaPOptions = {}; //normal player
 
 class NyaP extends _NyaPCommon.NyaPCommon {
   get icons() {
@@ -6998,7 +6994,7 @@ class NyaP extends _NyaPCommon.NyaPCommon {
           $ = this.$,
           video = this.video; //set icons
 
-    function icon(name, event, attr = {}) {
+    function icon(name, event, attr = {}, extopt) {
       const ico = opt.icons[name];
       return O2H({
         _: 'span',
@@ -7006,7 +7002,7 @@ class NyaP extends _NyaPCommon.NyaPCommon {
         attr,
         prop: {
           id: `icon_span_${name}`,
-          innerHTML: `<svg height=${ico[1]} width=${ico[0]} id="icon_${name}"">${ico[2]}</svg>`
+          innerHTML: `<svg viewBox="0 0 ${ico[0]} ${ico[1]}" height=${(extopt === null || extopt === void 0 ? void 0 : extopt.height) || ico[1]} width=${(extopt === null || extopt === void 0 ? void 0 : extopt.width) || ico[0]} id="icon_${name}"">${ico[2]}</svg>`
         }
       });
     }
@@ -7078,58 +7074,6 @@ class NyaP extends _NyaPCommon.NyaPCommon {
                   child: ['00:00']
                 }]
               }]
-            }, {
-              _: 'div',
-              prop: {
-                id: 'danmaku_input_frame'
-              },
-              child: [{
-                _: 'span',
-                prop: {
-                  id: 'danmaku_style'
-                },
-                child: [{
-                  _: 'div',
-                  attr: {
-                    id: 'danmaku_style_pannel'
-                  },
-                  child: [{
-                    _: 'div',
-                    attr: {
-                      id: 'danmaku_color_box'
-                    }
-                  }, {
-                    _: 'input',
-                    attr: {
-                      id: 'danmaku_color',
-                      placeholder: _t('hex color'),
-                      maxlength: "6"
-                    }
-                  }, {
-                    _: 'span',
-                    attr: {
-                      id: 'danmaku_mode_box'
-                    }
-                  }, {
-                    _: 'span',
-                    attr: {
-                      id: 'danmaku_size_box'
-                    }
-                  }]
-                }, icon('danmakuStyle')]
-              }, {
-                _: 'input',
-                attr: {
-                  id: 'danmaku_input',
-                  placeholder: _t('Input danmaku here')
-                }
-              }, {
-                _: 'span',
-                prop: {
-                  id: 'danmaku_submit',
-                  innerHTML: _t('Send')
-                }
-              }]
             }]
           }, {
             _: 'span',
@@ -7170,6 +7114,65 @@ class NyaP extends _NyaPCommon.NyaPCommon {
             }]
           }]
         }]
+      }, {
+        _: 'div',
+        prop: {
+          id: 'danmaku_input_frame',
+          style: "display:none;"
+        },
+        child: [{
+          _: 'span',
+          prop: {
+            id: 'danmaku_style'
+          },
+          child: [{
+            _: 'div',
+            attr: {
+              id: 'danmaku_style_pannel'
+            },
+            child: [{
+              _: 'div',
+              attr: {
+                id: 'danmaku_color_box'
+              }
+            }, {
+              _: 'input',
+              attr: {
+                id: 'danmaku_color',
+                placeholder: _t('hex color'),
+                maxlength: "6"
+              },
+              event: {
+                keypress: e => {}
+              }
+            }, {
+              _: 'span',
+              attr: {
+                id: 'danmaku_mode_box'
+              }
+            }, {
+              _: 'span',
+              attr: {
+                id: 'danmaku_size_box'
+              }
+            }]
+          }, icon('danmakuStyle', undefined, undefined, {
+            width: "2em",
+            height: "2em"
+          })]
+        }, {
+          _: 'input',
+          attr: {
+            id: 'danmaku_input',
+            placeholder: _t('Input danmaku here')
+          }
+        }, {
+          _: 'span',
+          prop: {
+            id: 'danmaku_submit',
+            innerHTML: _t('Send')
+          }
+        }]
       }]
     }); //progress
 
@@ -7187,7 +7190,13 @@ class NyaP extends _NyaPCommon.NyaPCommon {
 
     const events = {
       main_video: {
-        playing: e => NP._iconActive('play', true),
+        playing: e => {
+          NP._iconActive('play', true);
+
+          if (this.$('#danmaku_input_frame').offsetHeight) {
+            this.danmakuInput(false);
+          }
+        },
         pause: e => {
           NP._iconActive('play', false);
         },
@@ -7207,7 +7216,7 @@ class NyaP extends _NyaPCommon.NyaPCommon {
           NP._.volumeBox.renew(`${_t('volume')}:${(video.volume * 100).toFixed(0)}%` + `${video.muted ? '(' + _t('muted') + ')' : ''}`, 3000); //change icon style
 
 
-          _NyaPCommon.Utils.setAttrs($('#volume_circle'), {
+          _NyaPCommon.DomTools.setAttrs($('#volume_circle'), {
             'stroke-dasharray': `${video.volume * 12 * Math.PI} 90`,
             style: `fill-opacity:${video.muted ? .2 : .6}!important`
           }); //change icon tip
@@ -7363,10 +7372,10 @@ class NyaP extends _NyaPCommon.NyaPCommon {
 
 
     if (this._danmakuEnabled) {
-      var _context4, _context5, _opt2, _opt2$uiOptions, _context6;
+      var _context4, _context5, _opt$uiOptions2, _context6;
 
       //danmaku sizes
-      opt.danmakuSizes && (0, _forEach.default)(_context4 = opt.danmakuSizes).call(_context4, (s, ind) => {
+      opt.uiOptions.danmakuSizes && (0, _forEach.default)(_context4 = opt.uiOptions.danmakuSizes).call(_context4, (s, ind) => {
         var _opt, _opt$uiOptions;
 
         let e = O2H({
@@ -7388,7 +7397,7 @@ class NyaP extends _NyaPCommon.NyaPCommon {
         }
       }); //danmaku colors
 
-      opt.danmakuColors && (0, _forEach.default)(_context5 = opt.danmakuColors).call(_context5, c => {
+      opt.uiOptions.danmakuColors && (0, _forEach.default)(_context5 = opt.uiOptions.danmakuColors).call(_context5, c => {
         let e = O2H({
           _: 'span',
           attr: {
@@ -7402,19 +7411,19 @@ class NyaP extends _NyaPCommon.NyaPCommon {
         $('#danmaku_color_box').appendChild(e);
       });
 
-      if ((_opt2 = opt) === null || _opt2 === void 0 ? void 0 : (_opt2$uiOptions = _opt2.uiOptions) === null || _opt2$uiOptions === void 0 ? void 0 : _opt2$uiOptions.danmakuColor) {
+      if ((_opt$uiOptions2 = opt.uiOptions) === null || _opt$uiOptions2 === void 0 ? void 0 : _opt$uiOptions2.danmakuColor) {
         //set default color
         $('#danmaku_color').value = opt.uiOptions.danmakuColor;
       } //danmaku modes
 
 
-      opt.danmakuModes && (0, _forEach.default)(_context6 = opt.danmakuModes).call(_context6, m => {
-        var _opt3, _opt3$uiOptions;
+      opt.uiOptions.danmakuModes && (0, _forEach.default)(_context6 = opt.uiOptions.danmakuModes).call(_context6, m => {
+        var _opt2, _opt2$uiOptions;
 
         let e = icon(`danmakuMode${m}`);
         $('#danmaku_mode_box').appendChild(e);
 
-        if (m === ((_opt3 = opt) === null || _opt3 === void 0 ? void 0 : (_opt3$uiOptions = _opt3.uiOptions) === null || _opt3$uiOptions === void 0 ? void 0 : _opt3$uiOptions.danmakuMode)) {
+        if (m === ((_opt2 = opt) === null || _opt2 === void 0 ? void 0 : (_opt2$uiOptions = _opt2.uiOptions) === null || _opt2$uiOptions === void 0 ? void 0 : _opt2$uiOptions.danmakuMode)) {
           //click specified button
           e.click();
         }
@@ -7574,7 +7583,7 @@ class NyaP extends _NyaPCommon.NyaPCommon {
   danmakuInput(bool = !this.$('#danmaku_input_frame').offsetHeight) {
     //hide or show danmaku input
     let $ = this.$;
-    $('#danmaku_input_frame').style.display = bool ? 'flex' : '';
+    $('#danmaku_input_frame').style.display = bool ? '' : 'none';
 
     this._iconActive('addDanmaku', bool);
 
@@ -7725,6 +7734,12 @@ const NyaPCommonOptions = {
   },
   // for ui
   uiOptions: {
+    danmakuColors: ['fff', '6cf', 'ff0', 'f00', '0f0', '00f', 'f0f', '000'],
+    //colors in the danmaku style pannel
+    danmakuModes: [0, 3, 2, 1],
+    //0:right	1:left	2:bottom	3:top  ;; mode in the danmaku style pannel
+    danmakuSizes: [20, 24, 36],
+    //danmaku size buttons in the danmaku style pannel
     danmakuColor: null,
     //default color to fill the color option input
     danmakuMode: 0,
@@ -7745,9 +7760,9 @@ const NyaPCommonOptions = {
   //the element for containing the player
   icons: {
     play: [30, 30, '<path d="m10.063,8.856l9.873,6.143l-9.873,6.143v-12.287z" stroke-width="3" stroke-linejoin="round"/>'],
-    addDanmaku: [30, 30, '<path style="fill-opacity:0!important;" stroke-width="1.4" d="m21.004,8.995c-0.513,-0.513 -1.135,-0.770 -1.864,-0.770l-8.281,0c-0.729,0 -1.350,0.256 -1.864,0.770c-0.513,0.513 -0.770,1.135 -0.770,1.864l0,8.281c0,0.721 0.256,1.341 0.770,1.858c0.513,0.517 1.135,0.776 1.864,0.776l8.281,0c0.729,0 1.350,-0.258 1.864,-0.776c0.513,-0.517 0.770,-1.136 0.770,-1.858l0,-8.281c0,-0.729 -0.257,-1.350 -0.770,-1.864z" stroke-linejoin="round"/>' + '<path d="m12.142,14.031l1.888,0l0,-1.888l1.937,0l0,1.888l1.888,0l0,1.937l-1.888,0l0,1.888l-1.937,0l0,-1.888l-1.888,0l0,-1.937z" stroke-width="1"/>'],
+    danmakuStyle: [30, 30, '<path style="fill-opacity:0!important;" stroke-width="1.4" d="m21.004,8.995c-0.513,-0.513 -1.135,-0.770 -1.864,-0.770l-8.281,0c-0.729,0 -1.350,0.256 -1.864,0.770c-0.513,0.513 -0.770,1.135 -0.770,1.864l0,8.281c0,0.721 0.256,1.341 0.770,1.858c0.513,0.517 1.135,0.776 1.864,0.776l8.281,0c0.729,0 1.350,-0.258 1.864,-0.776c0.513,-0.517 0.770,-1.136 0.770,-1.858l0,-8.281c0,-0.729 -0.257,-1.350 -0.770,-1.864z" stroke-linejoin="round"/>' + '<path d="m12.142,14.031l1.888,0l0,-1.888l1.937,0l0,1.888l1.888,0l0,1.937l-1.888,0l0,1.888l-1.937,0l0,-1.888l-1.888,0l0,-1.937z" stroke-width="1"/>'],
     danmakuToggle: [30, 30, '<path d="m8.569,10.455l0,0c0,-0.767 0.659,-1.389 1.473,-1.389l0.669,0l0,0l3.215,0l6.028,0c0.390,0 0.765,0.146 1.041,0.406c0.276,0.260 0.431,0.613 0.431,0.982l0,3.473l0,0l0,2.083l0,0c0,0.767 -0.659,1.389 -1.473,1.389l-6.028,0l-4.200,3.532l0.985,-3.532l-0.669,0c-0.813,0 -1.473,-0.621 -1.473,-1.389l0,0l0,-2.083l0,0l0,-3.473z"/>'],
-    danmakuStyle: [30, 30, '<path style="fill-opacity:1!important" d="m21.781,9.872l-1.500,-1.530c-0.378,-0.385 -0.997,-0.391 -1.384,-0.012l-0.959,0.941l2.870,2.926l0.960,-0.940c0.385,-0.379 0.392,-0.998 0.013,-1.383zm-12.134,7.532l2.871,2.926l7.593,-7.448l-2.872,-2.927l-7.591,7.449l0.000,0.000zm-1.158,2.571l-0.549,1.974l1.984,-0.511l1.843,-0.474l-2.769,-2.824l-0.509,1.835z" stroke-width="0"/>'],
+    addDanmaku: [30, 30, '<path style="fill-opacity:1!important" d="m21.781,9.872l-1.500,-1.530c-0.378,-0.385 -0.997,-0.391 -1.384,-0.012l-0.959,0.941l2.870,2.926l0.960,-0.940c0.385,-0.379 0.392,-0.998 0.013,-1.383zm-12.134,7.532l2.871,2.926l7.593,-7.448l-2.872,-2.927l-7.591,7.449l0.000,0.000zm-1.158,2.571l-0.549,1.974l1.984,-0.511l1.843,-0.474l-2.769,-2.824l-0.509,1.835z" stroke-width="0"/>'],
     fullScreen: [30, 30, '<path stroke-linejoin="round" d="m11.166,9.761l-5.237,5.239l5.237,5.238l1.905,-1.905l-3.333,-3.333l3.332,-3.333l-1.904,-1.906zm7.665,0l-1.903,1.905l3.332,3.333l-3.332,3.332l1.903,1.905l5.238,-5.238l-5.238,-5.237z" stroke-width="1.3" />'],
     fullPage: [30, 30, '<rect stroke-linejoin="round" height="11.169" width="17.655" y="9.415" x="6.172" stroke-width="1.5"/>' + '<path stroke-linejoin="round" d="m12.361,11.394l-3.604,3.605l3.605,3.605l1.311,-1.311l-2.294,-2.294l2.293,-2.294l-1.311,-1.311zm5.275,0l-1.310,1.311l2.293,2.294l-2.293,2.293l1.310,1.311l3.605,-3.605l-3.605,-3.605z"/>'],
     loop: [30, 30, '<path stroke-linejoin="round" stroke-width="1" d="m20.945,15.282c-0.204,-0.245 -0.504,-0.387 -0.823,-0.387c-0.583,0 -1.079,0.398 -1.205,0.969c-0.400,1.799 -2.027,3.106 -3.870,3.106c-2.188,0 -3.969,-1.780 -3.969,-3.969c0,-2.189 1.781,-3.969 3.969,-3.969c0.720,0 1.412,0.192 2.024,0.561l-0.334,0.338c-0.098,0.100 -0.127,0.250 -0.073,0.380c0.055,0.130 0.183,0.213 0.324,0.212l2.176,0.001c0.255,-0.002 0.467,-0.231 0.466,-0.482l-0.008,-2.183c-0.000,-0.144 -0.085,-0.272 -0.217,-0.325c-0.131,-0.052 -0.280,-0.022 -0.379,0.077l-0.329,0.334c-1.058,-0.765 -2.340,-1.182 -3.649,-1.182c-3.438,0 -6.236,2.797 -6.236,6.236c0,3.438 2.797,6.236 6.236,6.236c2.993,0 5.569,-2.133 6.126,-5.072c0.059,-0.314 -0.022,-0.635 -0.227,-0.882z"/>'],

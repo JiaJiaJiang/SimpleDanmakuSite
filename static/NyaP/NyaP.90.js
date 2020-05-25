@@ -883,8 +883,6 @@ var NyaPlayerCore = /*#__PURE__*/function (_NyaPEventEmitter) {
       });
     }
 
-    _this.log('%c https://github.com/JiaJiaJiang/NyaP-Core/ ', 'log', "background:#6f8fa2;color:#ccc;padding:.3em");
-
     _this.debug('Languages:' + _this.i18n.langsArr.join(','));
 
     opt = _this.opt = _utils.Utils.deepAssign({}, NyaPCoreOptions, opt); //add events
@@ -1414,6 +1412,16 @@ var DomTools = /*#__PURE__*/function () {
       });
     }
   }, {
+    key: "setAttrs",
+    value: function setAttrs(ele, obj) {
+      //set multi attrs to a Element
+      for (var a in obj) {
+        ele.setAttribute(a, obj[a]);
+      }
+
+      return ele;
+    }
+  }, {
     key: "fullscreenElement",
     value: function fullscreenElement() {
       var d = document;
@@ -1733,16 +1741,6 @@ var Utils = /*#__PURE__*/function () {
       r = [padTime(s / 60 | 0), padTime(s % 60)];
       total >= 3600 && r.unshift(h);
       return r.join(':');
-    }
-  }, {
-    key: "setAttrs",
-    value: function setAttrs(ele, obj) {
-      //set multi attrs to a Element
-      for (var a in obj) {
-        ele.setAttribute(a, obj[a]);
-      }
-
-      return ele;
     }
   }, {
     key: "rand",
@@ -3437,7 +3435,8 @@ danmaku obj struct
 	time:(number)msec time,
 	text:(string),
 	style:(object)to be combined whit default style,
-	mode:(number)
+	mode:(number),
+	onScreen:(bool)on the screen
 }
 
 danmaku mode
@@ -4211,6 +4210,8 @@ var RenderingDanmakuManager = /*#__PURE__*/function () {
   (0, _createClass2.default)(RenderingDanmakuManager, [{
     key: "add",
     value: function add(t) {
+      if (t.danmaku.onScreen) return;
+      t.danmaku.onScreen = true;
       this.dText.DanmakuText.push(t);
       this.totalArea += t._cache.width * t._cache.height; //cumulate danmaku area
 
@@ -4222,6 +4223,7 @@ var RenderingDanmakuManager = /*#__PURE__*/function () {
     value: function remove(t) {
       var _context9;
 
+      t.danmaku.onScreen = false;
       var ind = (0, _indexOf.default)(_context9 = this.dText.DanmakuText).call(_context9, t);
 
       if (ind >= 0) {
@@ -10017,14 +10019,7 @@ var _NyaPCommon2 = require("./NyaPCommon.js");
 
 var O2H = _NyaPCommon2.DomTools.Object2HTML; //NyaP options
 
-var NyaPOptions = {
-  danmakuColors: ['fff', '6cf', 'ff0', 'f00', '0f0', '00f', 'f0f', '000'],
-  //colors in the danmaku style pannel
-  danmakuModes: [0, 3, 2, 1],
-  //0:right	1:left	2:bottom	3:top  ;; mode in the danmaku style pannel
-  danmakuSizes: [20, 24, 36] //danmaku size buttons in the danmaku style pannel
-
-}; //normal player
+var NyaPOptions = {}; //normal player
 
 var NyaP = /*#__PURE__*/function (_NyaPCommon) {
   (0, _inherits2.default)(NyaP, _NyaPCommon);
@@ -10036,7 +10031,7 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
   }]);
 
   function NyaP(opt) {
-    var _context4, _context5;
+    var _context6, _context7;
 
     var _this;
 
@@ -10049,9 +10044,10 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
         video = _this.video; //set icons
 
     function icon(name, event) {
-      var _context, _context2, _context3;
+      var _context, _context2, _context3, _context4, _context5;
 
       var attr = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+      var extopt = arguments.length > 3 ? arguments[3] : undefined;
       var ico = opt.icons[name];
       return O2H({
         _: 'span',
@@ -10059,7 +10055,7 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
         attr: attr,
         prop: {
           id: "icon_span_".concat(name),
-          innerHTML: (0, _concat.default)(_context = (0, _concat.default)(_context2 = (0, _concat.default)(_context3 = "<svg height=".concat(ico[1], " width=")).call(_context3, ico[0], " id=\"icon_")).call(_context2, name, "\"\">")).call(_context, ico[2], "</svg>")
+          innerHTML: (0, _concat.default)(_context = (0, _concat.default)(_context2 = (0, _concat.default)(_context3 = (0, _concat.default)(_context4 = (0, _concat.default)(_context5 = "<svg viewBox=\"0 0 ".concat(ico[0], " ")).call(_context5, ico[1], "\" height=")).call(_context4, (extopt === null || extopt === void 0 ? void 0 : extopt.height) || ico[1], " width=")).call(_context3, (extopt === null || extopt === void 0 ? void 0 : extopt.width) || ico[0], " id=\"icon_")).call(_context2, name, "\"\">")).call(_context, ico[2], "</svg>")
         }
       });
     }
@@ -10134,58 +10130,6 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
                   child: ['00:00']
                 }]
               }]
-            }, {
-              _: 'div',
-              prop: {
-                id: 'danmaku_input_frame'
-              },
-              child: [{
-                _: 'span',
-                prop: {
-                  id: 'danmaku_style'
-                },
-                child: [{
-                  _: 'div',
-                  attr: {
-                    id: 'danmaku_style_pannel'
-                  },
-                  child: [{
-                    _: 'div',
-                    attr: {
-                      id: 'danmaku_color_box'
-                    }
-                  }, {
-                    _: 'input',
-                    attr: {
-                      id: 'danmaku_color',
-                      placeholder: _t('hex color'),
-                      maxlength: "6"
-                    }
-                  }, {
-                    _: 'span',
-                    attr: {
-                      id: 'danmaku_mode_box'
-                    }
-                  }, {
-                    _: 'span',
-                    attr: {
-                      id: 'danmaku_size_box'
-                    }
-                  }]
-                }, icon('danmakuStyle')]
-              }, {
-                _: 'input',
-                attr: {
-                  id: 'danmaku_input',
-                  placeholder: _t('Input danmaku here')
-                }
-              }, {
-                _: 'span',
-                prop: {
-                  id: 'danmaku_submit',
-                  innerHTML: _t('Send')
-                }
-              }]
             }]
           }, {
             _: 'span',
@@ -10206,7 +10150,7 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
               title: _t('danmaku toggle(D)'),
               class: 'active_icon'
             }), icon('volume', {}, {
-              title: (0, _concat.default)(_context4 = (0, _concat.default)(_context5 = "".concat(_t('volume'), ":(")).call(_context5, video.muted ? _t('muted') : (video.volume * 100 | 0) + '%', ")([shift]+\u2191\u2193)(")).call(_context4, _t('wheeling'), ")")
+              title: (0, _concat.default)(_context6 = (0, _concat.default)(_context7 = "".concat(_t('volume'), ":(")).call(_context7, video.muted ? _t('muted') : (video.volume * 100 | 0) + '%', ")([shift]+\u2191\u2193)(")).call(_context6, _t('wheeling'), ")")
             }), icon('loop', {
               click: function click(e) {
                 video.loop = !video.loop;
@@ -10234,6 +10178,65 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
             }]
           }]
         }]
+      }, {
+        _: 'div',
+        prop: {
+          id: 'danmaku_input_frame',
+          style: "display:none;"
+        },
+        child: [{
+          _: 'span',
+          prop: {
+            id: 'danmaku_style'
+          },
+          child: [{
+            _: 'div',
+            attr: {
+              id: 'danmaku_style_pannel'
+            },
+            child: [{
+              _: 'div',
+              attr: {
+                id: 'danmaku_color_box'
+              }
+            }, {
+              _: 'input',
+              attr: {
+                id: 'danmaku_color',
+                placeholder: _t('hex color'),
+                maxlength: "6"
+              },
+              event: {
+                keypress: function keypress(e) {}
+              }
+            }, {
+              _: 'span',
+              attr: {
+                id: 'danmaku_mode_box'
+              }
+            }, {
+              _: 'span',
+              attr: {
+                id: 'danmaku_size_box'
+              }
+            }]
+          }, icon('danmakuStyle', undefined, undefined, {
+            width: "2em",
+            height: "2em"
+          })]
+        }, {
+          _: 'input',
+          attr: {
+            id: 'danmaku_input',
+            placeholder: _t('Input danmaku here')
+          }
+        }, {
+          _: 'span',
+          prop: {
+            id: 'danmaku_submit',
+            innerHTML: _t('Send')
+          }
+        }]
       }]
     }); //progress
 
@@ -10254,7 +10257,11 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
     var events = {
       main_video: {
         playing: function playing(e) {
-          return NP._iconActive('play', true);
+          NP._iconActive('play', true);
+
+          if (_this.$('#danmaku_input_frame').offsetHeight) {
+            _this.danmakuInput(false);
+          }
         },
         pause: function pause(e) {
           NP._iconActive('play', false);
@@ -10271,19 +10278,19 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
           NP._setDisplayTime(null, _NyaPCommon2.Utils.formatTime(video.duration, video.duration));
         },
         volumechange: function volumechange(e) {
-          var _context6, _context7, _context8;
+          var _context8, _context9, _context10;
 
           //show volume msg
-          NP._.volumeBox.renew((0, _concat.default)(_context6 = "".concat(_t('volume'), ":")).call(_context6, (video.volume * 100).toFixed(0), "%") + "".concat(video.muted ? '(' + _t('muted') + ')' : ''), 3000); //change icon style
+          NP._.volumeBox.renew((0, _concat.default)(_context8 = "".concat(_t('volume'), ":")).call(_context8, (video.volume * 100).toFixed(0), "%") + "".concat(video.muted ? '(' + _t('muted') + ')' : ''), 3000); //change icon style
 
 
-          _NyaPCommon2.Utils.setAttrs($('#volume_circle'), {
+          _NyaPCommon2.DomTools.setAttrs($('#volume_circle'), {
             'stroke-dasharray': "".concat(video.volume * 12 * Math.PI, " 90"),
             style: "fill-opacity:".concat(video.muted ? .2 : .6, "!important")
           }); //change icon tip
 
 
-          $('#icon_span_volume').setAttribute('title', (0, _concat.default)(_context7 = (0, _concat.default)(_context8 = "".concat(_t('volume'), ":(")).call(_context8, video.muted ? _t('muted') : (video.volume * 100 | 0) + '%', ")([shift]+\u2191\u2193)(")).call(_context7, _t('wheeling'), ")"));
+          $('#icon_span_volume').setAttribute('title', (0, _concat.default)(_context9 = (0, _concat.default)(_context10 = "".concat(_t('volume'), ":(")).call(_context10, video.muted ? _t('muted') : (video.volume * 100 | 0) + '%', ")([shift]+\u2191\u2193)(")).call(_context9, _t('wheeling'), ")"));
         },
         progress: function progress(e) {
           return NP.drawProgress();
@@ -10379,11 +10386,11 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
       },
       danmaku_mode_box: {
         click: function click(e) {
-          var _context9;
+          var _context11;
 
           var t = e.target;
 
-          if ((0, _startsWith.default)(_context9 = t.id).call(_context9, 'icon_span_danmakuMode')) {
+          if ((0, _startsWith.default)(_context11 = t.id).call(_context11, 'icon_span_danmakuMode')) {
             var m = 1 * t.id.match(/\d$/)[0];
             if (NP._.danmakuMode !== undefined) $("#icon_span_danmakuMode".concat(NP._.danmakuMode)).classList.remove('active');
             $("#icon_span_danmakuMode".concat(m)).classList.add('active');
@@ -10393,11 +10400,11 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
       },
       danmaku_size_box: {
         click: function click(e) {
-          var _context10;
+          var _context12;
 
           var t = e.target;
           if (!t.size) return;
-          (0, _forEach.default)(_context10 = _NyaPCommon2.Utils.toArray($('#danmaku_size_box').childNodes)).call(_context10, function (sp) {
+          (0, _forEach.default)(_context12 = _NyaPCommon2.Utils.toArray($('#danmaku_size_box').childNodes)).call(_context12, function (sp) {
             if (NP._.danmakuSize === sp.size) sp.classList.remove('active');
           });
           t.classList.add('active');
@@ -10428,9 +10435,9 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
       },
       //listen danmakuToggle event to change button style
       playerModeChange: function playerModeChange(mode) {
-        var _context11;
+        var _context13;
 
-        (0, _forEach.default)(_context11 = ['fullPage', 'fullScreen']).call(_context11, function (m) {
+        (0, _forEach.default)(_context13 = ['fullPage', 'fullScreen']).call(_context13, function (m) {
           NP._iconActive(m, mode === m);
         });
       },
@@ -10456,10 +10463,10 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
 
 
     if (_this._danmakuEnabled) {
-      var _context12, _context13, _opt2, _opt2$uiOptions, _context14;
+      var _context14, _context15, _opt$uiOptions2, _context16;
 
       //danmaku sizes
-      opt.danmakuSizes && (0, _forEach.default)(_context12 = opt.danmakuSizes).call(_context12, function (s, ind) {
+      opt.uiOptions.danmakuSizes && (0, _forEach.default)(_context14 = opt.uiOptions.danmakuSizes).call(_context14, function (s, ind) {
         var _opt, _opt$uiOptions;
 
         var e = O2H({
@@ -10481,7 +10488,7 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
         }
       }); //danmaku colors
 
-      opt.danmakuColors && (0, _forEach.default)(_context13 = opt.danmakuColors).call(_context13, function (c) {
+      opt.uiOptions.danmakuColors && (0, _forEach.default)(_context15 = opt.uiOptions.danmakuColors).call(_context15, function (c) {
         var e = O2H({
           _: 'span',
           attr: {
@@ -10495,27 +10502,27 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
         $('#danmaku_color_box').appendChild(e);
       });
 
-      if ((_opt2 = opt) === null || _opt2 === void 0 ? void 0 : (_opt2$uiOptions = _opt2.uiOptions) === null || _opt2$uiOptions === void 0 ? void 0 : _opt2$uiOptions.danmakuColor) {
+      if ((_opt$uiOptions2 = opt.uiOptions) === null || _opt$uiOptions2 === void 0 ? void 0 : _opt$uiOptions2.danmakuColor) {
         //set default color
         $('#danmaku_color').value = opt.uiOptions.danmakuColor;
       } //danmaku modes
 
 
-      opt.danmakuModes && (0, _forEach.default)(_context14 = opt.danmakuModes).call(_context14, function (m) {
-        var _opt3, _opt3$uiOptions;
+      opt.uiOptions.danmakuModes && (0, _forEach.default)(_context16 = opt.uiOptions.danmakuModes).call(_context16, function (m) {
+        var _opt2, _opt2$uiOptions;
 
         var e = icon("danmakuMode".concat(m));
         $('#danmaku_mode_box').appendChild(e);
 
-        if (m === ((_opt3 = opt) === null || _opt3 === void 0 ? void 0 : (_opt3$uiOptions = _opt3.uiOptions) === null || _opt3$uiOptions === void 0 ? void 0 : _opt3$uiOptions.danmakuMode)) {
+        if (m === ((_opt2 = opt) === null || _opt2 === void 0 ? void 0 : (_opt2$uiOptions = _opt2.uiOptions) === null || _opt2$uiOptions === void 0 ? void 0 : _opt2$uiOptions.danmakuMode)) {
           //click specified button
           e.click();
         }
       });
     } else {
-      var _context15;
+      var _context17;
 
-      (0, _forEach.default)(_context15 = _this.$$('[id*=danmaku]')).call(_context15, function (el) {
+      (0, _forEach.default)(_context17 = _this.$$('[id*=danmaku]')).call(_context17, function (el) {
         //remove danmaku buttons
         el.parentNode, removeChild(el);
       });
@@ -10681,7 +10688,7 @@ var NyaP = /*#__PURE__*/function (_NyaPCommon) {
       var bool = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : !this.$('#danmaku_input_frame').offsetHeight;
       //hide or show danmaku input
       var $ = this.$;
-      $('#danmaku_input_frame').style.display = bool ? 'flex' : '';
+      $('#danmaku_input_frame').style.display = bool ? '' : 'none';
 
       this._iconActive('addDanmaku', bool);
 
@@ -10852,6 +10859,12 @@ var NyaPCommonOptions = {
   },
   // for ui
   uiOptions: {
+    danmakuColors: ['fff', '6cf', 'ff0', 'f00', '0f0', '00f', 'f0f', '000'],
+    //colors in the danmaku style pannel
+    danmakuModes: [0, 3, 2, 1],
+    //0:right	1:left	2:bottom	3:top  ;; mode in the danmaku style pannel
+    danmakuSizes: [20, 24, 36],
+    //danmaku size buttons in the danmaku style pannel
     danmakuColor: null,
     //default color to fill the color option input
     danmakuMode: 0,
@@ -10872,9 +10885,9 @@ var NyaPCommonOptions = {
   //the element for containing the player
   icons: {
     play: [30, 30, '<path d="m10.063,8.856l9.873,6.143l-9.873,6.143v-12.287z" stroke-width="3" stroke-linejoin="round"/>'],
-    addDanmaku: [30, 30, '<path style="fill-opacity:0!important;" stroke-width="1.4" d="m21.004,8.995c-0.513,-0.513 -1.135,-0.770 -1.864,-0.770l-8.281,0c-0.729,0 -1.350,0.256 -1.864,0.770c-0.513,0.513 -0.770,1.135 -0.770,1.864l0,8.281c0,0.721 0.256,1.341 0.770,1.858c0.513,0.517 1.135,0.776 1.864,0.776l8.281,0c0.729,0 1.350,-0.258 1.864,-0.776c0.513,-0.517 0.770,-1.136 0.770,-1.858l0,-8.281c0,-0.729 -0.257,-1.350 -0.770,-1.864z" stroke-linejoin="round"/>' + '<path d="m12.142,14.031l1.888,0l0,-1.888l1.937,0l0,1.888l1.888,0l0,1.937l-1.888,0l0,1.888l-1.937,0l0,-1.888l-1.888,0l0,-1.937z" stroke-width="1"/>'],
+    danmakuStyle: [30, 30, '<path style="fill-opacity:0!important;" stroke-width="1.4" d="m21.004,8.995c-0.513,-0.513 -1.135,-0.770 -1.864,-0.770l-8.281,0c-0.729,0 -1.350,0.256 -1.864,0.770c-0.513,0.513 -0.770,1.135 -0.770,1.864l0,8.281c0,0.721 0.256,1.341 0.770,1.858c0.513,0.517 1.135,0.776 1.864,0.776l8.281,0c0.729,0 1.350,-0.258 1.864,-0.776c0.513,-0.517 0.770,-1.136 0.770,-1.858l0,-8.281c0,-0.729 -0.257,-1.350 -0.770,-1.864z" stroke-linejoin="round"/>' + '<path d="m12.142,14.031l1.888,0l0,-1.888l1.937,0l0,1.888l1.888,0l0,1.937l-1.888,0l0,1.888l-1.937,0l0,-1.888l-1.888,0l0,-1.937z" stroke-width="1"/>'],
     danmakuToggle: [30, 30, '<path d="m8.569,10.455l0,0c0,-0.767 0.659,-1.389 1.473,-1.389l0.669,0l0,0l3.215,0l6.028,0c0.390,0 0.765,0.146 1.041,0.406c0.276,0.260 0.431,0.613 0.431,0.982l0,3.473l0,0l0,2.083l0,0c0,0.767 -0.659,1.389 -1.473,1.389l-6.028,0l-4.200,3.532l0.985,-3.532l-0.669,0c-0.813,0 -1.473,-0.621 -1.473,-1.389l0,0l0,-2.083l0,0l0,-3.473z"/>'],
-    danmakuStyle: [30, 30, '<path style="fill-opacity:1!important" d="m21.781,9.872l-1.500,-1.530c-0.378,-0.385 -0.997,-0.391 -1.384,-0.012l-0.959,0.941l2.870,2.926l0.960,-0.940c0.385,-0.379 0.392,-0.998 0.013,-1.383zm-12.134,7.532l2.871,2.926l7.593,-7.448l-2.872,-2.927l-7.591,7.449l0.000,0.000zm-1.158,2.571l-0.549,1.974l1.984,-0.511l1.843,-0.474l-2.769,-2.824l-0.509,1.835z" stroke-width="0"/>'],
+    addDanmaku: [30, 30, '<path style="fill-opacity:1!important" d="m21.781,9.872l-1.500,-1.530c-0.378,-0.385 -0.997,-0.391 -1.384,-0.012l-0.959,0.941l2.870,2.926l0.960,-0.940c0.385,-0.379 0.392,-0.998 0.013,-1.383zm-12.134,7.532l2.871,2.926l7.593,-7.448l-2.872,-2.927l-7.591,7.449l0.000,0.000zm-1.158,2.571l-0.549,1.974l1.984,-0.511l1.843,-0.474l-2.769,-2.824l-0.509,1.835z" stroke-width="0"/>'],
     fullScreen: [30, 30, '<path stroke-linejoin="round" d="m11.166,9.761l-5.237,5.239l5.237,5.238l1.905,-1.905l-3.333,-3.333l3.332,-3.333l-1.904,-1.906zm7.665,0l-1.903,1.905l3.332,3.333l-3.332,3.332l1.903,1.905l5.238,-5.238l-5.238,-5.237z" stroke-width="1.3" />'],
     fullPage: [30, 30, '<rect stroke-linejoin="round" height="11.169" width="17.655" y="9.415" x="6.172" stroke-width="1.5"/>' + '<path stroke-linejoin="round" d="m12.361,11.394l-3.604,3.605l3.605,3.605l1.311,-1.311l-2.294,-2.294l2.293,-2.294l-1.311,-1.311zm5.275,0l-1.310,1.311l2.293,2.294l-2.293,2.293l1.310,1.311l3.605,-3.605l-3.605,-3.605z"/>'],
     loop: [30, 30, '<path stroke-linejoin="round" stroke-width="1" d="m20.945,15.282c-0.204,-0.245 -0.504,-0.387 -0.823,-0.387c-0.583,0 -1.079,0.398 -1.205,0.969c-0.400,1.799 -2.027,3.106 -3.870,3.106c-2.188,0 -3.969,-1.780 -3.969,-3.969c0,-2.189 1.781,-3.969 3.969,-3.969c0.720,0 1.412,0.192 2.024,0.561l-0.334,0.338c-0.098,0.100 -0.127,0.250 -0.073,0.380c0.055,0.130 0.183,0.213 0.324,0.212l2.176,0.001c0.255,-0.002 0.467,-0.231 0.466,-0.482l-0.008,-2.183c-0.000,-0.144 -0.085,-0.272 -0.217,-0.325c-0.131,-0.052 -0.280,-0.022 -0.379,0.077l-0.329,0.334c-1.058,-0.765 -2.340,-1.182 -3.649,-1.182c-3.438,0 -6.236,2.797 -6.236,6.236c0,3.438 2.797,6.236 6.236,6.236c2.993,0 5.569,-2.133 6.126,-5.072c0.059,-0.314 -0.022,-0.635 -0.227,-0.882z"/>'],
