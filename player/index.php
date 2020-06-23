@@ -16,27 +16,13 @@ require_once('../utils/common.php');
 <script>
 var ua=navigator.userAgent,
 	touchMode=(ua.match(/mobile/i) || ua.match(/android/i))&& ('ontouchstart' in window),//touch player
-	scriptVer=50,
 	NyaPTime=<?php modTime('static/NyaP');?>;
-try{//es2016 version feature test
-	'use strict';
-	[
-		'class a{}',//class
-		'()=>{}',//lambda
-		'{window}',//concise property
-		'[...[]]',//expand array
-		'let a;const b=1;',//let const
-		'fetch.name==="fetch"',//fetch api
-	].forEach(function(s){eval(s)});
-}catch(e){
-	console.log('not supported feature:',e);
-	scriptVer=90;
-}
+
 var playerName='NyaP'+(touchMode?"Touch":"");
-console.log('load player',playerName,scriptVer);
+console.log('load player',playerName);
 document.write(
 	"<style>@import url('"+"../static/NyaP/"+playerName+".css?"+NyaPTime+"')</style>"+
-	"<script src='../static/NyaP/"+playerName+"."+scriptVer+".js?"+NyaPTime+"'><\/script>"
+	"<script src='../static/NyaP/"+playerName+".js?"+NyaPTime+"'><\/script>"
 );
 var NyaP_plugins=JSON.parse('<?php
 	$plugin_list=glob('plugins/*.js');

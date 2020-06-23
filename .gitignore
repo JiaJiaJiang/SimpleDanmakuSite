@@ -2,3 +2,5 @@ config.php
 tmp
 convertScript/*.php
 player/plugins/
+admin/plugins/*.php
+*.todo
