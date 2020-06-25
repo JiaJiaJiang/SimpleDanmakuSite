@@ -114,7 +114,6 @@ class FWindow extends FWindowEventEmitter{
 	};
 	static defaultEvents=null;//do not add events on this event emitter
 	static addDefaultEvent(...args){
-		console.log(this);
 		if(!this.hasOwnProperty('defaultEvents')){
 			this.defaultEvents=new FWindowEventEmitter();
 		}

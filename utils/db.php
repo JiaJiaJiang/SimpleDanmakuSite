@@ -11,9 +11,12 @@ function initPDO(){
 	if(@constant('dbPort'))$connectionInfo.=('port='.dbPort.';');
 	if(@constant('dbUnixSocket'))$connectionInfo.=('unix_socket='.dbUnixSocket.';');
 	$connectionInfo.=('dbname='.dbName.';');
+	if(!extension_loaded('PDO')){
+		throw new Exception("PDO插件未加载");
+	}
 	try{
 		dbOpt::$PDO=new PDO($connectionInfo,dbUser,dbPass,array(
-		    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+		    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
 		    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
 		    PDO::ATTR_EMULATE_PREPARES => false
 		));
@@ -152,6 +155,11 @@ class commonDBOpt{
 		if($count==0)return 0;
 		foreach ($id as &$value) {
 			$this->checkID($value);
+		}
+		if($count===1){
+			return $this->prepareExe(
+				"DELETE FROM `{$this->table}` WHERE `{$this->idName}`=?",$id
+			)->rowCount();
 		}
 		$qustr=implode(',',array_fill(0,$count,'?'));//组成问号组
 		return $this->prepareExe(
