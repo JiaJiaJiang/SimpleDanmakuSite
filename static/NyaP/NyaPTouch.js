@@ -14998,13 +14998,14 @@ var MsgBox = /*#__PURE__*/function () {
     value: function renew(text, time) {
       this.setText(text);
       this.setTimeout(time);
-      if (!this.using) this.show();
+      if (!this.using) this.show(false);
     }
   }, {
     key: "show",
     value: function show() {
       var _this6 = this;
 
+      var autoHide = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
       if (this.using) return;
       this.msg.style.opacity = 0;
 
@@ -15012,11 +15013,11 @@ var MsgBox = /*#__PURE__*/function () {
         this.parentNode.appendChild(this.msg);
       }
 
+      this.using = true;
       this.msg.parentNode && (0, _setTimeout3["default"])(function () {
-        _this6.using = true;
         _this6.msg.style.opacity = 1;
       }, 0);
-      this.setTimeout();
+      if (autoHide) this.setTimeout();
     }
   }, {
     key: "remove",
@@ -15363,7 +15364,47 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
                 click: function click(e) {
                   return _this.playToggle();
                 }
-              }), icon('danmakuToggle', {
+              }), {
+                _: 'div',
+                attr: {
+                  style: 'flex-grow: 1;display: flex;'
+                },
+                child: [{
+                  _: 'span',
+                  attr: {
+                    id: 'danmakuStyleEditor',
+                    "class": 'NyaP_hideNotFirstChildren',
+                    tabindex: 0
+                  },
+                  child: [icon('danmakuStyle', {
+                    click: function click(e) {
+                      return _this.danmakuStyleToggle();
+                    }
+                  }), {
+                    _: 'div',
+                    attr: {
+                      id: 'danmaku_size_box'
+                    }
+                  }, {
+                    _: 'div',
+                    attr: {
+                      id: 'danmaku_mode_box'
+                    }
+                  }, {
+                    _: 'div',
+                    attr: {
+                      id: 'danmaku_color_box'
+                    }
+                  }]
+                }, {
+                  _: 'input',
+                  attr: {
+                    id: 'danmaku_input',
+                    placeholder: _t('Input danmaku here')
+                  }
+                }]
+              }, // {_:'div',attr:{style:'flex-grow: 1;'}},
+              icon('danmakuToggle', {
                 click: function click(e) {
                   return _this.Danmaku.toggle();
                 }
@@ -15382,45 +15423,6 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
                   return _this.playerMode(_this._.fullScreenToFullPage ? 'fullPage' : 'fullScreen');
                 }
               })]
-            }]
-          }, {
-            _: 'div',
-            attr: {
-              id: 'control_bottom_second'
-            },
-            child: [{
-              _: 'span',
-              attr: {
-                id: 'danmakuStyleEditor',
-                "class": 'NyaP_hideNotFirstChildren',
-                tabindex: 0
-              },
-              child: [icon('danmakuStyle', {
-                click: function click(e) {
-                  return _this.danmakuStyleToggle();
-                }
-              }), {
-                _: 'div',
-                attr: {
-                  id: 'danmaku_size_box'
-                }
-              }, {
-                _: 'div',
-                attr: {
-                  id: 'danmaku_mode_box'
-                }
-              }, {
-                _: 'div',
-                attr: {
-                  id: 'danmaku_color_box'
-                }
-              }]
-            }, {
-              _: 'input',
-              attr: {
-                id: 'danmaku_input',
-                placeholder: _t('Input danmaku here')
-              }
             }]
           }]
         }]
@@ -15515,17 +15517,21 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
         touchdrag: function touchdrag(e) {
           if (!NP._.currentDragMode) {
             //make sure the drag mode:seek,volume
-            if (opt.dragToSeek && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+            if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
               //seek
+              if (!opt.dragToSeek) return;
               NP._.currentDragMode = 'seek';
               NP._.seekTo = video.currentTime;
+            } else {
+              NP._.currentDragMode = 'volume';
             }
           }
 
           switch (NP._.currentDragMode) {
             case 'volume':
               {
-                video.volume = _NyaPCommon2.Utils.clamp(video.volume - e.deltaY / 200, 0, 1);
+                video.volume = _NyaPCommon2.Utils.clamp(video.volume - e.deltaY / 200, 0, 1); // NP._.volumeBox.renew(`${_t('volume')}:${(video.volume*100).toFixed(0)}%`+`${video.muted?('('+_t('muted')+')'):''}`,3000);
+
                 break;
               }
 
@@ -15548,33 +15554,30 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
           }
 
           NP._.currentDragMode = null;
-        },
-        contextmenu: function contextmenu(e) {
-          var _context7;
-
-          e.preventDefault();
-          if (!opt.dragToChangeVolume) return;
-          NP._.currentDragMode = 'volume';
-
-          NP._.volumeBox.renew((0, _concat["default"])(_context7 = "".concat(_t('volume'), ":")).call(_context7, (video.volume * 100).toFixed(0), "%") + "".concat(video.muted ? '(' + _t('muted') + ')' : ''), 3000);
         }
-      },
-      control_bottom: {
-        touchdrag: function touchdrag(e) {
-          if (NP._.bottomControlDraging === undefined) {
-            NP._.bottomControlDraging = Math.abs(e.deltaY) > Math.abs(e.deltaX);
-          }
+        /* contextmenu:e=>{
+        	e.preventDefault();
+        	if(!opt.dragToChangeVolume)return;
+        	NP._.currentDragMode='volume';
+        }, */
 
-          if (NP._.bottomControlDraging) NP._bottomControlTransformY(NP._.bottomControlTransformY - e.deltaY);
-        },
-        touchend: function touchend(e) {
-          if (NP._.bottomControlDraging == undefined) return;
-          NP._.bottomControlDraging = undefined;
-          var R = $('#control_bottom').offsetHeight / 2;
-
-          NP._bottomControlTransformY(NP._.bottomControlTransformY < R ? 0 : NP.opt.bottomControlHeight);
-        }
       },
+
+      /* control_bottom:{
+      	touchdrag:e=>{
+      		if(NP._.bottomControlDraging===undefined){
+      			NP._.bottomControlDraging=(Math.abs(e.deltaY)>Math.abs(e.deltaX));
+      		}
+      		if(NP._.bottomControlDraging)
+      			NP._bottomControlTransformY(NP._.bottomControlTransformY-e.deltaY);
+      	},
+      	touchend:e=>{
+      		if(NP._.bottomControlDraging==undefined)return;
+      		NP._.bottomControlDraging=undefined;
+      		let R=$('#control_bottom').offsetHeight/2;
+      		NP._bottomControlTransformY(NP._.bottomControlTransformY<R?0:NP.opt.bottomControlHeight);
+      	},
+      }, */
       progress_frame: {
         click: function click(e) {
           var t = e.target,
@@ -15613,11 +15616,11 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
       },
       danmaku_mode_box: {
         click: function click(e) {
-          var _context8;
+          var _context7;
 
           var t = e.target;
 
-          if ((0, _startsWith["default"])(_context8 = t.id).call(_context8, 'icon_span_danmakuMode')) {
+          if ((0, _startsWith["default"])(_context7 = t.id).call(_context7, 'icon_span_danmakuMode')) {
             var m = 1 * t.id.match(/\d$/)[0];
             if (NP._.danmakuMode !== undefined) $("#icon_span_danmakuMode".concat(NP._.danmakuMode)).classList.remove('active');
             $("#icon_span_danmakuMode".concat(m)).classList.add('active');
@@ -15627,11 +15630,11 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
       },
       danmaku_size_box: {
         click: function click(e) {
-          var _context9;
+          var _context8;
 
           var t = e.target;
           if (!t.size) return;
-          (0, _forEach["default"])(_context9 = _NyaPCommon2.Utils.toArray($('#danmaku_size_box').childNodes)).call(_context9, function (sp) {
+          (0, _forEach["default"])(_context8 = _NyaPCommon2.Utils.toArray($('#danmaku_size_box').childNodes)).call(_context8, function (sp) {
             if (NP._.danmakuSize === sp.size) sp.classList.remove('active');
           });
           t.classList.add('active');
@@ -15644,19 +15647,19 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
             var c = NP.Danmaku.isVaildColor(e.target.color);
 
             if (c) {
-              var _context10; //match valid hex color code
+              var _context9; //match valid hex color code
 
 
               NP._.danmakuColor = c;
-              (0, _forEach["default"])(_context10 = _NyaPCommon2.Utils.toArray($('#danmaku_color_box').childNodes)).call(_context10, function (cp) {
+              (0, _forEach["default"])(_context9 = _NyaPCommon2.Utils.toArray($('#danmaku_color_box').childNodes)).call(_context9, function (cp) {
                 if (cp === e.target) cp.classList.add('active');else cp.classList.remove('active');
               });
             } else {
-              var _context11;
+              var _context10;
 
               NP._.danmakuColor = undefined;
               c = NP.Danmaku.isVaildColor(NP.opt.danmaku.defaultDanmakuColor);
-              (0, _forEach["default"])(_context11 = _NyaPCommon2.Utils.toArray($('#danmaku_color_box').childNodes)).call(_context11, function (cp) {
+              (0, _forEach["default"])(_context10 = _NyaPCommon2.Utils.toArray($('#danmaku_color_box').childNodes)).call(_context10, function (cp) {
                 return cp.classList.remove('active');
               });
             }
@@ -15688,9 +15691,9 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
         NP._setDisplayTime(null, _NyaPCommon2.Utils.formatTime(t, video.duration));
       },
       playerModeChange: function playerModeChange(mode) {
-        var _context12;
+        var _context11;
 
-        (0, _forEach["default"])(_context12 = ['fullScreen', 'fullPage']).call(_context12, function (m) {
+        (0, _forEach["default"])(_context11 = ['fullScreen', 'fullPage']).call(_context11, function (m) {
           NP._iconActive(m, mode === m);
         });
       }
@@ -15707,10 +15710,10 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
 
 
     if (_this._danmakuEnabled) {
-      var _context13, _context14, _context15; //danmaku sizes
+      var _context12, _context13, _context14; //danmaku sizes
 
 
-      opt.uiOptions.danmakuSizes && (0, _forEach["default"])(_context13 = opt.uiOptions.danmakuSizes).call(_context13, function (s, ind) {
+      opt.uiOptions.danmakuSizes && (0, _forEach["default"])(_context12 = opt.uiOptions.danmakuSizes).call(_context12, function (s, ind) {
         var el = O2H({
           _: 'span',
           attr: {
@@ -15729,7 +15732,7 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
         }
       }); //danmaku colors
 
-      opt.uiOptions.danmakuColors && (0, _forEach["default"])(_context14 = opt.uiOptions.danmakuColors).call(_context14, function (c) {
+      opt.uiOptions.danmakuColors && (0, _forEach["default"])(_context13 = opt.uiOptions.danmakuColors).call(_context13, function (c) {
         var el = O2H({
           _: 'span',
           attr: {
@@ -15743,7 +15746,7 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
         $('#danmaku_color_box').appendChild(el);
       }); //danmaku modes
 
-      opt.uiOptions.danmakuModes && (0, _forEach["default"])(_context15 = opt.uiOptions.danmakuModes).call(_context15, function (m) {
+      opt.uiOptions.danmakuModes && (0, _forEach["default"])(_context14 = opt.uiOptions.danmakuModes).call(_context14, function (m) {
         var _opt$uiOptions;
 
         var el = icon("danmakuMode".concat(m));
@@ -15754,9 +15757,9 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
         }
       });
     } else {
-      var _context16;
+      var _context15;
 
-      (0, _forEach["default"])(_context16 = _this.$$('[id*=danmaku]')).call(_context16, function (el) {
+      (0, _forEach["default"])(_context15 = _this.$$('[id*=danmaku]')).call(_context15, function (el) {
         //remove danmaku buttons
         el.parentNode, removeChild(el);
       });
@@ -15797,6 +15800,7 @@ var NyaPTouch = /*#__PURE__*/function (_NyaPCommon) {
 
       var bool = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._.bottomControlTransformY === 0; //hide or show danmaku input
 
+      return;
       var $ = this.$;
       if (bool) this._bottomControlTransformY(this.$('#control_bottom_first').offsetHeight - NP.opt.bottomControlHeight);else {
         this._bottomControlTransformY(0);

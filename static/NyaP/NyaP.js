@@ -15950,13 +15950,14 @@ var MsgBox = /*#__PURE__*/function () {
     value: function renew(text, time) {
       this.setText(text);
       this.setTimeout(time);
-      if (!this.using) this.show();
+      if (!this.using) this.show(false);
     }
   }, {
     key: "show",
     value: function show() {
       var _this6 = this;
 
+      var autoHide = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
       if (this.using) return;
       this.msg.style.opacity = 0;
 
@@ -15964,11 +15965,11 @@ var MsgBox = /*#__PURE__*/function () {
         this.parentNode.appendChild(this.msg);
       }
 
+      this.using = true;
       this.msg.parentNode && (0, _setTimeout3["default"])(function () {
-        _this6.using = true;
         _this6.msg.style.opacity = 1;
       }, 0);
-      this.setTimeout();
+      if (autoHide) this.setTimeout();
     }
   }, {
     key: "remove",
