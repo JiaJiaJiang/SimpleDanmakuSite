@@ -120,8 +120,8 @@ class List{
 	select(target){
 		let boxes=[].slice.call(this.$$('input.selector'));
 		switch(target){
-			case 'all':boxes.forEach(i=>i.checked=true);break;
-			case 'opposite':boxes.forEach(i=>i.checked=!i.checked);break;
+			case 'all':boxes.forEach(i=>i.checked||i.click());break;
+			case 'opposite':boxes.forEach(i=>i.click());break;
 		}
 	}
 	insert(data){
