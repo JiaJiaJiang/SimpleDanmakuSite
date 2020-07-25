@@ -82,13 +82,10 @@ if(playerOpt){
 	playerOpt=base64.decode(playerOpt);
 	try{
 		playerOpt=JSON.parse(playerOpt);
+		NyaP.Utils.deepAssign(opt,playerOpt);
 	}catch(e){
 		alert('播放器配置错误');
 	}
-	if(typeof playerOpt === 'object')
-		for(var sopt in playerOpt){
-			opt[sopt]=playerOpt[sopt];
-		}
 }
 if(NyaP_plugins){
 	opt.plugins||(opt.plugins=[]);
