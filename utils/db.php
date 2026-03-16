@@ -7,9 +7,9 @@ function initPDO(){
 	if(dbOpt::$PDO)return dbOpt::$PDO;
 	if(!dbName)throw new Exception('dbName is not defined');
 	$connectionInfo='mysql:';
-	if(@constant('dbHost'))$connectionInfo.=('host='.dbHost.';');
-	if(@constant('dbPort'))$connectionInfo.=('port='.dbPort.';');
-	if(@constant('dbUnixSocket'))$connectionInfo.=('unix_socket='.dbUnixSocket.';');
+	if(defined('dbHost'))$connectionInfo.=('host='.dbHost.';');
+	if(defined('dbPort'))$connectionInfo.=('port='.dbPort.';');
+	if(defined('dbUnixSocket'))$connectionInfo.=('unix_socket='.dbUnixSocket.';');
 	$connectionInfo.=('dbname='.dbName.';');
 	if(!extension_loaded('PDO')){
 		throw new Exception("PDO插件未加载");
